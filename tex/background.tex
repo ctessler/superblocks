@@ -1,0 +1,41 @@
+\section {Scheduling Architecture}\label{sec:background}
+%
+\begin{figure*}[tb]
+	\centering
+		\subfigure[The SWAP Logical Components.]{
+    	\label{fig:swap_logical_components}
+		\includegraphics[width=0.45\textwidth, height=.25\textheight]{swap_logical_view.pdf}}
+		\subfigure[The SWAP Physical Components.]{
+    	\label{fig:swap_physical_components}
+		\includegraphics[width=0.50\textwidth, height=.25\textheight]{swap_physical_view.pdf}}
+	\caption{Primary SWAP Components.}
+	\label{fig:swap_components}
+\end{figure*}
+
+%More detail about the scheduling architecture
+With the challenges of scientific computing introduced, we now turn our attention to the essential elements or components of the SWAP scheduling architecture.  In a high performance computing site, many computing nodes are connected and controlled by a single centralized job scheduling manager.  An HPSS centralized storage server provides a multi-tiered set of varied storage resources including fast disk, bulk disk, and tape storage of scientific data.  Within this computing environment, the SWAP job scheduling manager provides several related job scheduling services summarized below and shown in Figures~\ref{fig:swap_logical_components} and~\ref{fig:swap_physical_components} respectively.
+%list functions
+These services include, but are not limited to:
+
+	\noindent\textbf{Job Scheduling Service:}
+	As jobs are submitted for execution, the job scheduling service computes the job
+    execution speed up that can be achieved on available computing nodes.  The scheduling component accounts for file location, compute node loading, disk loading, and the input/output data request rate to pair candidate jobs with the most optimal compute nodes to attain maximal utilization of compute resources.
+	
+	\noindent \textbf{File Location Monitor:}
+	File location monitoring is the most important function of the SWAP scheduler
+    responsible for maintaining a database of scientific data files and their locations in the system.  This file cache information is used by the scheduler to compute the pre-job execution file migration or staging time on the set of available compute nodes.
+	
+	\noindent\textbf{File Migration Service:}
+	The file migration service is responsible for replicating or staging the input data
+    files to the selected compute nodes that have not been previously cached.  Input data files can be obtained from an HPSS centralized storage server, or from another compute node.  Once the local compute node disk utilization reaches a specific threshold, the file migration service will remove selected files via a hybrid algorithm that uses file access count as the primary and last access time or LRU as the secondary selection criteria.
+	
+	\noindent \textbf{Job Performance Monitor:}
+	The job performance monitor is responsible for tracking job status and gathering
+    post execution metrics used to characterize the execution profile of each executable program.  These metrics are used by the scheduler to select the most suitable candidate compute node by looking at historical performance as a means for estimating the expected performance.  Using this approach, the scheduler can differentiate between compute bound and I/O bound jobs thereby enhancing the ability to make an optimal scheduling decision.
+	
+	\noindent \textbf{Compute Node Performance Monitor:}
+	The compute node performance monitor component is responsible for periodically
+    monitoring CPU, disk, and memory performance of each compute node.  With this performance data, an accurate characterization of the loading on key compute node resources can be established.  The scheduler uses the loading information along with the execution profile of the job's executable program to achieve the most optimal match of job and compute node.  Thus, the scheduler will generally place compute bound jobs on less loaded CPUs, while I/O bound jobs are placed on less loaded disks.
+
+%high level on our approach
+We propose a job scheduling algorithm, SWAP, that accounts for several job performance factors; including input data file location, CPU loading, disk loading, and program execution profile to achieve optimal job scheduling decisions.  Furthermore, we have developed a Java based job scheduling simulator that facilitates the capture job performance metrics for SWAP and several well known job scheduling algorithms as a suitable basis for comparison. 

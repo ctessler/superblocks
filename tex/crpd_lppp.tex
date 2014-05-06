@@ -1,0 +1,71 @@
+\documentclass[10pt, final]{IEEEtran}
+%\documentclass[12pt, final, onecolumn]{IEEEtran}
+%\documentclass[journal, final]{IEEEtran}
+
+%allows for using the 1in margins on a page
+%\usepackage{fullpage}
+%allows for using graphics in the paper
+\usepackage{graphicx}
+%package needed to set the document into
+%double space mode
+\usepackage{setspace}
+%allows for the use of subfigures
+\usepackage{subfigure}
+\usepackage{times}
+\usepackage[table]{xcolor}
+%\usepackage{latex8}
+
+%\textwidth 6.0in
+%\textheight 8.5in
+
+\textwidth 7in
+\textheight 9in
+
+\pagestyle{empty}
+
+%Insert the title of the paper here
+\title{Optimal Preemption Point Placement \\Using Enhanced Cache Related Preemption Delay}
+
+%authors of the paper
+\author{{John Cavicchio, Corey Tessler, and Nathan Fisher}
+%Affiliation
+\vspace{1.6mm}\\
+\fontsize{10}{10}\selectfont\itshape
+Wayne State University\\
+\fontsize{9}{9}\selectfont\ttfamily\upshape
+\{ba6444, corey.tessler, fishern\}@wayne.edu\\}
+
+%in order to remove the date
+\date{}
+
+
+%begin document
+\begin{document}
+\pagestyle{plain}
+
+%title
+\maketitle
+%\thispagestyle{empty}
+\input{abstract}
+%\input{keywords}
+%\input{tech_area}
+\input{introduction}
+\input{related}
+%input{background}
+\input{system_model}
+\input{crpd_computation}
+\input{schedulability_analysis}
+\input{implementation}
+\input{evaluation}
+\input{conclusion}
+
+
+
+\scriptsize\addtolength{\baselineskip}{-2mm}
+\bibliographystyle{IEEEtran}
+\bibliography{web-bib}
+
+
+%end document
+\end{document}
+
