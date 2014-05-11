@@ -1,0 +1,135 @@
+Instruction Cache:
+2 given 1 : 233
+2 maximum improvement: 0.00 
+3 given 1 : 233
+3 given 2 : 255
+3 maximum improvement: 8.63 
+4 given 1 : 89
+4 given 2 : 89
+4 given 3 : 89
+4 maximum improvement: 0.00 
+5 given 1 : 89
+5 given 2 : 89
+5 given 3 : 89
+5 given 4 : 89
+5 maximum improvement: 0.00 
+6 given 1 : 89
+6 given 2 : 89
+6 given 3 : 89
+6 given 4 : 89
+6 given 5 : 255
+6 maximum improvement: 65.10 
+7 given 1 : 89
+7 given 2 : 89
+7 given 3 : 89
+7 given 4 : 89
+7 given 5 : 255
+7 given 6 : 255
+7 maximum improvement: 65.10 
+8 given 1 : 89
+8 given 2 : 89
+8 given 3 : 89
+8 given 4 : 89
+8 given 5 : 255
+8 given 6 : 255
+8 given 7 : 255
+8 maximum improvement: 65.10 
+9 given 1 : 76
+9 given 2 : 76
+9 given 3 : 76
+9 given 4 : 76
+9 given 5 : 241
+9 given 6 : 241
+9 given 7 : 241
+9 given 8 : 241
+9 maximum improvement: 68.46 
+10 given 1 : 76
+10 given 2 : 76
+10 given 3 : 76
+10 given 4 : 76
+10 given 5 : 241
+10 given 6 : 241
+10 given 7 : 241
+10 given 8 : 241
+10 given 9 : 255
+10 maximum improvement: 70.20 
+11 given 1 : 71
+11 given 2 : 71
+11 given 3 : 71
+11 given 4 : 71
+11 given 5 : 234
+11 given 6 : 234
+11 given 7 : 234
+11 given 8 : 234
+11 given 9 : 248
+11 given 10 : 248
+11 maximum improvement: 71.37 
+Average maximum improvement: 41.40
+
+Data Cache:
+2 given 1 : 251
+2 maximum improvement: 0.00 
+3 given 1 : 251
+3 given 2 : 255
+3 maximum improvement: 1.57 
+4 given 1 : 251
+4 given 2 : 255
+4 given 3 : 255
+4 maximum improvement: 1.57 
+5 given 1 : 251
+5 given 2 : 255
+5 given 3 : 255
+5 given 4 : 255
+5 maximum improvement: 1.57 
+6 given 1 : 251
+6 given 2 : 255
+6 given 3 : 255
+6 given 4 : 255
+6 given 5 : 255
+6 maximum improvement: 1.57 
+7 given 1 : 251
+7 given 2 : 255
+7 given 3 : 255
+7 given 4 : 255
+7 given 5 : 255
+7 given 6 : 255
+7 maximum improvement: 1.57 
+8 given 1 : 251
+8 given 2 : 255
+8 given 3 : 255
+8 given 4 : 255
+8 given 5 : 255
+8 given 6 : 255
+8 given 7 : 255
+8 maximum improvement: 1.57 
+9 given 1 : 247
+9 given 2 : 251
+9 given 3 : 251
+9 given 4 : 251
+9 given 5 : 251
+9 given 6 : 251
+9 given 7 : 251
+9 given 8 : 251
+9 maximum improvement: 1.59 
+10 given 1 : 234
+10 given 2 : 238
+10 given 3 : 238
+10 given 4 : 238
+10 given 5 : 238
+10 given 6 : 238
+10 given 7 : 238
+10 given 8 : 238
+10 given 9 : 242
+10 maximum improvement: 3.31 
+11 given 1 : 225
+11 given 2 : 229
+11 given 3 : 229
+11 given 4 : 229
+11 given 5 : 229
+11 given 6 : 229
+11 given 7 : 229
+11 given 8 : 229
+11 given 9 : 233
+11 given 10 : 246
+11 maximum improvement: 8.54 
+Average maximum improvement: 2.28

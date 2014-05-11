@@ -1,0 +1,84 @@
+\documentclass[12pt]{article}
+\title{Case Study}
+\usepackage{amsmath} %dfrac
+
+\begin{document}
+
+
+\section{Methodology}
+
+Gaisler's GRSIM LEON3 simulator was used to estimate the number of
+UCBs of a task. The estimation took four steps. An initial run to
+determine the total number of instructions for a complete run of the
+task. Then dividing the task into uniform intervals. The cache state
+at the end of each interval was recorded. Lastly, the captured cache
+state was compared to determine the UCBs between pairs of program points.
+
+Tasks were selected from the MRTC WCET Benchmark suite. They were
+modifiend and built using Gaisler's LEON3 compiler. Then run on the
+LEON3 GRSIM simulator. Using the simulator, the total number of
+instructions required for a complete execution of a task was recorded
+as ${IC}$.
+
+The tasks were divided into ${v}$ intervals of ${\dfrac{IC}{v}}$
+instructions. Yielding ${v}$ program points ${\{P_1, P_2, \ldots,
+  P_v\}}$. Each program point corresponds to the last instruction of
+each interval. Using the simulator, the complete instuction and data
+caches were captured at each program point. As nomenclature, the complete
+instruction and data cache captured at program point ${P_j}$ will be
+referred to as ${C_j}$.
+
+
+Estimating the UCBs between two program points ${P_j}$ and ${P_k}$ was
+done by taking the intersection of cache states between the two
+points: 
+
+\begin{equation*}
+  UCB(P_j, P_k) = \left\vert\bigcap_{i=j}^{k}C_i\right\vert
+\end{equation*}
+
+The reasoning
+is simple, those cache entries common to all program points ${P_j}$
+through ${P_k}$ are the only UCB candidates. Counting those entries
+serves as an upper bound on the UCBs between ${P_j}$ and ${P_k}$.
+
+\section{Results}
+
+The results are presented as a comparison between the method described
+herein and the Bertonga approach. For a program point ${P_j}$ the
+Bertogna approach defines the UCBs (and therefor the CRPD) as:
+
+\begin{equation*}
+  max\{ UCB(P_i, P_j) \vert i < j \}
+\end{equation*}
+
+To determine the maximum benefit of the new approach, the best case
+scenario is considered. When the preemption point is selected with the
+fewest number of UCBs based upon previous preemption.  For ${P_j}$ the
+determination is made by:
+
+\begin{equation*}
+  min\{ UCB(P_i, P_j) \vert i < j \}
+\end{equation*}
+
+The difference between these values is calculated for all program
+points and then averaged. For the task set selected from the MRTC
+Benchmark Suite, the average reduction in UCBs for instruction caches
+is 41.40\% and data caches 2.28\%.
+
+\section{References}
+
+MRTC Benchmarks 
+http://www.mrtc.mdh.se/projects/wcet/benchmarks.html
+
+
+Gaisler GRSIM 
+http://gaisler.com/index.php/products/simulators/grsim
+
+
+Gaisler Compiler 
+http://gaisler.com/index.php/downloads/compilers
+
+
+\end{document}
+
