@@ -6,7 +6,7 @@ clean:
 	rm -rf *.log *.aux case_study.pdf
 
 
-case_study.pdf: case_study.tex bsort100.tex
+case_study.pdf: case_study.tex 
 	pdflatex case_study.tex
 	rm *.log *.aux
 

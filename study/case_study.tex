@@ -4,43 +4,46 @@
 
 \begin{document}
 
-
 \section{Methodology}
 
-Gaisler's GRSIM LEON3 simulator was used to estimate the number of
-UCBs of a task. The estimation took four steps. An initial run to
-determine the total number of instructions for a complete run of the
-task. Then dividing the task into uniform intervals. The cache state
-at the end of each interval was recorded. Lastly, the captured cache
-state was compared to determine the UCBs between pairs of program points.
+To characterize the behavior and estimate the benefit of the approach
+proposed in this paper, a case study of representative tasks was
+performed. The tasks were selected from Malardalen University of
+Sweden's WCET benchmark suite[1]. Each task was built using Gaisler's
+Bare-C Cross Compiler[2] for the GRSIM LEON3[3] simulated target. 
 
-Tasks were selected from the MRTC WCET Benchmark suite. They were
-modifiend and built using Gaisler's LEON3 compiler. Then run on the
-LEON3 GRSIM simulator. Using the simulator, the total number of
-instructions required for a complete execution of a task was recorded
-as ${IC}$.
+After compiling and linking, each task was analyzed by AbsInt's
+a\textsuperscript{3} WCET[4] tool. This yielded the basic block
+boundaries within each task. Next, the basic blocks
+${\{B_1, B_2, ..., B_n\}}$ were serialized based upon an understanding of
+the control flow of the task. Program points
+${\{P_1, P_2, ..., P_n\}}$ were assigned by setting ${P_i}$ to the
+address of the final instruction of each basic block ${B_i}$ for ${i}$
+from ${0}$ to ${n}$.
 
-The tasks were divided into ${v}$ intervals of ${\dfrac{IC}{v}}$
-instructions. Yielding ${v}$ program points ${\{P_1, P_2, \ldots,
-  P_v\}}$. Each program point corresponds to the last instruction of
-each interval. Using the simulator, the complete instuction and data
-caches were captured at each program point. As nomenclature, the complete
-instruction and data cache captured at program point ${P_j}$ will be
-referred to as ${C_j}$.
+These program points served as a breakpoints within the task when
+running on the simulator. During the execution of the task, the
+instruction and data caches were collected at each breakpoint. Since
+each breakpoint may be visited multiple times, the cache state was
+only recorded for the final visit.
 
+Taking the intersection of cache state at ${P_i}$ and ${P_j}$
+serves as an overestimate of the actual UCBs for the ${B_i}$. These
+UCB estimates can be used to determine the utility of the proposed
+approach. 
 
-Estimating the UCBs between two program points ${P_j}$ and ${P_k}$ was
-done by taking the intersection of cache states between the two
-points: 
+\subsection{Availability}
 
-\begin{equation*}
-  UCB(P_j, P_k) = \left\vert\bigcap_{i=j}^{k}C_i\right\vert
-\end{equation*}
+This method may be verified and reproduced using the same tools and
+data. Gaisler's compiler and simulator are freely available. AbsInt's
+a\textsuperscript{3} tool is available for educational and evaluation
+purposes. The programs written for this paper can be found on GitHub
+at the following url:
 
-The reasoning
-is simple, those cache entries common to all program points ${P_j}$
-through ${P_k}$ are the only UCB candidates. Counting those entries
-serves as an upper bound on the UCBs between ${P_j}$ and ${P_k}$.
+\begin{center}
+https://github.com/ctessler/superblocks/tree/master/study
+\end{center}
+
 
 \section{Results}
 
