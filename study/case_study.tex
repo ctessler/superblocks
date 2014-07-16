@@ -2,6 +2,7 @@
 \title{Case Study}
 \usepackage{amsmath} %dfrac
 \usepackage{graphicx}
+\usepackage{epstopdf}
 
 \begin{document}
 
@@ -34,10 +35,12 @@ Instead, all instruction and data cache state was disregarded except
 the state collected during the final visit of ${P_j}$ during the tasks
 execution. Using these final snapshots the UCBs shared between two
 program points ${P_i}$ and ${P_j}$ are determined by the following
-equation.
-
+equation. 
 \begin{center}
-  ${\bigcap_{k=i}^{j-1} C_k}$
+  \begin{equation*}
+    UCB(P_i, P_j) = \bigcap_{k=i}^{j-1} C_k
+  \end{equation*}
+  \emph{${C}$ may be either ${C^I}$ or ${C^D}$}
 \end{center}
 
 This intersection of the cache state taken from program point ${P_i}$
@@ -78,17 +81,21 @@ determination is made by:
   min\{ UCB(P_i, P_j) \vert i < j \}
 \end{equation*}
 
-In the following graph, the x-axis is a program point ${P_i}$. The
-y-axis is the number of UCBs shared with a later program point. For
-the red line, the later point is the one with the maximum number of
-shared UCBs. For the green line, the later point is the one with the
-minimum number of UCBs.
 
-Bertogna's approach is represented by the red line. The proposed
-approach by the green line. For both approaches only two points are
-considered for possible preemption. Bertogna's approach would select
-the two points related to the lowest y-value of the red line. The
-proposed approach would select the lowest y-value of the green line.
+In the following graphs, each point in the graph represents two points
+in the program. The first point of the program ${P_i}$ is fixed by the
+x-axis. Each point in the graph is labelled with a number, a later
+program point ${P_j}$ which has been selected by the the Bertogna
+approach, or by the proposed method. Bertogna's approach follows the
+dashed blue line, the proposed approach the solid black line.
+
+Bertogna's approach is represented by the dashed blue line. The proposed
+approach by the solid black line. Both approaches will select two
+program points, represented by a single position in the
+graph. Bertogna's approach would select the lowest value of the dashed
+blue line. The proposed approach would select the lowest value of the
+solid black line. Comparing the number of shared UCBs allows a
+comparison to be made.
 
 \includegraphics{eps/bsort-icache.eps}
 
@@ -98,14 +105,17 @@ proposed approach would select the lowest y-value of the green line.
 
 \includegraphics{eps/recursion-dcache.eps}
 
+%% An alternative for a wider graph
+%% \includegraphics[width=\linewidth]{eps/fft1-icache.eps}
+
 \includegraphics{eps/fft1-icache.eps}
 
 \includegraphics{eps/fft1-dcache.eps}
 
-For the bsort task, the overall benefit for instruction and data
-caches is 2 and 0 UCBs. For the fft1 task, the instruction and data
-cache benefit is 121 and 7 UCBs. For the recursion task, the benefit
-is 7 and 10 UCBs.
+For the bsort task, the proposed approach provides a benefit for the
+instruction and data caches of 2 and 0 UCBs. For the fft1 task, the
+instruction and data cache benefit is 121 and 7 UCBs. For the
+recursion task, the benefit is 7 and 10 UCBs.
 
 \section{References}
 
