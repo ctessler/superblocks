@@ -1,3 +1,118 @@
 \section{Implementation}\label{sec:implementation}
 
-TBD
+Our approach employs the results of schedulability analysis with the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math} computed for each task \begin{math}\tau_{i}\end{math}.  The objective is to select a subset of preemption points that minimizes:
+\begin{equation}\label{eqn:wcet-cost}
+   C_{i} = B_{N_{i}}^{i}(\rho^{i}) = C_{i}^{NP} + \sum_{m=1}^{|\rho^{i}|-1} [\xi(\rho_{m}^{i},\rho_{m+1}^{i})].
+\end{equation}
+
+\noindent
+where \begin{math}\rho^{i}\end{math} is the set of selected preemption points for task \begin{math}\tau_{i}\end{math}:
+\begin{equation}\label{eqn:pp-set}
+\begin{split}
+   \rho^{i} \stackrel{\text{def}}{=} \{\delta_{m}^{i}|&\delta_{m}^{i} \text{is a selected preemption point of task } \tau_{i}\ \wedge \\ &m \in [1,N_{i}]\}
+\end{split}
+\end{equation}
+
+\noindent
+and \begin{math}B_{k}^{i}\end{math} is the WCET with preemption overhead of first k basic blocks (BB) of task \begin{math}\tau_{i}\end{math} as given by:
+\begin{equation}\label{eqn:bbkwcet-cost}
+\begin{split}
+   B_{k}^{i}(\rho^{i}) = \textit{min}_{\delta_{j}^{i}} \Big[&B_{j-1}^{i}(\rho^{i}(\delta_{j-1}^{i})) + \xi(\delta_{j}^{i},\rho_{next}^{i}(\delta_{j}^{i})) + \\ &\sum_{n=1}^{k}b_{n}^{i}\Big].
+\end{split}
+\end{equation}
+
+\noindent
+where the term \begin{math}\rho_{next}^{i}(\delta_{j}^{i})\end{math} is the next potential/selected preemption point from basic block \begin{math}\delta_{j}^{i}\end{math}:
+\begin{equation}\label{eqn:ppnext-set}
+\begin{split}
+   \rho_{next}^{i}(\delta_{k}^{i}) \stackrel{\text{def}}{=} \{\delta_{j}^{i}|&\delta_{j}^{i} = \rho_{m+1}^{i} \wedge \delta_{j}^{i} = \rho_{m+1}^{i} \\ &\textit{ for some m} \in [1,N_{i}-1]\}
+\end{split}
+\end{equation}
+
+\noindent
+The selection of optimal preemption points is subject to the constraint that no non-preemptive region in task \begin{math}\tau_{i}\end{math} exceeds the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math}:
+\begin{equation}\label{eqn:pp-constraint}
+   \Psi^{i}(\rho^{i}) =
+\left\{
+\begin{array}{l}
+    \textit{True, if } q_{m}^{i}(\rho^{i}) \leq Q_{i} \textit{ for } m \in [1,N_{i}-1] \\
+    \textit{False, otherwise}
+\end{array}
+\right\}~.
+\end{equation}
+
+\noindent
+where \begin{math}q_{m}^{i}(\rho^{i})\end{math} represents the \begin{math}m^{th}\end{math} non-preemptive-region (NPR) time for task \begin{math}\tau_{i}\end{math}:
+\begin{equation}\label{eqn:mthnpr-time}
+   q_{m}^{i}(\rho^{i}) = \Big[\xi(\rho_{m}^{i},\rho_{m+1}^{i}) + \sum_{n=\rho_{m}^{i}}^{\rho_{m+1}^{i}}b_{n}^{i}\Big]
+\end{equation}
+
+\noindent
+In accordance with the recursive nature of equation (\ref{eqn:bbkwcet-cost}) we propose an O(N!) recursive algorithm for computing the optimal preemption points subject to the constraint of equation (\ref{eqn:pp-constraint}).
+
+\begin{algorithm}
+\caption*{Recursive Optimal Preemption Point Placement}
+\label{alg:recursive-optimal-ppp}
+\begin{algorithmic}[1]
+\State{$\rho\ \gets\ $\Call{$Compute\_PPSet$}{$N_{i},\rho_{prev}$}};
+\end{algorithmic}
+\end{algorithm}
+
+\noindent
+The recursive formulation gives a preliminary algorithm description, however, it is computationally intractable.  We now propose an \begin{math}O(cN^{2})\end{math} dynamic programming algorithm for computing the optimal preemption points.
+
+\begin{algorithm}
+\caption*{Dynamic Programming Optimal Preemption Point Placement}
+\label{alg:dynamic-optimal-ppp}
+\begin{algorithmic}[1]
+\Function{$Select\_Optimal\_PPP$}{$N_{i}$,$b^{i}$,$Q_{i}$,$\xi$}
+\State {$N_{p}\ \gets\ \infty\ q\ \gets\ \infty\ B\ \gets\ \infty\ \rho_{prev}\ \gets\ \{\delta_{0}^{i}\}$};
+\If {$b_{k}^{i} > Q_{i}\ for\ some\ k\ \in\ [1,N_{i}]$}
+\State\Return{INFEASIBLE;} 
+\EndIf
+\For{$k: 2\leq k\leq N_{i}$}
+\State\Call{$Compute\_PPCost$}{$\delta_{k-1}^{i}$,$\delta_{k}^{i}$};
+\For{$j: k-1\geq j\geq 1\ and\ q(\delta_{j}^{i},\delta_{k}^{i}) < Q_{i}$}
+%\Comment{$Check\ preemption\ cost\ at\ BB\ \delta_{j}^{i}\ with\ preemption$}
+%\Comment{$at\ BB\ \delta_{0}^{i}\ and\ BB\ \delta_{k}^{i}$}
+\State\Call{$Compute\_PPCost$}{$\delta_{0}^{i}$,$\delta_{j}^{i}$};
+\State\Call{$Compute\_PPCost$}{$\delta_{j}^{i}$,$\delta_{k}^{i}$};
+\State{$P_{cost}\ \gets\ B(\delta_{0}^{i},\delta_{j}^{i})\ +\ B(\delta_{j}^{i},\delta_{k}^{i})$};
+\If {$P_{cost} < B(\delta_{0}^{i},\delta_{k}^{i})$}
+\State{$B(\delta_{0}^{i},\delta_{k}^{i}) \gets P_{cost}$};
+\State{$\rho_{prev}(\delta_{k}^{i}) \gets \delta_{j}^{i}$};
+\EndIf
+\EndFor
+\EndFor
+\State{$\rho\ \gets\ $\Call{$Compute\_PPSet$}{$N_{i},\rho_{prev}$}};
+\State\Return{FEASIBLE;}
+\EndFunction
+\\
+\Function{$Compute\_PPCost$}{$\delta_{j}^{i}$,$\delta_{k}^{i}$}
+\If {$q(\delta_{j}^{i},\delta_{k}^{i})$ = $\infty$}
+\State{$Compute\ \xi(\delta_{j}^{i}$,$\delta_{k}^{i})\ using\ Equation\ (\ref{eqn:prempt-cost})$};
+\State{$Compute\ N_{p}(\delta_{j}^{i}$,$\delta_{k}^{i})$};
+\State{$Compute\ q(\delta_{j}^{i}$,$\delta_{k}^{i})$};
+\If {$q(\delta_{j}^{i}$,$\delta_{k}^{i})\ \leq\ Q_{i}$}
+\State{$B(\delta_{j}^{i},\delta_{k}^{i}) \gets q(\delta_{j}^{i}$,$\delta_{k}^{i})$};
+\State{$\rho_{prev}(\delta_{k}^{i}) \gets \delta_{j}^{i}$};
+\Else 
+\If {$j-k\ =\ 1$}
+\State\Return{INFEASIBLE;}
+\EndIf
+\EndIf
+\EndIf
+\EndFunction
+\\
+\Function{$Compute\_PPSet$}{$N_{i}$,$\rho_{prev}$}
+\State {$\rho\ \gets\ \{\}$};
+\State {$\rho_{index}\ \gets\ \{\delta_{N_{i}}^{i}\}$};
+\While {$\rho_{index}\ \neq\ \delta_{0}^{i}$}
+\State {$\rho\ \gets\ \rho\ \cup \rho_{index}$};
+\State {$\rho_{index}\ \gets\ \rho_{prev}(\rho_{index})$};
+\EndWhile
+\State {$\rho\ \gets\ \rho\ \cup \rho_{index}$};
+\State\Return{$\rho$;}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}

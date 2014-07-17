@@ -1,3 +1,134 @@
 \section{Evaluation}\label{sec:evaluation}
 
-TBD
+The evaluation of our preemption point placement algorithm will embody two methods: 1) characterization and measurement of preemption costs using real-time application code, and 2) a schedulability comparison of synthetic task set for various preemption models.
+
+\subsection {Preemption Cost Characterization}\label{sec:preemption_cost_measurement}
+To characterize the behavior and estimate the benefit of the approach
+proposed in this paper, a case study of representative real-time tasks was
+performed. The tasks were selected from Malardalen University of
+Sweden's WCET benchmark suite[1]. Each task was built using Gaisler's
+Bare-C Cross Compiler[2] for the GRSIM LEON3[3] simulated target.
+
+After compiling and linking, each task was analyzed by AbsInt's
+a\textsuperscript{3} WCET[4] tool. This yielded the basic block
+boundaries within each task. Next, the basic blocks
+${\{B_1, B_2, ..., B_n\}}$ were serialized based upon an understanding of
+the control flow of the task. Program points
+${\{P_1, P_2, ..., P_n\}}$ were assigned by setting ${P_i}$ to the
+address of the final instruction of each basic block ${B_i}$ for ${i}$
+from ${0}$ to ${n}$.
+
+Each program point ${P_j}$ served as a breakpoint within the task when
+running on the simulator. The task was executed, recording the state of
+the instruction ${C^I_j}$ and data ${C^D_j}$ cache state for every
+visit of ${P_j}$. Given the limitations of the simulator and
+a\textsuperscript{3} it was not possible record the actual control
+flow. Thus, definitively over-estimating the UCBs shared between two
+program points was not possible.
+
+Instead, all instruction and data cache state was disregarded except
+the state collected during the final visit of ${P_j}$ during the tasks
+execution. Using these final snapshots the UCBs shared between two
+program points ${P_i}$ and ${P_j}$ are determined by the following
+equation.
+
+\begin{center}
+  ${\bigcap_{k=i}^{j-1} C_k}$
+\end{center}
+
+This intersection of the cache state taken from program point ${P_i}$
+to the penultimate point ${P_{j-1}}$ serves as an upper bound on the
+actual UCBs shared between the two points ${P_i}$ and ${P_j}$. Since
+the UCBs are the primary factor of CRPD, the results are presented in
+terms of UCB counts.
+
+This method may be verified and reproduced using the same tools and
+data. Gaisler's compiler and simulator are freely available. AbsInt's
+a\textsuperscript{3} tool is available for educational and evaluation
+purposes. The programs written and data used in this paper can be
+found on GitHub at the following url:
+
+\begin{center}
+https://github.com/ctessler/superblocks/tree/master/study
+\end{center}
+
+The results are presented as a comparison between the method described
+herein and the Bertonga approach. For a program point ${P_j}$ the
+Bertogna approach defines the UCBs (and therefor the CRPD) as:
+
+\begin{equation*}
+  max\{ UCB(P_i, P_j) \vert i < j \}
+\end{equation*}
+
+To determine the maximum benefit of the new approach, the best case
+scenario is considered. When the preemption point is selected with the
+fewest number of UCBs based upon previous preemption.  For ${P_j}$ the
+determination is made by:
+
+\begin{equation*}
+  min\{ UCB(P_i, P_j) \vert i < j \}
+\end{equation*}
+
+In the following graph, the x-axis is a program point ${P_i}$. The
+y-axis is the number of UCBs shared with a later program point. For
+the red line, the later point is the one with the maximum number of
+shared UCBs. For the green line, the later point is the one with the
+minimum number of UCBs.
+
+Bertogna's approach is represented by the red line. The proposed
+approach by the green line. For both approaches only two points are
+considered for possible preemption. Bertogna's approach would select
+the two points related to the lowest y-value of the red line. The
+proposed approach would select the lowest y-value of the green line.
+
+\begin{figure}[h]
+\begin{center}
+    \includegraphics[scale = .65, clip]{eps/bsort-icache.eps}
+\caption{bsort-icache}\label{fig:bsort-icache}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+    \includegraphics[scale = .65, clip]{eps/bsort-dcache.eps}
+\caption{bsort-dcache}\label{fig:bsort-dcache}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+    \includegraphics[scale = .65, clip]{eps/recursion-icache.eps}
+\caption{recursion-icache}\label{fig:recursion-icache}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+    \includegraphics[scale = .65, clip]{eps/recursion-dcache.eps}
+\caption{recursion-dcache}\label{fig:recursion-dcache}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+    \includegraphics[scale = .65, clip]{eps/fft1-icache.eps}
+\caption{fft1-icache}\label{fig:fft1-icache}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+    \includegraphics[scale = .65, clip]{eps/fft1-dcache.eps}
+\caption{fft1-dcache}\label{fig:fft1-dcache}
+\end{center}
+\end{figure}
+
+For the bsort task, the overall benefit for instruction and data
+caches is 2 and 0 UCBs. For the fft1 task, the instruction and data
+cache benefit is 121 and 7 UCBs. For the recursion task, the benefit
+is 7 and 10 UCBs.
+
+\subsection {Taskset Schedulability Evaluation}\label{sec:taskset schedulability}
+The schedulability performance metrics we intend to compare various preemption models with are: 1) the percentage of schedulable task sets as a function of the task set utilization, 2) the percentage of schedulable task sets as a function of the number of tasks, 3) the percentage of schedulable task sets as a function of the maximum CRPD, and 4) the percentage of schedulable task sets as a function of the variability of the CRPD variance \begin{math}\sigma_{CRPD}\end{math}.  The following preemption models will be studied namely: 1) fully non-preemptive, 2) fully preemptive, 3) limited preemption naive approach, 4) limited preemption point placement with fixed CRPD preemption cost, 5) limited preemption point placement with variable CRPD preemption cost, and 6) optimal preemption point placement with enhanced CRPD preemption cost.
+
+Our approach for generating the synthetic task sets involves a number of steps which is summarized as follows.  The number of basic blocks generated each task is in the interval \begin{math}[N_{i}(min),N_{i}(max)]\end{math} using a random uniform distribution.  Each basic block non-preemptive WCET is generated using a Gaussian distribution with mean \begin{math}\mu_{WCET}\end{math} and variance \begin{math}\sigma_{WCET}\end{math}.  The  utilization of each task has been generated using the approach proposed in [TBD12].  The task periods \begin{math}T_{i}\end{math} were then computed dividing the non-preemptive WCET \begin{math}C_{i}^{NP}\end{math} by the utilization \begin{math}U_{i}\end{math} of each task.  Preemption costs were randomly generated using the following function (TBD), to achieve a realistic distribution similar to the one derived empirically).  The enhanced CRPD is generated to be a percentage of the WCET in the interval [0, 0.50] with a random uniform  distribution. Cache related preemption delay (CRPD) values are generated for each pair of potential preemption points.  The variable CRPD preemption cost model uses the CRPD cost from the each preemption point to the end of the task. The fixed CRPD preemption cost model uses the maximum CRPD cost of all variable CRPD preemption cost values. 

@@ -1,3 +1,14 @@
 \section{Schedulability Analysis}\label{sec:schedulability_analysis}
 
-TBD
+The modified preemption cost as a function of the current and next preemption points and the preempting task \begin{math}\tau_{k}\end{math} is given by:
+\begin{equation}\label{eqn:prempt-cost}
+\begin{split}
+    \xi(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k})\ =\ &\gamma(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k}) + \pi + \sigma + \\ &\eta(\gamma(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k})).
+\end{split}
+\end{equation}
+
+ \noindent
+ where \begin{math}\pi\end{math} is the pipeline cost, \begin{math}\sigma\end{math} is the scheduler processing cost, and \begin{math}\eta()\end{math} is the front side bus (FSB) contention resulting from the cache reload interference as described in~\cite{pellizzoni:07} ~\cite{pellizzoni:08} ~\cite{pellizzoni:11}.  Commensurate with our worst case analysis, the preemption overhead cost as a function of the current and next selected preemption points is:
+\begin{equation}\label{eqn:prempt-cost}
+    \xi(\delta_{curr}^{i},\delta_{next}^{i}) = \textit{max}_{k \in hp(i)} [ \xi(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k})].
+\end{equation}
