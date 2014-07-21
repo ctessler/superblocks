@@ -10,11 +10,12 @@ of synthetic task set for various preemption models.
 To characterize the behavior and estimate the benefit of the approach
 proposed in this paper, a case study of representative tasks was
 performed. The tasks were selected from Malardalen University of
-Sweden's WCET benchmark suite[1]. Each task was built using Gaisler's
-Bare-C Cross Compiler[2] for the GRSIM LEON3[3] simulated target. 
+Sweden's WCET benchmark suite \cite{mrtc:01}. Each task was built using Gaisler's
+Bare-C Cross Compiler \cite{gaisler:01} for the GRSIM
+LEON3 \cite{gaisler:02} simulated target. 
 
 After compiling and linking, each task was analyzed by AbsInt's
-a\textsuperscript{3} WCET[4] tool. This yielded the basic block
+a\textsuperscript{3} WCET \cite{absint:01} tool. This yielded the basic block
 boundaries within each task. Next, the basic blocks
 ${\{B_1, B_2, ..., B_n\}}$ were serialized based upon an understanding of
 the control flow of the task. Program points
@@ -127,24 +128,6 @@ For the bsort task, the proposed approach provides a benefit for the
 instruction and data caches of 2 and 0 UCBs. For the fft1 task, the
 instruction and data cache benefit is 121 and 7 UCBs. For the
 recursion task, the benefit is 7 and 10 UCBs.
-
-\section{References}
-
-\begin{enumerate}
-\item MRTC Benchmarks \\
-http://www.mrtc.mdh.se/projects/wcet/benchmarks.html
-
-\item Gaisler Compiler  \\
-http://gaisler.com/index.php/downloads/compilers
-
-\item Gaisler GRSIM \\
-http://gaisler.com/index.php/products/simulators/grsim
-
-\item AbsInt a\textsuperscript{3} WCET Tool \\
-http://www.absint.com/a3/index.htm
-\end{enumerate}
-
-
 
 
 \subsection {Taskset Schedulability Evaluation}\label{sec:taskset schedulability}
