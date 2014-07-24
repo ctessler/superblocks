@@ -54,7 +54,12 @@ In accordance with the recursive nature of equation (\ref{eqn:bbkwcet-cost}) we 
 \caption*{Recursive Optimal Preemption Point Placement}
 \label{alg:recursive-optimal-ppp}
 \begin{algorithmic}[1]
-\State{$\rho\ \gets\ $\Call{$Compute\_PPSet$}{$N_{i},\rho_{prev}$}};
+\State Step 0:
+\State\hspace{\algorithmicindent} {$\rho_{POT}^{(0)}\ \gets\ \{\delta_{0}^{i},\delta_{N_{i}}^{i}\}$};
+\hspace{\algorithmicindent}\If {$\Psi_{N_{i}}^{i}(\{\delta_{0}^{i},\delta_{1}^{i},\delta_{2}^{i}, ..., \delta_{N_{i}}^{i}\}) = False$}
+\State\Return{INFEASIBLE;}
+\EndIf
+\State Step 1:
 \end{algorithmic}
 \end{algorithm}
 
@@ -68,7 +73,7 @@ The recursive formulation gives a preliminary algorithm description, however, it
 \Function{$Select\_Optimal\_PPP$}{$N_{i}$,$b^{i}$,$Q_{i}$,$\xi$}
 \State {$N_{p}\ \gets\ \infty\ q\ \gets\ \infty\ B\ \gets\ \infty\ \rho_{prev}\ \gets\ \{\delta_{0}^{i}\}$};
 \If {$b_{k}^{i} > Q_{i}\ for\ some\ k\ \in\ [1,N_{i}]$}
-\State\Return{INFEASIBLE;} 
+\State\Return{INFEASIBLE;}
 \EndIf
 \For{$k: 2\leq k\leq N_{i}$}
 \State\Call{$Compute\_PPCost$}{$\delta_{k-1}^{i}$,$\delta_{k}^{i}$};
@@ -96,7 +101,7 @@ The recursive formulation gives a preliminary algorithm description, however, it
 \If {$q(\delta_{j}^{i}$,$\delta_{k}^{i})\ \leq\ Q_{i}$}
 \State{$B(\delta_{j}^{i},\delta_{k}^{i}) \gets q(\delta_{j}^{i}$,$\delta_{k}^{i})$};
 \State{$\rho_{prev}(\delta_{k}^{i}) \gets \delta_{j}^{i}$};
-\Else 
+\Else
 \If {$j-k\ =\ 1$}
 \State\Return{INFEASIBLE;}
 \EndIf

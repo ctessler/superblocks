@@ -1,15 +1,15 @@
 \section{CRPD Computation}\label{sec:crpd_computation}
 
-While existing research has focused on computing the upper bounds on cache related preemption delay (CRPD), our approach achieves higher accuracy by computing the re-loaded cache blocks (LCBs) due to higher priority task preemption by using the set of potential/chosen preemption locations.  Consistent with the literature the sets of various cache blocks CBs are represented as sets of integers.  We employ the CRPD terms UCB and ECB as defined by Lee et. al.~\cite{lee:98} and by Altmeyer and Burguiere~\cite{altmeyer:11c}.
+While existing research has focused on computing the upper bounds on cache related preemption delay (CRPD), our approach achieves higher accuracy by computing the re-loaded cache blocks (LCBs) due to higher priority task preemption by using the set of potential/chosen preemption locations.  Consistent with the literature the sets of various cache blocks CBs are represented as sets of integers.  We employ the CRPD terms UCB and ECB as defined by Lee et. al.~\cite{lee:98} and by Altmeyer and Burguiere~\cite{altmeyer:11c}.  Since the variables P and Q in the original are overloaded here, we modify the definition alternatively using basic block identifiers.
 
 \begin{definition}
-\textbf{Useful Cache Block (UCB)}: A memory block m is called a useful cache block at program point P, if \\(a) m may be cached at P and \\(b) m may be reused at program point Q that may be reached from P without eviction of m on this path.
+\textbf{Useful Cache Block (UCB)}: A memory block $m$ is called a useful cache block at program point \begin{math}\delta_{j_{1}}^{i}\end{math}, if \\(a) $m$ may be cached at \begin{math}\delta_{j_{1}}^{i}\end{math} and \\(b) $m$ may be reused at program point \begin{math}\delta_{j_{2}}^{i}\end{math} that may be reached from \begin{math}\delta_{j_{1}}^{i}\end{math} without eviction of $m$ on this path.
 \end{definition}
 
-\noindent More formally, cache-set \begin{math}s \in \textit{UCB}(\tau_{i}) \Leftrightarrow \tau_{i}\end{math} has a useful cache block in cache-set s.  Note this definition of \textit{UCB} embodies a task level view.  Cache-set \begin{math}s \in \textit{UCB}_{out}(\delta_{j}^{i}) \Leftrightarrow \delta_{j}^{i}\end{math} has a useful cache block in cache-set s where
+\noindent More formally, cache-set \begin{math}s \in \textit{UCB}(\tau_{i}) \Leftrightarrow \tau_{i}\end{math} has a useful cache block in cache-set $s$.  Note this definition of \textit{UCB} embodies a task level view.  Cache-set \begin{math}s \in \textit{UCB}_{out}(\delta_{j}^{i}) \Leftrightarrow \delta_{j}^{i}\end{math} has a useful cache block in cache-set $s$ where
 
 \begin{equation}\label{eqn:ucb-task}
-    \textit{UCB}(\tau_{i}) = \sum_{j} \textit{UCB}_{out}(\delta_{j}^{i}).
+    \textit{UCB}(\tau_{i}) = \bigcup_{j} \textit{UCB}_{out}(\delta_{j}^{i}).
 \end{equation}
 
 \noindent The notation \begin{math}\textit{UCB}_{out}(\delta_{j}^{i})\end{math} is the set of useful cache blocks cached in task \begin{math}\tau_{i}\end{math} post execution of basic block \begin{math}\delta_{j}^{i}\end{math}.  Similarly, the notation \begin{math}\textit{UCB}_{in}(\delta_{j}^{i})\end{math} is the set of useful cache blocks cached in task \begin{math}\tau_{i}\end{math} pre execution of basic block \begin{math}\delta_{j}^{i}\end{math}.
@@ -18,22 +18,22 @@ While existing research has focused on computing the upper bounds on cache relat
 \textbf{Evicting cache block (ECB)}: A memory block of the preempting task is called an evicting cache block, if it may be accessed during the execution of the preempting task.
 \end{definition}
 
-\noindent Cache-set \begin{math}s \in \textit{ECB}(\tau_{k}) \Leftrightarrow \tau_{k}\end{math} may evict a cache block in cache-set s.  Note this definition of \textit{ECB} also embodies a task level view.  Cache-set \begin{math}s \in \textit{ECB}(\delta_{j}^{i}) \Leftrightarrow \delta_{j}^{k}\end{math} may evict a cache block in cache-set s where
+\noindent Cache-set \begin{math}s \in \textit{ECB}(\tau_{k}) \Leftrightarrow \tau_{k}\end{math} may evict a cache block in cache-set $s$.  Note this definition of \textit{ECB} also embodies a task level view.  Cache-set \begin{math}s \in \textit{ECB}(\delta_{j}^{i}) \Leftrightarrow \delta_{j}^{k}\end{math} may evict a cache block in cache-set $s$ where
 
 \begin{equation}\label{eqn:ecb-task}
-    \textit{ECB}(\tau_{k}) = \sum_{j} \textit{ECB}(\delta_{j}^{k}).
+    \textit{ECB}(\tau_{k}) = \bigcup_{j} \textit{ECB}(\delta_{j}^{k}).
 \end{equation}
 
 \noindent The notation \begin{math}\textit{ECB}(\delta_{j}^{k})\end{math} is the set of evicting cache blocks accessed in task \begin{math}\tau_{k}\end{math} during execution of basic block \begin{math}\delta_{j}^{k}\end{math}.  Altmeyer and Burguiere~\cite{altmeyer:11c} introduced a refinement of \textit{UCB} to capture extrinsic cache blocks evicted due to inter-task preemption thereby removing the cache blocks evicted via intra-task execution.
 
 \begin{definition}
-\textbf{Definitely Cached Useful Cache Block (DC-UCB)}: A memory block m is called a definitely cached useful cache block at program point P, if \\(a) m must be cached at P and \\(b) m may be reused at program point Q that must be reached from P without eviction of m on this path.
+\textbf{Definitely Cached Useful Cache Block (DC-UCB)}: A memory block $m$ is called a definitely cached useful cache block at program point \begin{math}\delta_{j_{1}}^{i}\end{math}, if \\(a) $m$ must be cached at \begin{math}\delta_{j_{1}}^{i}\end{math} and \\(b) $m$ may be reused at program point \begin{math}\delta_{j_{2}}^{i}\end{math} that must be reached from \begin{math}\delta_{j_{1}}^{i}\end{math} without eviction of $m$ on this path.
 \end{definition}
 
-\noindent More formally, cache-set \begin{math}s \in \textit{DC-UCB}(\tau_{i}) \Leftrightarrow \tau_{i}\end{math} has a definitely cached useful cache block in cache-set s.  Note this definition of \textit{DC-UCB} also embodies a task level view.  Cache-set \begin{math}s \in \textit{DC-UCB}_{out}(\delta_{j}^{i}) \Leftrightarrow \delta_{j}^{i}\end{math} has a definitely cached useful cache block in cache-set s where
+\noindent More formally, cache-set \begin{math}s \in \textit{DC-UCB}(\tau_{i}) \Leftrightarrow \tau_{i}\end{math} has a definitely cached useful cache block in cache-set $s$.  Note this definition of \textit{DC-UCB} also embodies a task level view.  Cache-set \begin{math}s \in \textit{DC-UCB}_{out}(\delta_{j}^{i}) \Leftrightarrow \delta_{j}^{i}\end{math} has a definitely cached useful cache block in cache-set $s$ where
 
 \begin{equation}\label{eqn:dcucb-task}
-    \textit{DC-UCB}(\tau_{i}) = \sum_{j} \textit{DC-UCB}_{out}(\delta_{j}^{i}).
+    \textit{DC-UCB}(\tau_{i}) = \bigcup_{j} \textit{DC-UCB}_{out}(\delta_{j}^{i}).
 \end{equation}
 
 \noindent The notation
@@ -59,7 +59,7 @@ If a cache block is evicted there are two options in terms of where the preempti
 
 \noindent The term \begin{math}\textit{AUCB}_{out}(\delta_{j}^{i})\end{math} represents the definitely cached useful cache blocks (DC-UCBs) accessed by task \begin{math}\tau_{i}\end{math} at during execution of basic block at location \begin{math}\delta_{j}^{i}\end{math}. The definition of \textit{AUCB} is introduced to capture the set of task accessed memory at a specific basic block location subsequently used in the calculation of blocks that must be reloaded when task preemptions occur.  We compute the set of accessed useful cache blocks (AUCBs) as follows:
 \begin{equation}\label{eqn:aucb-formula}
-    \textit{AUCB}_{out}(\delta_{j}^{i},\tau_{k}) = \textit{DC-UCB}_{out}(\delta_{j}^{i}) \cap \textit{ECB}(\delta_{j}^{k}).
+    \textit{AUCB}_{out}(\delta_{j}^{i}) = \textit{DC-UCB}_{out}(\delta_{j}^{i}) \cap \textit{ECB}(\delta_{j}^{i}).
 \end{equation}
 \noindent where \begin{math}\textit{DC-UCB}_{out}(\delta_{j}^{i})\end{math} is the set of definitely cached useful cache blocks for task \begin{math}\tau_{i}\end{math} post basic block \begin{math}\delta_{j}^{i}\end{math} execution; and \begin{math}\textit{ECB}(\delta_{j}^{k})\end{math} denotes the set of evicting cache blocks accessed in task \begin{math}\tau_{i}\end{math} during execution of basic block \begin{math}\delta_{j}^{i}\end{math}. It is important to note that only cache block evictions due to preemption are considered, as intrinsic cache misses are captured as part of WCET analysis in the term \begin{math}C_{i}^{NP}\end{math}.  Using the previously defined terms, we may now define and explicitly compute the cache blocks that are re-loaded due to preemption which are called loaded cache blocks (LCBs).
 
