@@ -24,30 +24,38 @@ address of the final instruction of each basic block ${B_i}$ for ${i}$
 from ${0}$ to ${n}$.
 
 Each program point ${P_j}$ served as a breakpoint within the task when
-running on the simulator. The task was executed, recording the state of
-the instruction ${C^I_j}$ and data ${C^D_j}$ cache state for every
-visit of ${P_j}$. Given the limitations of the simulator and
+running on the simulator. As the task was executed, at each breakpoint
+${P_j}$, the instruction and data cache states were saved as ${I_j}$
+and ${D_j}$. Given the limitations of the simulator and
 a\textsuperscript{3} it was not possible record the actual control
-flow. Thus, definitively over-estimating the UCBs shared between two
+flow. Thus, over-estimating the UCBs shared between two
 program points was not possible.
 
-Instead, all instruction and data cache state was disregarded except
-the state collected during the final visit of ${P_j}$ during the tasks
-execution. Using these final snapshots the UCBs shared between two
-program points ${P_i}$ and ${P_j}$ are determined by the following
-equation. 
+A program point ${P_i}$ may be visited multiple times during a tasks
+execution. The UCBs shared between ${P_i}$ and a later point ${P_j}$
+could change with each visit of ${P_i}$. To accurately determine the
+shared UCBs control flow information is necessary. Without control
+flow information, an estimate is required. That estimate, was made in
+two parts. First, by collecting the instruction and data cache state
+(${I_i}$ and ${D_i}$) for each program point ${P_i}$ only during the
+final visit of ${P_i}$. Second, an over-estimate of the shared UCBs
+was made between ${P_i}$ and ${P_j}$ from the collected cache state.
+
+Shared UCBs were calculated by intersecting the cache state from ${P_i}$
+to ${P_j}$, except ${P_j}$. A cache line that remains unchanged after
+the execution of ${P_i}$, ${P_{i+1}}$, ..., ${P_{j-1}}$ will be
+present in the cache before execution of the basic block that ${P_j}$
+represents. It is only from these unchanged cache lines that the shared UCBs
+between ${P_i}$ and ${P_j}$ can be selected. The complete set of
+unchanged cache lines serves as a safe upper-bound on the shared UCBs
+between the two points. In the equation below ${H}$ may be either the
+set of instruction cache or data cache snapshots.
+
 \begin{center}
   \begin{equation*}
-    UCB(P_i, P_j) = \bigcap_{k=i}^{j-1} C_k
+    UCB(P_i, P_j) = \bigcap_{k=i}^{j-1} H_k
   \end{equation*}
 \end{center}
-
-In the equation above ${C}$ may be either the set of instruction or
-data caches. This intersection of the cache state taken from program
-point ${P_i}$ to the penultimate point ${P_{j-1}}$ serves as an upper
-bound on the actual UCBs shared between the two points ${P_i}$ and
-${P_j}$. Since the UCBs are the primary factor of CRPD, the results
-are presented in terms of UCB counts.
 
 \subsubsection{Availability}
 
@@ -64,9 +72,9 @@ https://github.com/ctessler/superblocks/tree/master/study
 
 \subsubsection{Results}
 
-The results are presented as a comparison between the method described
-herein and the Bertonga approach. For a program point ${P_j}$ the
-Bertogna approach defines the UCBs (and therefor the CRPD) as:
+The results are presented as a comparison between the our proposed
+method and the Bertonga approach. For a program point ${P_j}$ the 
+Bertogna \cite{bertogna:11} approach defines the UCBs (and therefor the CRPD) as:
 
 \begin{equation*}
   max\{ UCB(P_i, P_j) \vert i < j \}
@@ -124,11 +132,45 @@ comparison to be made.
   \includegraphics[width=\linewidth]{eps/fft1-dcache.eps}
 \end{center}
 
-For the bsort task, the proposed approach provides a benefit for the
-instruction and data caches of 2 and 0 UCBs. For the fft1 task, the
-instruction and data cache benefit is 121 and 7 UCBs. For the
-recursion task, the benefit is 7 and 10 UCBs.
+\begin{minipage}{\linewidth}
+\centering
+%  \caption {Benefit of Proposed Method}
+    \begin{tabular}{l l | l}
+      Task & Cache & Benefit \\ \hline
+      bsort & ${I}$ & 2 \\ 
+      & ${D}$ & 0 \\
+      \hline
+      fft1  & ${I}$ & 121 \\
+      & ${D}$ & 7 \\
+      \hline
+      recursion & ${I}$ & 7 \\
+      & ${D}$ & 10 \\
+    \end{tabular}
+    \bigskip
 
+    Benefit of Proposed Method
+    \bigskip
+\end{minipage}
+
+Examining the graphs for all tasks and caches (instruction and data)
+there are a few common traits. The minimum shared UCBs sharply
+increases at the end of the tasks execution. This is due to the nature
+of the over-estimation of shared UCBs and the tasks, the number of
+instructions in the basic block between the final program points is
+relatively small; limiting the number of cache lines that could be
+filtered by the intersection.
+
+Drastic spikes downwards in the shared UCB counts for the minimum and
+maximum approaches coincide with function call boundaries, or large
+conditional blocks. At these boundaries, the maximum and minimum
+approaches have similar UCB counts. This may be an area for further
+study, using a greater number of tasks.
+
+There is a sharp upward spike in the early program points for the
+maximum approach. This is likely due to the early initialization
+blocks built into tasks. The minimum approach shows a clear benefit of
+selecting a preemption point outside of the early initialization
+section. 
 
 \subsection {Taskset Schedulability Evaluation}\label{sec:taskset schedulability}
 The schedulability performance metrics we intend to compare various
