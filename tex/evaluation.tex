@@ -29,27 +29,37 @@ ${P_j}$, the instruction and data cache states were saved as ${I_j}$
 and ${D_j}$. Given the limitations of the simulator and
 a\textsuperscript{3} it was not possible record the actual control
 flow. Thus, over-estimating the UCBs shared between two
-program points was not possible.
+program points was not possible. 
 
-A program point ${P_i}$ may be visited multiple times during a tasks
-execution. The UCBs shared between ${P_i}$ and a later point ${P_j}$
-could change with each visit of ${P_i}$. To accurately determine the
-shared UCBs control flow information is necessary. Without control
-flow information, an estimate is required. That estimate, was made in
-two parts. First, by collecting the instruction and data cache state
-(${I_i}$ and ${D_i}$) for each program point ${P_i}$ only during the
-final visit of ${P_i}$. Second, an over-estimate of the shared UCBs
-was made between ${P_i}$ and ${P_j}$ from the collected cache state.
+Variance in shared UCBs between program points is related to the
+execution flow of the task through each of the points. For instance,
+one path to ${P_j}$ may be through ${P_h}$, another path to ${P_j}$
+may contain ${P_h}$ followed by ${P_i}$. The set of UCBs shared
+between ${P_h}$ and ${P_j}$ may differ based on the path between
+them. If the paths differ one of them may result in a greater number
+of shared UCBs between the points. To accurately upper-bound the
+shared UCBs between points requires complete control flow
+information. In the absence of this information, a representative set
+of cache contents were used to evaluate the proposed method.
+
+The representative cache contents were selected as the final visit of
+each program point. A program point ${P_i}$ may be visited multiple
+times during a tasks execution. The UCBs shared between ${P_i}$ and a
+later point ${P_j}$ could change with each visit of ${P_i}$. During
+the final visit of ${P_i}$ the instruction and data cache contents
+were snapshotted, and recorded as ${I_i}$ and ${D_i}$. From these
+representative snapshots, an over-estimate of shared UCBs were made.
 
 Shared UCBs were calculated by intersecting the cache state from ${P_i}$
 to ${P_j}$, except ${P_j}$. A cache line that remains unchanged after
-the execution of ${P_i}$, ${P_{i+1}}$, ..., ${P_{j-1}}$ will be
+the execution of ${\langle}$ ${P_i}$, ${P_{i+1}}$, ..., ${P_{j-1}}$
+${\rangle}$ will be
 present in the cache before execution of the basic block that ${P_j}$
 represents. It is only from these unchanged cache lines that the shared UCBs
 between ${P_i}$ and ${P_j}$ can be selected. The complete set of
 unchanged cache lines serves as a safe upper-bound on the shared UCBs
-between the two points. In the equation below ${H}$ may be either the
-set of instruction cache or data cache snapshots.
+between the two points. The equation below formalizes this idea, using
+${H}$ as either the set of instruction cache or data cache snapshots.
 
 \begin{center}
   \begin{equation*}
