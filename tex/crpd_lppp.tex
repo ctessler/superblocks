@@ -35,6 +35,15 @@
 \theoremstyle{remark}
 \newtheorem{remark}{Remark}
 
+\newlength\myindent
+\setlength\myindent{2em}
+\newcommand\bindent{%
+  \begingroup
+  \setlength{\itemindent}{\myindent}
+  \addtolength{\algorithmicindent}{\myindent}
+}
+\newcommand\eindent{\endgroup}
+
 %\textwidth 6.0in
 %\textheight 8.5in
 

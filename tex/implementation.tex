@@ -48,18 +48,75 @@ where \begin{math}q_{m}^{i}(\rho^{i})\end{math} represents the \begin{math}m^{th
 \end{equation}
 
 \noindent
-In accordance with the recursive nature of equation (\ref{eqn:bbkwcet-cost}) we propose an O(N!) recursive algorithm for computing the optimal preemption points subject to the constraint of equation (\ref{eqn:pp-constraint}).
+In accordance with the recursive nature of equation (\ref{eqn:bbkwcet-cost}) we propose an O(N!) recursive algorithm for computing the optimal preemption points.  While the recursive formulation is clearly inefficient, it is helpful in developing an understanding of how the algorithm works.  Starting with the first basic block and for each successive basic block \begin{math}\delta_{m}^{i}, m \in [1,N_{i}]\end{math}, the overall WCET cost is computed for two cases: 1) \begin{math}\delta_{m}^{i} \in \rho\end{math}, and 2) \begin{math}\delta_{m}^{i} \not\in \rho\end{math}.  At each step of the algorithm the set \begin{math}\rho\end{math} must conform to the constraint of equation (\ref{eqn:pp-constraint}).  Once basic block \begin{math}\delta_{N_{i}}^{i}\end{math} has been examined, the set of selected preemption points is given by \begin{math}\rho = \rho^{N_{i}}\end{math}.  The WCET cost with basic block \begin{math}\delta_{m}^{i}\end{math} included in the set of potential preemption points is given by:
+
+\begin{equation}\label{eqn:pcost-bb}
+p_{COST}(\delta_{m}^{i})\ =\ B^{i}(\delta_{0}^{i},\delta_{m}^{i}) + B^{i}(\delta_{m}^{i},\delta_{N_{i}}^{i})
+\end{equation}
+
+The WCET cost with basic block \begin{math}\delta_{m}^{i}\end{math} excluded from the set of potential preemption points is given by:
+
+\begin{equation}\label{eqn:npcost-bb}
+n_{COST}(\delta_{m}^{i})\ =\ B^{i}(\delta_{0}^{i},\delta_{m-1}^{i}) + b_{m}^{i} + B^{i}(\delta_{m+1}^{i},\delta_{N_{i}}^{i})
+\end{equation}
 
 \begin{algorithm}
 \caption*{Recursive Optimal Preemption Point Placement}
 \label{alg:recursive-optimal-ppp}
-\begin{algorithmic}[1]
-\State Step 0:
-\State\hspace{\algorithmicindent} {$\rho_{POT}^{(0)}\ \gets\ \{\delta_{0}^{i},\delta_{N_{i}}^{i}\}$};
-\hspace{\algorithmicindent}\If {$\Psi_{N_{i}}^{i}(\{\delta_{0}^{i},\delta_{1}^{i},\delta_{2}^{i}, ..., \delta_{N_{i}}^{i}\}) = False$}
-\State\Return{INFEASIBLE;}
-\EndIf
-\State Step 1:
+\begin{algorithmic}[0]
+\State \textbf{\underline{Step 0:}}
+\\
+\State {$\ \ \rho^{(0)}\ \gets\ \{\delta_{0}^{i},\delta_{N_{i}}^{i}\}$};
+\State {$\ \ \textbf{if}\ \Psi_{N_{i}}^{i}(\{\delta_{0}^{i},\delta_{1}^{i},\delta_{2}^{i}, ..., \delta_{N_{i}}^{i}\}) = False$\ \textbf{then}}
+\State {$\ \ \ \ \ \ \textbf{return}\ \textbf{INFEASIBLE;}$}
+\State {$\ \ \textbf{end if}$}
+\\
+\State \textbf{\underline{Step 1:}}
+\begin{equation*}
+\rho^{(1)}\ \gets\
+\left\{
+\begin{array}{l}
+    \rho^{(0)}, if\ n_{COST}(\delta_{1}^{i}) < p_{COST}(\delta_{1}^{i})\ \&\ \ \ \ \ \ \ \ \ \ \ \\
+    \ \ \ \ \ \ \ \ \ \ \Psi_{1}^{i}(\rho^{(0)}) = True\\
+    \rho^{(0)}\ \cup\ \delta_{1}^{i},\ otherwise
+\end{array}
+\right\}~.
+\end{equation*}
+\State \textbf{\underline{Step 2:}}
+\begin{equation*}
+\rho^{(2)}\ \gets\
+\left\{
+\begin{array}{l}
+    \rho^{(1)}, if\ n_{COST}(\delta_{2}^{i}) < p_{COST}(\delta_{2}^{i})\ \&\ \ \ \ \ \ \ \ \ \ \ \\
+    \ \ \ \ \ \ \ \ \ \ \Psi_{2}^{i}(\rho^{(1)}) = True\\
+    \rho^{(1)}\ \cup\ \delta_{2}^{i},\ otherwise
+\end{array}
+\right\}~.
+\end{equation*}
+\ldots
+\State \textbf{\underline{Step m:}}
+\begin{equation*}
+\rho^{(m)}\ \gets\
+\left\{
+\begin{array}{l}
+    \rho^{(m-1)}, if\ n_{COST}(\delta_{m}^{i}) < p_{COST}(\delta_{m}^{i})\ \&\ \ \ \ \\
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \Psi_{m}^{i}(\rho^{(m-1)}) = True\\
+    \rho^{(m-1)}\ \cup\ \delta_{m}^{i},\ otherwise
+\end{array}
+\right\}~.
+\end{equation*}
+\ldots
+\State \textbf{\underline{Step $N_{i}$:}}
+\begin{equation*}
+\rho^{(N_{i})}\ \gets\
+\left\{
+\begin{array}{l}
+    \rho^{(N_{i}-1)}, if\ n_{COST}(\delta_{N_{i}}^{i}) < p_{COST}(\delta_{N_{i}}^{i})\ \&\\
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \Psi_{N_{i}}^{i}(\rho^{(N_{i}-1)}) = True\\
+    \rho^{(N_{i}-1)}\ \cup\ \delta_{N_{i}}^{i},\ otherwise
+\end{array}
+\right\}~.
+\end{equation*}
 \end{algorithmic}
 \end{algorithm}
 
