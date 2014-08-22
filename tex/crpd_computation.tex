@@ -27,7 +27,7 @@ While existing research has focused on computing the upper bounds on cache relat
 \noindent The notation \begin{math}\textit{ECB}(\delta_{j}^{k})\end{math} is the set of evicting cache blocks accessed in task \begin{math}\tau_{k}\end{math} during execution of basic block \begin{math}\delta_{j}^{k}\end{math}.  Altmeyer and Burguiere~\cite{altmeyer:11c} introduced a refinement of \textit{UCB} to capture extrinsic cache blocks evicted due to inter-task preemption thereby removing the cache blocks evicted via intra-task execution.
 
 \begin{definition}
-\textbf{Definitely Cached Useful Cache Block (DC-UCB)}: A memory block $m$ is called a definitely cached useful cache block at program point \begin{math}\delta_{j_{1}}^{i}\end{math}, if \\(a) $m$ must be cached at \begin{math}\delta_{j_{1}}^{i}\end{math} and \\(b) $m$ may be reused at program point \begin{math}\delta_{j_{2}}^{i}\end{math} that must be reached from \begin{math}\delta_{j_{1}}^{i}\end{math} without eviction of $m$ on this path.
+\textbf{Definitely Cached Useful Cache Block (DC-UCB)}: A memory block $m$ is called a definitely cached useful cache block at program point \begin{math}\delta_{j_{1}}^{i}\end{math}, if \\(a) $m$ must be cached at \begin{math}\delta_{j_{1}}^{i}\end{math} and \\(b) $m$ may be reused at program point \begin{math}\delta_{j_{2}}^{i}\end{math} that may be reached from \begin{math}\delta_{j_{1}}^{i}\end{math} without eviction of $m$ on this path.
 \end{definition}
 
 \noindent More formally, cache-set \begin{math}s \in \textit{DC-UCB}(\tau_{i}) \Leftrightarrow \tau_{i}\end{math} has a definitely cached useful cache block in cache-set $s$.  Note this definition of \textit{DC-UCB} also embodies a task level view.  Cache-set \begin{math}s \in \textit{DC-UCB}_{out}(\delta_{j}^{i}) \Leftrightarrow \delta_{j}^{i}\end{math} has a definitely cached useful cache block in cache-set $s$ where
@@ -75,8 +75,8 @@ The definition of \textit{LCB} is introduced to capture the set of task reloaded
 \noindent\textbf{Preemption Cost Paid Where Preemptions Occur}
 \begin{equation}\label{eqn:lcb-formula-1}
 \begin{split}
-    \textit{LCB}(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k}) = &[\textit{DC-UCB}_{out}(\delta_{curr}^{i})\ \cap \\
-    &[\cup_\lambda \textit{AUCB}_{out}(\delta_{\lambda}^{i})]] \cap \textit{ECB}(\tau_{k})\\
+    \lefteqn{\textit{LCB}(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k}) =} & \\
+    &\left[\textit{DC-UCB}_{out}(\delta_{curr}^{i})\ \cap \left[\cup_\lambda \textit{AUCB}_{out}(\delta_{\lambda}^{i})\right]\right] \cap \textit{ECB}(\tau_{k})\\
 \end{split}
 \end{equation}
 
@@ -84,7 +84,7 @@ The definition of \textit{LCB} is introduced to capture the set of task reloaded
 \noindent
 where
 \begin{equation*}\label{eqn:lcb-formula-1b}
-    \lambda \stackrel{\text{def}}{=} \{ \lambda|\lambda \in [ \delta_{curr}^{i} \text{,} \delta_{next}^{i} ] \}
+    \lambda \stackrel{\text{def}}{=} \{ \nu|\nu \in [ \delta_{curr}^{i} \text{,} \delta_{next}^{i} ] \}
 \end{equation*}
 
 \noindent
@@ -94,17 +94,30 @@ where
 \noindent\textbf{Preemption Cost Paid Where Memory Reloads Occur}
 \begin{equation}\label{eqn:lcb-formula-2}
 \begin{split}
-    \textit{LCB}(\delta_{j}^{i},\tau_{k}) = &[\cup_\varphi [\textit{RCB}_{out}(\delta_{\varphi}^{i},\tau_{k}) \setminus \cup_\lambda \textit{AUCB}_{out}(\delta_{\lambda}^{i})] \cap \\
-    &\textit{AUCB}_{out}(\delta_{j}^{i})]
+    \lefteqn{\textit{LCB}(\delta_{j}^{i},\tau_{k}) =} & \\
+    &\left[\cup_\varphi \left[\textit{RCB}_{out}(\delta_{\varphi}^{i},\tau_{k}) \setminus \cup_\lambda \textit{AUCB}_{out}(\delta_{\lambda}^{i})\right] \cap \textit{AUCB}_{out}(\delta_{j}^{i})\right]\\
 \end{split}
 \end{equation}
 \noindent
 where
 \begin{equation*}\label{eqn:lcb-formula-2b}
-\varphi \stackrel{\text{def}}{=} \{\varphi | (\varphi \geq \delta_{1}^{i} \wedge \varphi < \delta_{j}^{i})\}
+\varphi \stackrel{\text{def}}{=} \{\kappa | (\kappa \geq \delta_{1}^{i} \wedge \kappa < \delta_{j}^{i})\}
 \end{equation*}
 \begin{equation*}\label{eqn:lcb-formula-2c}
-    \lambda \stackrel{\text{def}}{=} \{\lambda | (\lambda > \delta_{\varphi}^{i} \wedge \lambda \leq min(\delta_{j}^{i},\rho_{next}(\delta_{\varphi}^{i})))\}
+    \lambda \stackrel{\text{def}}{=} \{\nu | (\nu > \delta_{\varphi}^{i} \wedge \nu \leq min(\delta_{j}^{i},\rho_{next}(\delta_{\varphi}^{i})))\}
+\end{equation*}
+
+\noindent
+Using the term \begin{math}\textit{LCB}(\delta_{j}^{i},\tau_{k})\end{math}, we can compute the preemption cost as a function of the current and next selected preemption point:
+\begin{equation}\label{eqn:lcb-formula-3}
+\textit{LCB}(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k}) = [\cup_\lambda \textit{LCB}(\delta_{\lambda}^{i},\tau_{k})]
+\end{equation}
+
+%\newline
+\noindent
+where
+\begin{equation*}\label{eqn:lcb-formula-1b}
+    \lambda \stackrel{\text{def}}{=} \{ \nu|\nu \in [ \delta_{curr}^{i} \text{,} \delta_{next}^{i} ] \}
 \end{equation*}
 
 \noindent

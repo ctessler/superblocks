@@ -1,42 +1,12 @@
 \section{Implementation}\label{sec:implementation}
 
-Our approach employs the results of schedulability analysis with the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math} computed for each task \begin{math}\tau_{i}\end{math}.  The objective is to select a subset of preemption points that minimizes:
-\begin{equation}\label{eqn:wcet-cost}
-   C_{i} = B_{N_{i}}^{i}(\rho^{i}) = C_{i}^{NP} + \sum_{m=1}^{|\rho^{i}|-1} [\xi(\rho_{m}^{i},\rho_{m+1}^{i})].
-\end{equation}
-
-\noindent
-where \begin{math}\rho^{i}\end{math} is the set of selected preemption points for task \begin{math}\tau_{i}\end{math}:
-\begin{equation}\label{eqn:pp-set}
-\begin{split}
-   \rho^{i} \stackrel{\text{def}}{=} \{\delta_{m}^{i}|&\delta_{m}^{i} \text{is a selected preemption point of task } \tau_{i}\ \wedge \\ &m \in [1,N_{i}]\}
-\end{split}
-\end{equation}
-
-\noindent
-and \begin{math}B_{k}^{i}\end{math} is the WCET with preemption overhead of first k basic blocks (BB) of task \begin{math}\tau_{i}\end{math} as given by:
-\begin{equation}\label{eqn:bbkwcet-cost}
-\begin{split}
-   B_{k}^{i}(\rho^{i}) = \textit{min}_{\delta_{j}^{i}} \Big[&B_{j-1}^{i}(\rho^{i}(\delta_{j-1}^{i})) + \xi(\delta_{j}^{i},\rho_{next}^{i}(\delta_{j}^{i})) + \\ &\sum_{n=1}^{k}b_{n}^{i}\Big].
-\end{split}
-\end{equation}
-
-\noindent
-where the term \begin{math}\rho_{next}^{i}(\delta_{j}^{i})\end{math} is the next potential/selected preemption point from basic block \begin{math}\delta_{j}^{i}\end{math}:
-\begin{equation}\label{eqn:ppnext-set}
-\begin{split}
-   \rho_{next}^{i}(\delta_{k}^{i}) \stackrel{\text{def}}{=} \{\delta_{j}^{i}|&\delta_{j}^{i} = \rho_{m+1}^{i} \wedge \delta_{j}^{i} = \rho_{m+1}^{i} \\ &\textit{ for some m} \in [1,N_{i}-1]\}
-\end{split}
-\end{equation}
-
-\noindent
-The selection of optimal preemption points is subject to the constraint that no non-preemptive region in task \begin{math}\tau_{i}\end{math} exceeds the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math}:
+Our approach employs the results of schedulability analysis with the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math} computed for each task \begin{math}\tau_{i}\end{math}.  The objective is to select a subset of preemption points that minimizes each tasks WCET parameter \begin{math}C_{i}\end{math}. The selection of optimal preemption points is subject to the constraint that no non-preemptive region in task \begin{math}\tau_{i}\end{math} exceeds the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math}:
 \begin{equation}\label{eqn:pp-constraint}
    \Psi^{i}(\rho^{i}) =
 \left\{
 \begin{array}{l}
-    \textit{True, if } q_{m}^{i}(\rho^{i}) \leq Q_{i} \textit{ for } m \in [1,N_{i}-1] \\
-    \textit{False, otherwise}
+    \textrm{True, }\textit{if } q_{m}^{i}(\rho^{i}) \leq Q_{i} \textit{ for } m \in [1,N_{i}-1] \\
+    \textrm{False, otherwise}
 \end{array}
 \right\}~.
 \end{equation}
@@ -49,13 +19,11 @@ where \begin{math}q_{m}^{i}(\rho^{i})\end{math} represents the \begin{math}m^{th
 
 \noindent
 In accordance with the recursive nature of equation (\ref{eqn:bbkwcet-cost}) we propose an O(N!) recursive algorithm for computing the optimal preemption points.  While the recursive formulation is clearly inefficient, it is helpful in developing an understanding of how the algorithm works.  Starting with the first basic block and for each successive basic block \begin{math}\delta_{m}^{i}, m \in [1,N_{i}]\end{math}, the overall WCET cost is computed for two cases: 1) \begin{math}\delta_{m}^{i} \in \rho\end{math}, and 2) \begin{math}\delta_{m}^{i} \not\in \rho\end{math}.  At each step of the algorithm the set \begin{math}\rho\end{math} must conform to the constraint of equation (\ref{eqn:pp-constraint}).  Once basic block \begin{math}\delta_{N_{i}}^{i}\end{math} has been examined, the set of selected preemption points is given by \begin{math}\rho = \rho^{N_{i}}\end{math}.  The WCET cost with basic block \begin{math}\delta_{m}^{i}\end{math} included in the set of potential preemption points is given by:
-
 \begin{equation}\label{eqn:pcost-bb}
 p_{COST}(\delta_{m}^{i})\ =\ B^{i}(\delta_{0}^{i},\delta_{m}^{i}) + B^{i}(\delta_{m}^{i},\delta_{N_{i}}^{i})
 \end{equation}
 
 The WCET cost with basic block \begin{math}\delta_{m}^{i}\end{math} excluded from the set of potential preemption points is given by:
-
 \begin{equation}\label{eqn:npcost-bb}
 n_{COST}(\delta_{m}^{i})\ =\ B^{i}(\delta_{0}^{i},\delta_{m-1}^{i}) + b_{m}^{i} + B^{i}(\delta_{m+1}^{i},\delta_{N_{i}}^{i})
 \end{equation}
