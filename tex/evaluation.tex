@@ -14,33 +14,32 @@ Sweden's WCET benchmark suite \cite{mrtc:01}. Each task was built using Gaisler'
 Bare-C Cross Compiler \cite{gaisler:01} for the GRSIM
 LEON3 \cite{gaisler:02} simulated target. 
 
-After compiling and linking, each task was analyzed by AbsInt's
-a\textsuperscript{3} WCET \cite{absint:01} tool. This yielded the basic block
-boundaries within each task. Next, the basic blocks
-${\{B_1, B_2, ..., B_n\}}$ were serialized based upon an understanding of
-the control flow of the task. Program points
-${\{P_1, P_2, ..., P_n\}}$ were assigned by setting ${P_i}$ to the
-address of the final instruction of each basic block ${B_i}$ for ${i}$
-from ${0}$ to ${n}$.
+Within a task, variance in the number of shared UCBs between program
+points is related to the execution flow of the task through each of
+the points. For instance, one path to ${P_j}$ may include only ${P_h}$,
+while another path to ${P_j}$ may contain ${P_h}$ followed by
+${P_i}$. The set of UCBs shared between ${P_h}$ and ${P_j}$ may differ
+based on the path between them. If the paths differ one of them may
+result in a greater number of shared UCBs between the points. To
+accurately upper-bound the shared UCBs between points requires
+complete control flow information.
 
-Each program point ${P_j}$ served as a breakpoint within the task when
-running on the simulator. As the task was executed, at each breakpoint
+Tasks were first analyzed using AbsInt's a\textsuperscript{3} WCET
+\cite{absint:01} to determine the set of basic blocks. Next, the basic
+blocks ${\{B_1, B_2, ..., B_n\}}$ were serialized based upon an
+understanding of the control flow of the task. Program points ${\{P_1,
+  P_2, ..., P_n\}}$ were assigned by setting ${P_i}$ to the address of
+the final instruction of each basic block ${B_i}$ for ${i}$ from ${0}$
+to ${n}$.
+
+Each program point ${P_j}$ served as a breakpoint when running the
+task on the simulator. As the task was executed, at each breakpoint
 ${P_j}$, the instruction and data cache states were saved as ${I_j}$
 and ${D_j}$. Given the limitations of the simulator and
 a\textsuperscript{3} it was not possible record the actual control
-flow. Thus, over-estimating the UCBs shared between two
-program points was not possible. 
-
-Variance in shared UCBs between program points is related to the
-execution flow of the task through each of the points. For instance,
-one path to ${P_j}$ may be through ${P_h}$, another path to ${P_j}$
-may contain ${P_h}$ followed by ${P_i}$. The set of UCBs shared
-between ${P_h}$ and ${P_j}$ may differ based on the path between
-them. If the paths differ one of them may result in a greater number
-of shared UCBs between the points. To accurately upper-bound the
-shared UCBs between points requires complete control flow
-information. In the absence of this information, a representative set
-of cache contents were used to evaluate the proposed method.
+flow. Thus, calculating an accurate over-estimate of the UCBs shared
+between program points was not possible. A selection of cache
+snapshots were chosen to representation the actual behavior.
 
 The representative cache contents were selected as the final visit of
 each program point. A program point ${P_i}$ may be visited multiple
@@ -48,7 +47,8 @@ times during a tasks execution. The UCBs shared between ${P_i}$ and a
 later point ${P_j}$ could change with each visit of ${P_i}$. During
 the final visit of ${P_i}$ the instruction and data cache contents
 were snapshotted, and recorded as ${I_i}$ and ${D_i}$. From these
-representative snapshots, an over-estimate of shared UCBs were made.
+representative snapshots, a representative over-estimate of shared
+UCBs were made. 
 
 Shared UCBs were calculated by intersecting the cache state from ${P_i}$
 to ${P_j}$, except ${P_j}$. A cache line that remains unchanged after
@@ -87,7 +87,7 @@ method and the Bertonga approach. For a program point ${P_j}$ the
 Bertogna \cite{bertogna:11} approach defines the UCBs (and therefor the CRPD) as:
 
 \begin{equation*}
-  max\{ UCB(P_i, P_j) \vert i < j \}
+  \max\{ UCB(P_i, P_j) \vert i < j \}
 \end{equation*}
 
 To determine the maximum benefit of the new approach, the best case
@@ -96,7 +96,7 @@ fewest number of UCBs based upon previous preemption.  For ${P_j}$ the
 determination is made by:
 
 \begin{equation*}
-  min\{ UCB(P_i, P_j) \vert i < j \}
+  \min\{ UCB(P_i, P_j) \vert i < j \}
 \end{equation*}
 
 
