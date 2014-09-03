@@ -182,6 +182,55 @@ blocks built into tasks. The minimum approach shows a clear benefit of
 selecting a preemption point outside of the early initialization
 section. 
 
+\subsection{Breakdown Utilization}
+
+To determine schedulability the benefit of the proposed approach,
+another study was performed. This study focuses on the breakdown
+utilization when comparing the UCB only approach to the UCB only
+approach with two preemption points selected by the proposed
+approach. For convenience the UCB only approach to schedulability will
+be referred to as ${UCB^o}$, and the UCB only approach with the
+proposed method ${UCB^c}$.
+
+The appropriate schedulablity tests are found in Luniss \emph{et~al.}
+\cite{lunniss:13}. Based upon the Baruah \emph{et~al.} using the
+processor demand function, a task set is schedulable if ${\{
+  \forall(t) > 0 |~ h(t) \le t \}}$
+
+\begin{equation}
+  h(t) = \sum^{n}_{i=1}\max \left\{0,1 +
+  \left \lfloor \frac{t-D_i}{T_i}\right \rfloor
+  \right\}
+  \left(C_i + \gamma_i\right)
+\end{equation}
+
+The only variance between the two UCB methods will be in their
+calculation of ${\gamma_i}$. For ${UCB^o}$, ${\gamma^{UCB^o}_i}$ is
+the maximum number of UCBs at any point during the tasks execution
+multiplied by the BRT. For ${UCB^c}$, ${\gamma^{UCB^c}_i}$ is the
+minimum number of UCBs shared between two program points. Although the
+execution time is different between the approaches, the deadlines
+remain constant. Therefor, the limit on ${t}$ remains the same
+${L_a}$. 
+
+\begin{equation}
+  L_a = \max \left\{ D_1, \ldots, D_n, 
+  \frac{\sum^{n}_{i=1} (T_i - D_i)U_i}
+       {1 - U}
+  \right\}
+\end{equation}
+
+To calculate the breakdown utilization, 10 tasks from the Malardaren
+test suite were analyzed. The UCBs were calculated in the same manner
+as the case study comparing the proposed method to the Bertogna
+approach. Each task had its deadline (and therefor period) initially
+set to ensure all tasks had equal utilization. As it was done in
+\cite{lunniss:13} the period for each task was multiplied by a
+constant ${u}$, ${T_i = u \cdot C_i}$. Finding the breakdown
+utilization involved increasing ${u}$ from 10 in steps of .25 until
+the task set became schedulable, and then performing minor decreases
+until the set became unschedulable.
+
 \subsection {Taskset Schedulability Evaluation}\label{sec:taskset schedulability}
 The schedulability performance metrics we intend to compare various
 preemption models with are: 1) the percentage of schedulable task sets
