@@ -184,52 +184,69 @@ section.
 
 \subsection{Breakdown Utilization}
 
-To determine schedulability the benefit of the proposed approach,
-another study was performed. This study focuses on the breakdown
-utilization when comparing the UCB only approach to the UCB only
-approach with two preemption points selected by the proposed
-approach. For convenience the UCB only approach to schedulability will
-be referred to as ${UCB^o}$, and the UCB only approach with the
-proposed method ${UCB^c}$.
+To determine the schedulability benefit of the explicit preemption
+placement approach another case study was performed. This study
+focuses on the breakdown utilization when comparing the UCB only
+approach for EDF \cite{lunniss:13} to the proposed method of explicit
+preemption point placement. For convenience the UCB Only approach for
+EDF will be referred to as ${UOE}$, and Explicit Preemption point
+Placement as ${EPP}$.
 
-The appropriate schedulablity tests are found in Luniss \emph{et~al.}
-\cite{lunniss:13}. Based upon the Baruah \emph{et~al.} using the
-processor demand function, a task set is schedulable if ${\{
-  \forall(t) > 0 |~ h(t) \le t \}}$
-
-\begin{equation}
-  h(t) = \sum^{n}_{i=1}\max \left\{0,1 +
-  \left \lfloor \frac{t-D_i}{T_i}\right \rfloor
-  \right\}
-  \left(C_i + \gamma_i\right)
-\end{equation}
-
-The only variance between the two UCB methods will be in their
-calculation of ${\gamma_i}$. For ${UCB^o}$, ${\gamma^{UCB^o}_i}$ is
-the maximum number of UCBs at any point during the tasks execution
-multiplied by the BRT. For ${UCB^c}$, ${\gamma^{UCB^c}_i}$ is the
-minimum number of UCBs shared between two program points. Although the
-execution time is different between the approaches, the deadlines
-remain constant. Therefor, the limit on ${t}$ remains the same
-${L_a}$. 
+The appropriate schedulablity test for ${UOE}$ is found in
+Luniss \emph{et~al.} \cite{lunniss:13}. It is comprised of three
+parts: ${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$. They represent
+the maximum CRPD for a task ${j}$, the utilization of the task ${j}$
+including the CRPD of the task, and the utilization of the task set.
+A task set is schedulable when ${U^* \le 1}$.
 
 \begin{equation}
-  L_a = \max \left\{ D_1, \ldots, D_n, 
-  \frac{\sum^{n}_{i=1} (T_i - D_i)U_i}
-       {1 - U}
-  \right\}
+  \gamma^{ucb}_{t,j} = BRT \cdot \max\limits_{\forall k \in aff(t,j)}
+  \left\{ \left| UCB_k \right| \right\}
 \end{equation}
 
-To calculate the breakdown utilization, 10 tasks from the Malardaren
-test suite were analyzed. The UCBs were calculated in the same manner
-as the case study comparing the proposed method to the Bertogna
-approach. Each task had its deadline (and therefor period) initially
-set to ensure all tasks had equal utilization. As it was done in
-\cite{lunniss:13} the period for each task was multiplied by a
-constant ${u}$, ${T_i = u \cdot C_i}$. Finding the breakdown
-utilization involved increasing ${u}$ from 10 in steps of .25 until
-the task set became schedulable, and then performing minor decreases
-until the set became unschedulable.
+\begin{equation}
+  U^*_j = \frac{C_j \cdot \gamma^{ucb}_{t,j}}{T_j}
+\end{equation}
+
+\begin{equation}
+  U^* = \sum_j U^*_j
+\end{equation}
+
+The task set from which the breakdown utilization benefit is
+calculated comes, again, from the MRTC suite \cite{mrtc:01}. Borrowing
+the technique from \cite{lunniss:13}, each task has its deadline (and
+therefor period) set to ${T_i = u \cdot (C_i + \gamma^{ucb}_{t,j})}$
+where ${u}$ is a constant. The constant, ${u}$, begins at the number
+of tasks (10) and is increased in steps of .25 until the task set
+becomes schedulable. Incremental negative adjustments are then made to
+determine when the set becomes unschedulable, indicating the breakdown
+utilization.
+
+For ${UOE}$, the UCBs for each task are needed (${UCB_k}$.) The
+earlier evaluation section \emph{Preemption Cost Characterization}
+describes a method for obtaining the UCB counts between two program
+points. The UCB count used by ${UOE}$ is the maximum UCB count at any
+program point in the task. Using the maximum shared UCB count between
+two points is appropriate.
+
+Similarly, for ${EPP}$, the UCBs between each program point are
+required. The method described in \emph{Preemption Cost
+Characterization} delivers this information, and is used
+appropriately.
+
+The last input variables required for both approaches are ${C_i}$ and
+${BRT}$. Both of these were obtained through simulation. ${C_i}$ was
+captured as the total number of cycles required to complete a task
+without preemptions. ${BRT}$ was determined by performing a single
+cached instruction and recording the number of cycles used to complete
+it, followed by performing the instruction when it was not cached. The
+difference yielded a ${BRT}$ of ${<some>}$ cycles.
+
+To hasten the calculation of the breakdown utilization using the
+${EPP}$ approach the results of the ${UOE}$ breakdown utilization are
+used to seed the determination of ${Q}$. \emph{This section to be
+  completed based upon 'The initial CRPD calculation from UOE'...}
+
 
 \subsection {Taskset Schedulability Evaluation}\label{sec:taskset schedulability}
 The schedulability performance metrics we intend to compare various
