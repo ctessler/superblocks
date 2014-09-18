@@ -1,4 +1,4 @@
-\section{Schedulability Analysis}\label{sec:schedulability_analysis}
+\section{Integrated WCET/CRPD Calculation}\label{sec:schedulability_analysis}
 
 The modified preemption cost as a function of the current and next preemption points and the preempting task \begin{math}\tau_{k}\end{math} is given by:
 \begin{equation}\label{eqn:prempt-cost}
@@ -15,7 +15,7 @@ The modified preemption cost as a function of the current and next preemption po
 
 The output of our algorithm is an optimal set of preemption points subject to the maximum allowable non-preemption region \begin{math}Q_{i}\end{math}.  The optimal set of preemption points obtained using the enhanced accuracy of our preemption cost computation is used to calculate each task's WCET given by:
 \begin{equation}\label{eqn:wcet-cost}
-   C_{i} = B_{N_{i}}^{i}(\rho^{i}) = C_{i}^{NP} + \sum_{m=1}^{|\rho^{i}|-1} [\xi(\rho_{m}^{i},\rho_{m+1}^{i})].
+   C_{i} = B_{0,N_{i}}^{i}(\rho^{i}) = C_{i}^{NP} + \sum_{m=1}^{|\rho^{i}|-1} [\xi(\rho_{m}^{i},\rho_{m+1}^{i})].
 \end{equation}
 
 \noindent
@@ -27,10 +27,10 @@ where \begin{math}\rho^{i}\end{math} is the set of selected preemption points fo
 \end{equation}
 
 \noindent
-and \begin{math}B_{k}^{i}\end{math} is the WCET with preemption overhead of first k basic blocks (BB) of task \begin{math}\tau_{i}\end{math} as given by:
+and \begin{math}B_{k,m}^{i}\end{math} is the WCET with preemption overhead of basic blocks k to m of task \begin{math}\tau_{i}\end{math} as given by:
 \begin{equation}\label{eqn:bbkwcet-cost}
 \begin{split}
-   B_{k}^{i}(\rho^{i}) = \min_{\delta_{j}^{i}} \Big[&B_{j-1}^{i}(\rho^{i}(\delta_{j-1}^{i})) + \xi(\delta_{j}^{i},\rho_{next}^{i}(\delta_{j}^{i})) + \\ &\sum_{n=1}^{k}b_{n}^{i}\Big].
+   B_{k,m}^{i}(\rho^{i}) = \min_{\delta_{j}^{i}} \Big[&B_{j-1}^{i}(\rho^{i}(\delta_{j-1}^{i})) + \xi(\delta_{j}^{i},\rho_{next}^{i}(\delta_{j}^{i})) + \\ &\sum_{n=k}^{m}b_{n}^{i}\Big].
 \end{split}
 \end{equation}
 
@@ -43,5 +43,45 @@ where the term \begin{math}\rho_{next}^{i}(\delta_{j}^{i})\end{math} is the next
 \end{equation}
 
 \noindent
-The maximum blocking time \begin{math}\beta_{i}\end{math} that each task may tolerate utilizes the computed task WCET parameter \begin{math}C_{i}\end{math}.  The method for obtaining the maximum blocking time is eloquently summarized for the Earliest Deadline First (EDF) and Fixed Priority (FP) scheduling algorithms~\cite{bertogna:11}~\cite{bertogna:10}.  The circular dependency between the maximum blocking time \begin{math}\beta_{i}\end{math} and task WCET \begin{math}C_{i}\end{math} parameters suggests an iterative approach to allow the two parameters to convergence to a steady state.
+The maximum blocking time \begin{math}\beta_{i}\end{math} that each task may tolerate utilizes the computed task WCET parameter \begin{math}C_{i}\end{math}.  The method for obtaining the maximum blocking time is eloquently summarized for the Earliest Deadline First (EDF) and Fixed Priority (FP) scheduling by Bertogna et. al. algorithms~\cite{bertogna:11}~\cite{bertogna:10}.  The circular dependency between the maximum blocking time \begin{math}\beta_{i}\end{math} and task WCET \begin{math}C_{i}\end{math} parameters suggests an iterative approach to allow the two parameters to convergence to a steady state.  One such iterative approach contains the following steps as given in Algorithm~\ref{alg:iterative-schedulability-optimal-ppp}.
 
+\begin{algorithm}
+\caption{Iterative Schedulability and Preemption Point Placement Algorithm}
+\label{alg:iterative-schedulability-optimal-ppp}
+\begin{algorithmic}[1]
+\State{Start with a task system that may or may not be feasible.}
+\State{Assume the CRPD of the task system is initially zero.}
+%\Repeat
+    \Repeat
+        \State\begin{varwidth}[t]{\linewidth}
+        Run the Baruah algorithm to obtain the maximum \par
+        \hskip\algorithmicindent non-preemptive region $Q_i$ for each task.
+        \end{varwidth}
+        \State\begin{varwidth}[t]{\linewidth}
+        Select optimal preemption points using our \par
+        \hskip\algorithmicindent dynamic programming algorithm.
+        \end{varwidth}
+        \State\begin{varwidth}[t]{\linewidth}
+        Compute the CRPD and the preemptive WCET \par
+        \hskip\algorithmicindent $C_i$ from the selected preemption points.
+        \end{varwidth}
+    \Until{the selected preemption points do not change.}
+%
+%    \If{the task system is feasible/schedulable}
+%        \State\begin{varwidth}[t]{\linewidth}
+%        Increase the system utilization by decreasing the \par
+%        \hskip\algorithmicindent periods via a binary search.
+%        \end{varwidth}
+%    \Else
+%        \State\begin{varwidth}[t]{\linewidth}
+%        Decrease the system utilization by increasing the \par
+%        \hskip\algorithmicindent periods via a binary search.
+%        \end{varwidth}
+%    \EndIf
+%\Until\begin{varwidth}[t]{\linewidth}
+%the system utilization change is less than some \par
+%\hskip\algorithmicindent tolerance.
+%\end{varwidth}
+%\State{The breakdown utilization is given by U.}
+\end{algorithmic}
+\end{algorithm}
