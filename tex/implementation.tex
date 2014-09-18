@@ -18,7 +18,7 @@ where \begin{math}q_{m}^{i}(\rho^{i})\end{math} represents the \begin{math}m^{th
 \end{equation}
 
 \noindent
-In accordance with the recursive nature of equation (\ref{eqn:bbkwcet-cost}) we propose an O(N!) recursive algorithm shown in Algorithm~\ref{alg:recursive-optimal-ppp} for computing the optimal preemption points.  While the recursive formulation is clearly inefficient, it is helpful in developing an understanding of how the algorithm works.  Starting with the first basic block and for each successive basic block \begin{math}\delta_{m}^{i}, m \in [1,N_{i}]\end{math}, the overall WCET cost is computed for two cases: 1) \begin{math}\delta_{m}^{i} \in \rho\end{math}, and 2) \begin{math}\delta_{m}^{i} \not\in \rho\end{math}.  At each step of the algorithm the set \begin{math}\rho\end{math} must conform to the constraint of equation (\ref{eqn:pp-constraint}).  Once basic block \begin{math}\delta_{N_{i}}^{i}\end{math} has been examined, the set of selected preemption points is given by \begin{math}\rho = \rho^{N_{i}}\end{math}.  The WCET cost with basic block \begin{math}\delta_{m}^{i}\end{math} included in the set of potential preemption points is given by:
+In accordance with the recursive nature of equation (\ref{eqn:bbkwcet-cost}) we propose an O(N!) recursive algorithm shown in Algorithm~\ref{alg:recursive-optimal-ppp} for computing the optimal preemption points.  While the recursive formulation is clearly inefficient, it is helpful in developing an understanding of how the algorithm works.  Starting with the first basic block and for each successive basic block \begin{math}\delta_{m}^{i}, m \in [1,N_{i}]\end{math}, the overall WCET cost is computed for two cases: 1) \begin{math}\delta_{m}^{i} \in \rho\end{math}, and 2) \begin{math}\delta_{m}^{i} \not\in \rho\end{math}.  At each step of the algorithm the set \begin{math}\rho\end{math} must conform to the constraint of equation (\ref{eqn:pp-constraint}).  Once basic block \begin{math}\delta_{N_{i}}^{i}\end{math} has been examined, the set of selected preemption points is given by \begin{math}\rho = \rho^{(N_{i})}\end{math}.  The WCET cost with basic block \begin{math}\delta_{m}^{i}\end{math} included in the set of potential preemption points is given by:
 \begin{equation}\label{eqn:pcost-bb}
 p_{COST}(\delta_{m}^{i})\ =\ B_{0,m}^{i}(\rho^{i}) + B_{m,N_{i}}^{i}(\rho^{i})
 \end{equation}
@@ -147,4 +147,26 @@ The recursive formulation gives a preliminary algorithm description, however, it
 \end{algorithmic}
 \end{algorithm}
 
-To exemplify how our algorithm works, consider the following example.
+To exemplify how our algorithm works, consider the following example. 
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{algo_example.jpg}
+\caption{Algorithm Example.}
+\label{fig:algo_example}
+\end{center}
+\end{figure}
+Let $N_i=6$ and $Q_i=12$ for the following basic block structure with WCET and preemption costs shown in Figure~\ref{fig:algo_example}.  The algorithm computes and stores the cumulative non-preemptive execution costs for starting and ending basic block pairs in a matrix denoted $N_p$.  Using this information, the combined WCET and CRPD costs for each basic block pair is computed and stored in a matrix denoted $q$.  These matrices are shown in Figure~\ref{fig:algo_example_2}.  The shaded cells in the $q$ matrix represent cases where the combined WCET and CRPD costs for these basic block pairs exceed the maximum allowable non-preemptive region parameter $Q_i$.  During execution of the algorithm, the minimum combined WCET + CRPD costs are computed for each basic block pair and stored in a matrix denoted $B$.  The $B$ matrix stores the non-preemptive execution cost above the diagonal and the preemptive execution cost below the diagonal.  Basic block pairs with preemptive costs that are less than or equal to $Q_i$ are candidates for selection.  When a lower cost is determined for a given basic block pair, the predecessor preemption point is updated in the $\rho_{prev}$ array which keeps track of the selected predecessor preemption point for each basic block forming a daisy chain containing the entire set of selected preemption points.  The final results are illustrated in Figure~\ref{fig:algo_example_3}.
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{algo_example_2.jpg}
+\caption{Combined WCET and CPRD Costs.}
+\label{fig:algo_example_2}
+\end{center}
+\end{figure}
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{algo_example_3.jpg}
+\caption{Algorithm Results.}
+\label{fig:algo_example_3}
+\end{center}
+\end{figure}
