@@ -26,11 +26,10 @@ complete control flow information.
 
 Tasks were first analyzed using AbsInt's a\textsuperscript{3} WCET
 \cite{absint:01} to determine the set of basic blocks. Next, the basic
-blocks ${\{B_1, B_2, ..., B_n\}}$ were serialized based upon an
-understanding of the control flow of the task. Program points ${\{P_1,
-  P_2, ..., P_n\}}$ were assigned by setting ${P_i}$ to the address of
-the final instruction of each basic block ${B_i}$ for ${i}$ from ${0}$
-to ${n}$.
+blocks ${\{B_1, B_2, ..., B_n\}}$ were serialized by recording their
+order during execution. Program points ${\{P_1, P_2, ..., P_n\}}$ were
+assigned by setting ${P_i}$ to the address of the final instruction of
+each basic block ${B_i}$ for ${i}$ from ${0}$ to ${n}$.
 
 Each program point ${P_j}$ served as a breakpoint when running the
 task on the simulator. As the task was executed, at each breakpoint
@@ -102,59 +101,98 @@ determination is made by:
 
 In the following graphs, each point in the graph represents two points
 in the program. The first point of the program ${P_i}$ is fixed by the
-x-axis. Each point in the graph is labelled with a number, a later
-program point ${P_j}$ which has been selected by the the Bertogna
-approach, or by the proposed method. Bertogna's approach follows the
-dashed blue line, the proposed approach the solid black line.
-
-Bertogna's approach is represented by the dashed blue line. The proposed
-approach by the solid black line. Both approaches will select two
-program points, represented by a single position in the
-graph. Bertogna's approach would select the lowest value of the dashed
-blue line. The proposed approach would select the lowest value of the
-solid black line. Comparing the number of shared UCBs allows a
-comparison to be made.
-
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/bsort-icache.eps}
-\end{center}
-
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/bsort-dcache.eps}
-\end{center}
-
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/recursion-icache.eps}
-\end{center}
+x-axis. The y-axis indicates the shared UCB count with a later program
+point. The first graph, which represents the recursion benchmark's
+data cache, is for illustration. At program point four, the Bertogna
+approach finds 24 shared UCBs between point four and point five. The
+proposed method selects program point seven with a shared UCB count of
+14. 
 
 \begin{center}
   \includegraphics[width=\linewidth]{eps/recursion-dcache.eps}
+\end{center}
+
+To compare the two approaches their selection of two program points is
+simulated by assuming ${Q}$ is larger than the task's total execution
+time. Bertogna's approach would select the lowest value of the 
+dashed line. The proposed approach would select the lowest value of
+the solid line. The difference between these two UCB counts is the
+benefit provided by the proposed approach.
+ 
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/adpcm-dcache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/adpcm-icache.eps}
 \end{center}
 
 %% An alternative for a wider graph
 %% \includegraphics[width=\linewidth]{eps/fft1-icache.eps}
 
 \begin{center}
-  \includegraphics[width=\linewidth]{eps/fft1-icache.eps}
+  \includegraphics[width=\linewidth]{eps/lms-dcache.eps}
 \end{center}
 
 \begin{center}
-  \includegraphics[width=\linewidth]{eps/fft1-dcache.eps}
+  \includegraphics[width=\linewidth]{eps/lms-icache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/ndes-dcache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/ndes-icache.eps}
 \end{center}
 
 \begin{minipage}{\linewidth}
 \centering
 %  \caption {Benefit of Proposed Method}
     \begin{tabular}{l l | l}
-      Task & Cache & Benefit \\ \hline
-      bsort & ${I}$ & 2 \\ 
-      & ${D}$ & 0 \\
+      Task & Cache & Benefit \\
       \hline
-      fft1  & ${I}$ & 121 \\
-      & ${D}$ & 7 \\
+
+      adpcm & ${I}$ & 143 \\
+            & ${D}$ & 5 \\
       \hline
+
+      bsort & ${I}$ & 0 \\ 
+            & ${D}$ & 0 \\
+      \hline
+
+      cnt & ${I}$ & 63 \\
+          & ${D}$ & 2 \\
+      \hline
+
+      cover & ${I}$ & 135 \\
+            & ${D}$ & 2 \\
+      \hline
+
+      crc & ${I}$ & 18 \\
+          & ${D}$ & 1 \\
+      \hline
+
+      fft1 & ${I}$ & 72 \\
+           & ${D}$ & 13 \\
+      \hline
+
+      fibcall & ${I}$ & 1 \\
+              & ${D}$ & 1 \\
+      \hline
+
+      lms & ${I}$ & 158 \\
+          & ${D}$ & 18 \\
+      \hline
+
+      ndes & ${I}$ & 96 \\
+           & ${D}$ & 15 \\
+      \hline
+
       recursion & ${I}$ & 7 \\
-      & ${D}$ & 10 \\
+                & ${D}$ & 10 \\
+      \hline
+
     \end{tabular}
     \bigskip
 
@@ -215,37 +253,44 @@ A task set is schedulable when ${U^* \le 1}$.
 The task set from which the breakdown utilization benefit is
 calculated comes, again, from the MRTC suite \cite{mrtc:01}. Borrowing
 the technique from \cite{lunniss:13}, each task has its deadline (and
-therefor period) set to ${T_i = u \cdot (C_i + \gamma^{ucb}_{t,j})}$
+therefor period) set to ${T_i = u \cdot C_i}$
 where ${u}$ is a constant. The constant, ${u}$, begins at the number
-of tasks (10) and is increased in steps of .25 until the task set
+of tasks (ten) and is increased in steps of .25 until the task set
 becomes schedulable. Incremental negative adjustments are then made to
 determine when the set becomes unschedulable, indicating the breakdown
 utilization.
 
-For ${UOE}$, the UCBs for each task are needed (${UCB_k}$.) The
-earlier evaluation section \emph{Preemption Cost Characterization}
-describes a method for obtaining the UCB counts between two program
-points. The UCB count used by ${UOE}$ is the maximum UCB count at any
-program point in the task. Using the maximum shared UCB count between
-two points is appropriate.
+The final parameter, ${UCB_k}$ is obtained by modifying the earlier
+evaluation section \emph{Preemption Cost Characterization}. For each
+task, the set of shared UCBs are calculated at each program
+point. Taking the maximum shared UCB count as ${UCB_k}$ for any task
+is safe and appropriate for calculating ${U^*}$.
 
-Similarly, for ${EPP}$, the UCBs between each program point are
-required. The method described in \emph{Preemption Cost
-Characterization} delivers this information, and is used
-appropriately.
+Similarly, for ${EPP}$, the shared UCB counts obtained in the earlier
+evaluation serve as input for the Explicit Preemption Point
+algorithm. 
 
 The last input variables required for both approaches are ${C_i}$ and
-${BRT}$. Both of these were obtained through simulation. ${C_i}$ was
-captured as the total number of cycles required to complete a task
-without preemptions. ${BRT}$ was determined by performing a single
-cached instruction and recording the number of cycles used to complete
-it, followed by performing the instruction when it was not cached. The
-difference yielded a ${BRT}$ of ${<some>}$ cycles.
+${BRT}$. ${C_i}$ was captured as the total number of cycles required
+to complete the task without preemptions. The ${BRT}$ is set to 7.8
+${{\mu}s}$, the refresh time of main memory.
 
-To hasten the calculation of the breakdown utilization using the
-${EPP}$ approach the results of the ${UOE}$ breakdown utilization are
-used to seed the determination of ${Q}$. \emph{This section to be
-  completed based upon 'The initial CRPD calculation from UOE'...}
+\emph{EPP evaluation to be written by John}
+
+Using ten tasks, the breakdown utilization comparison between ${UOE}$
+and ${EPP}$ are summarized in the table below.
+
+
+\begin{minipage}{\linewidth}
+  \bigskip
+  \centering
+    \begin{tabular}{c | c}
+      Method & Utilization \\
+      \hline
+      \\
+      UOE & .29 \\
+    \end{tabular}
+\end{minipage}
 
 
 \subsection {Taskset Schedulability Evaluation}\label{sec:taskset schedulability}
