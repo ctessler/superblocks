@@ -89,7 +89,35 @@ n_{COST}(\delta_{m}^{i})\ =\ B_{0,m-1}^{i}(\rho^{i}) + b_{m}^{i} + B_{m+1,N_{i}}
 \end{algorithm}
 
 \noindent
-The recursive formulation gives a preliminary algorithm description, however, it is computationally intractable.  We now propose an \begin{math}O(cN^{2})\end{math} dynamic programming algorithm for computing the optimal preemption points.  The algorithm is summarized in Algorithm~\ref{alg:dynamic-optimal-ppp} shown below.  For each task $\tau_i$, we are given the following parameters: 1) the number of basic blocks $N_i$ , 2) the non-preemptive execution time of each basic block $b^i$, 3) the maximum allowable non-preemptive region $Q_i$, and 4) the preemption cost matrix $\xi$.  The preemption cost matrix $\xi$ is organized for each basic block \begin{math}\delta_{j}^{i}\end{math} and contains the preemption cost for all successor basic blocks of the task's control flow graph.  The minimum (preemptive or non-preemptive) cost between all basic blocks is computed and stored in a matrix denoted $B$.  The $B$ matrix is initially seeded with the non-preemptive cost for basic block pairs that satisfy the constraint $q(\delta_{j}^{i},\delta_{k}^{i}) < Q_{i}$. All other entries are set to infinity.  As we consider whether each basic block $\delta_{k}^{i}$ is in the set of optimal preemption points, the location of the previous basic block $\delta_{j}^{i}$ with minimal preemption cost is stored in an array denoted $\rho_{prev}$.  The algorithm examines each basic block from \begin{math}\delta_{1}^{i}\end{math} to \begin{math}\delta_{N_i}^{i}\end{math} to minimize the preemption cost by traversing backwards from the current basic block $\delta_{k}^{i}$ under consideration in order to find the basic block $\delta_{j}^{i}$ with minimal preemption cost subject to the constraint $q(\delta_{j}^{i},\delta_{k}^{i}) < Q_{i}$.  While each basic block will have a predecessor with minimum preemption cost, the list of selected preemption points is obtained by starting with basic block $\delta_{N_i}^{i}$ and hopping to the predecessor basic block stored at $\rho_{prev}(\delta_{N_i}^{i})$, denoted $\delta_{m}^{i}$.  Basic blocks $\delta_{N_i}^{i}$ and $\delta_{m}^{i}$ are added to the optimal preemption point set $\rho$.  This basic block hopping process continues until basic block $\delta_{0}^{i}$ is reached.  The set $\rho$ contains the complete list of selected optimal preemption points.
+The recursive formulation gives a preliminary algorithm description, however, it is computationally intractable.  We now propose an \begin{math}O(cN^{2})\end{math} dynamic programming algorithm for computing the optimal preemption points.  In support of our dynamic programming algorithm, we propose the following theorem claiming optimal substructure of our solution formulation in terms of the WCET + CRPD cost $B$.
+
+\begin{theorem}
+\label{thm:optimal-substructure-cost}
+The WCET + CRPD cost variable $B$ utilized in our solution exhibits optimal substructure.
+\end{theorem}
+
+\noindent
+We now prove the optimal substructure property of the WCET + CRPD cost $B$.
+\newline
+\noindent
+\begin{proof}
+Let $B_{j,k}^{i}(\rho^{i})$ with its corresponding selected preemption points denoted by $\rho_{j,k}^{i}$ be the optimal limited preemption execution cost solution from basic block $j$ to basic block $k$, and assume the optimal cost solution contains the basic block identified by $m$. Furthermore, let $B_{j,m}^{i}(\rho^{i})$ with selected preemption points denoted by $\rho_{j,m}^{i}$ and $B_{m+1,k}^{i}(\rho^{i})$ with selected preemption points denoted by $\rho_{m+1,k}^{i}$ be the optimal limited preemption execution cost from $j$ to $m$ and from $m+1$ to $k$, respectively, contained in the optimal solution to the original problem. Three additional constraints are imposed where $\rho_{j,m}^{i} \subseteq \rho_{j,k}^{i}$ and $\rho_{m+1,k}^{i} \subseteq  \rho_{j,k}^{i}$ with $B_{j,m}^{i}(\rho^{i}) + B_{m+1,k}^{i}(\rho^{i}) = B_{j,k}^{i}(\rho^{i})$. To prove optimal substructure, we need to prove that in order for the limited preemption execution cost $B_{j,k}^{i}(\rho^{i})$ to be optimal, the limited preemption execution costs $B_{j,m}^{i}(\rho^{i})$ and $B_{m+1,k}^{i}(\rho^{i})$ must also be optimal solutions to their respective sub-problems.
+
+Using proof by contradiction, assume there is a better solution $B_{j,m}^{'i}(\rho^{'i})$ for the sub-problem of determining the optimal limited preemption execution costs from basic block j to basic block m, such that $B_{j,m}^{'i}(\rho^{'i}) < B_{j,m}^{i}(\rho^{i})$ and $\rho_{j,m}^{'i} \neq \rho_{j,m}^{i}$. Since the solution for selecting the optimal preemption points from basic block j to k will work regardless of which set of preemption points are used between basic block j and basic block k, we could then use the better solution  $B_{j,m}^{'i}(\rho^{'i})$ and $\rho_{j,m}^{i'}$ to arrive at a lower cost solution to the original problem. Thus we have the following:
+
+\begin{equation}\label{eqn:pcost-bb-1}
+B_{j,k}^{i}(\rho^{i})\ =\ B_{j,m}^{i}(\rho^{i}) + B_{m+1,k}^{i}(\rho^{i})
+\end{equation}
+\begin{equation}\label{eqn:pcost-bb-2}
+B_{j,k}^{i}(\rho^{i})\ >\ B_{j,m}^{'i}(\rho^{'i}) + B_{m+1,k}^{'i}(\rho^{'i})
+\end{equation}
+\noindent
+However this contradicts the original definition that $B_{j,k}^{i}(\rho^{i})$ and $\rho_{j,k}^{i}$ form an optimal solution to the problem. Therefore, the optimal limited preemption execution cost from basic block j to basic block k contained in the original solution $B_{j,k}^{i}(\rho^{i})$ must be an optimal solution to the sub-problem of determining the optimal limited preemption execution cost solution from basic block j to basic block k. The same argument works for the sub-problem of determining the optimal limited preemption execution cost solution from basic block m+1 to basic block k. Thus, the problem exhibits optimal substructure.
+\end{proof}
+
+\noindent
+\\
+The algorithm is summarized in Algorithm~\ref{alg:dynamic-optimal-ppp} shown below.  For each task $\tau_i$, we are given the following parameters: 1) the number of basic blocks $N_i$ , 2) the non-preemptive execution time of each basic block $b^i$, 3) the maximum allowable non-preemptive region $Q_i$, and 4) the preemption cost matrix $\xi$.  The preemption cost matrix $\xi$ is organized for each basic block \begin{math}\delta_{j}^{i}\end{math} and contains the preemption cost for all successor basic blocks of the task's control flow graph.  The minimum (preemptive or non-preemptive) cost between all basic blocks is computed and stored in a matrix denoted $B$.  The $B$ matrix is initially seeded with the non-preemptive cost for basic block pairs that satisfy the constraint $q(\delta_{j}^{i},\delta_{k}^{i}) < Q_{i}$. All other entries are set to infinity.  As we consider whether each basic block $\delta_{k}^{i}$ is in the set of optimal preemption points, the location of the previous basic block $\delta_{j}^{i}$ with minimal preemption cost is stored in an array denoted $\rho_{prev}$.  The algorithm examines each basic block from \begin{math}\delta_{1}^{i}\end{math} to \begin{math}\delta_{N_i}^{i}\end{math} to minimize the preemption cost by traversing backwards from the current basic block $\delta_{k}^{i}$ under consideration in order to find the basic block $\delta_{j}^{i}$ with minimal preemption cost subject to the constraint $q(\delta_{j}^{i},\delta_{k}^{i}) < Q_{i}$.  While each basic block will have a predecessor with minimum preemption cost, the list of selected preemption points is obtained by starting with basic block $\delta_{N_i}^{i}$ and hopping to the predecessor basic block stored at $\rho_{prev}(\delta_{N_i}^{i})$, denoted $\delta_{m}^{i}$.  Basic blocks $\delta_{N_i}^{i}$ and $\delta_{m}^{i}$ are added to the optimal preemption point set $\rho$.  This basic block hopping process continues until basic block $\delta_{0}^{i}$ is reached.  The set $\rho$ contains the complete list of selected optimal preemption points.
 
 \begin{algorithm}
 \caption{Dynamic Programming Optimal Preemption Point Placement}
@@ -147,7 +175,7 @@ The recursive formulation gives a preliminary algorithm description, however, it
 \end{algorithmic}
 \end{algorithm}
 
-To exemplify how our algorithm works, consider the following example. 
+To exemplify how our algorithm works, consider the following example.
 \begin{figure}[h!]
 \begin{center}
 \includegraphics[width=0.5\textwidth]{algo_example.jpg}
