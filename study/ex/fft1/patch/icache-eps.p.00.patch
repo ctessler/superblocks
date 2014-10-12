@@ -1,0 +1,19 @@
+--- caches/icache-eps.p.orig	2014-07-16 17:56:55.221461657 -0400
++++ caches/icache-eps.p	2014-07-16 18:12:01.822409281 -0400
+@@ -1,11 +1,11 @@
+ set term postscript eps color
+-set title "Instruction Cache"
+-set output "icache.eps"
++set title "fft1 Instruction Cache"
++set output "fft1-icache.eps"
+ set xlabel "Program Point"
+ set ylabel "UCBs Shared with Subsequent Program Point"
+-set xtics 0,1
+-set xrange []
+-set yrange []
++set xtics 0,1 
++set xrange [0:26]
++set yrange [-10:320]
+ # Minimum Line Style
+ set linestyle 1 lt 1 lc rgb "black"
+ # Maximum Line Style

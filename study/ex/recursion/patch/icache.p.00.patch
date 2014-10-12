@@ -1,0 +1,18 @@
+--- caches/icache.p.orig	2014-07-16 17:23:50.953576291 -0400
++++ caches/icache.p	2014-07-16 17:27:49.253562524 -0400
+@@ -1,11 +1,11 @@
+ set term pngcairo dashed
+-set title "Instruction Cache"
+-set output "icache.png"
++set title "recursion Instruction Cache"
++set output "recursion-icache.png"
+ set xlabel "Program Point"
+ set ylabel "UCBs Shared with Subsequent Program Point"
+ set xtics 0,1
+-set xrange []
+-set yrange []
++set xrange [0:11]
++set yrange [120:165]
+ # Minimum Line Style
+ set linestyle 1 lt 1 lc rgb "black"
+ # Maximum Line Style

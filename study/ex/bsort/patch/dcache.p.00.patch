@@ -1,0 +1,18 @@
+--- caches/dcache.p	2014-07-16 15:46:57.371944302 -0400
++++ caches/dcache.p	2014-07-16 15:48:17.766939657 -0400
+@@ -1,11 +1,11 @@
+ set term pngcairo dashed
+-set title "Data Cache"
+-set output "dcache.png"
++set title "bsort100 Data Cache"
++set output "bsort-dcache.png"
+ set xlabel "Program Point"
+ set ylabel "UCBs Shared with Subsequent Program Point"
+ set xtics 0,1
+-set xrange []
+-set yrange []
++set xrange [0:16]
++set yrange [14:22]
+ # Minimum Line Style
+ set linestyle 1 lt 1 lc rgb "black"
+ # Maximum Line Style

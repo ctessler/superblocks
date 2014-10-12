@@ -1,0 +1,124 @@
+* URLS
+** GRSIM Information
+   http://gaisler.com/index.php/products/simulators/grsim
+
+** Compiler Information
+   http://gaisler.com/index.php/downloads/compilers
+
+** MRTC Benchmarks
+   http://www.mrtc.mdh.se/projects/wcet/benchmarks.html
+
+** Sparc V8 Architecture Manual
+   http://www.gaisler.com/doc/sparcv8.pdf
+
+* Components
+** GRSIM/TSIM
+   Simulates a LEON family processor
+** BCC 
+   Bare Bones C Compiler
+   Cross compiles for a LEON family processor
+
+* LEON3
+  Sparc V8 Architecture with V8e extensions
+* BCC
+** BCC Installation
+   Extract
+   ► tar -xjvf ../dist/sparc-elf-4.4.2-1.0.45.tar.bz2
+   
+   Update the PATH
+   PATH=${PWD}/sparc-elf-4.4.2/bin:${PATH}
+   
+   Use the sparc-elf-* binaries, such as sparc-elf-gcc and
+   sparc-elf-gdb
+
+** BCC Usage
+   Normal workflow is
+   1. Compile with sparc-elf-gcc
+   2. Debug on simulator
+   3. Create boot-prom for standalone application
+
+   Important Compilation Options
+   -msoft-float -- emulate FPU (must provide -nfp to tsim)
+   -mcpu=v8 -- to utilize hardware MUL/DIV operations
+
+** Memory Configuration
+   STACK
+     |
+   .text	0x40000000
+   .data
+   .bss
+     |
+   HEAP
+
+* GRSIM
+** GRSIM Installation
+   Extract
+   ► tar -zxvf  ../dist/tsim-eval-2.0.32.tar.gz
+
+   Update the PATH
+   PATH=${PWD}/tsim-eval/tsim/linux-x64:${PATH}
+
+   Invoke the simulator with tsim-leon3
+** Limitations
+   - No command line options
+   - Maximum of 2^32 cycles
+   - 4096 kbytes of RAM
+   - 256 kbyets of ROM
+** Important Options
+   -gdb -- listen for incoming gdb connections
+   -f <input file> -- elf or s-record object
+
+   -dcsize <kbytes> -- data cache size: 2^0, 2^1, ..., 2^7
+   -dcsets -- number of data cache sets: 1 .. 4
+   
+   -icsize <kbytes> -- instruction cache size: 2^0, 2^1, ..., 2^7
+   -icsets -- number of instruction cache sets: 1 .. 4
+
+** Commands
+   - dcache : Shows the data cache
+   - icache : Shows the instruction cache
+   - load <file> : loads an object
+   - run : runs from the start
+   - gdb : begins listening for gdb connections
+
+* Workflow with GDB
+** Build
+   > sparc-elf-gcc -ggdb -O0 hello.c hello
+** Start the simulator
+   > tsim-leon3
+   # Start listening for GDB connections
+   tsim> gdb
+** Begin GDB
+   > sparc-elf-gdb
+   # Tell GDB about the symbols
+   (gdb) file hello
+   # Connect to the remote target
+   (gdb) target extended-remote :1234
+   # Load the object onto the target
+   (gdb) load hello
+   # Set a breakpoint
+   (gdb) break main
+   # And continue (not run)
+   (gdb) c
+   
+* Workflow with TSIM
+** Build
+   > sparc-elf-gcc -ggdb -O0 hello.c hello
+** Start the simulator
+   > tsim-leon3
+   tsim> load hello
+   tsim> run
+
+* Cycles
+  (- 46451 28784) 17667
+* Example Batch File
+  # An example tsim-leon3 batch file
+  break 0x4000199c
+  run
+  echo "Break 1"
+  icache
+  dcache
+  c
+  echo boo
+  icache
+  dcache

@@ -1,0 +1,19 @@
+--- caches/icache.p.orig	2014-07-16 15:59:20.816901352 -0400
++++ caches/icache.p	2014-07-16 16:17:14.965839296 -0400
+@@ -1,11 +1,11 @@
+-set term pngcairo dashed
+-set title "Instruction Cache"
+-set output "icache.png"
++set term pngcairo dashed size 840,480
++set title "fft1 Instruction Cache"
++set output "fft-icache.png"
+ set xlabel "Program Point"
+ set ylabel "UCBs Shared with Subsequent Program Point"
+ set xtics 0,1
+-set xrange []
+-set yrange []
++set xrange [0:26]
++set yrange [-10:320]
+ # Minimum Line Style
+ set linestyle 1 lt 1 lc rgb "black"
+ # Maximum Line Style

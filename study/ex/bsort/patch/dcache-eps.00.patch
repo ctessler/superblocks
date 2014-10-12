@@ -1,0 +1,18 @@
+--- caches/dcache-eps.p	2014-07-16 15:35:56.390982488 -0400
++++ caches/dcache-eps.p.new	2014-07-16 15:41:07.384964521 -0400
+@@ -1,11 +1,12 @@
+ set term postscript eps color
+ set title "Data Cache"
+-set output "dcache.eps"
++set output "bsort-dcache.eps"
+ set xlabel "Program Point"
+ set ylabel "UCBs Shared with Subsequent Program Point"
+ set xtics 0,1
+-set xrange []
+-set yrange []
++set ytics 1
++set xrange [0:16]
++set yrange [14:22]
+ # Minimum Line Style
+ set linestyle 1 lt 1 lc rgb "black"
+ # Maximum Line Style

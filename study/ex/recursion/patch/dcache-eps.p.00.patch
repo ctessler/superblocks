@@ -1,0 +1,18 @@
+--- caches/dcache-eps.p.orig	2014-07-16 17:24:05.752575436 -0400
++++ caches/dcache-eps.p	2014-07-16 17:26:32.815566940 -0400
+@@ -1,11 +1,11 @@
+ set term postscript eps color
+-set title "Data Cache"
+-set output "dcache.eps"
++set title "recursion Data Cache"
++set output "recursion-dcache.eps"
+ set xlabel "Program Point"
+ set ylabel "UCBs Shared with Subsequent Program Point"
+ set xtics 0,1
+-set xrange []
+-set yrange []
++set xrange [0:11]
++set yrange [0:30]
+ # Minimum Line Style
+ set linestyle 1 lt 1 lc rgb "black"
+ # Maximum Line Style

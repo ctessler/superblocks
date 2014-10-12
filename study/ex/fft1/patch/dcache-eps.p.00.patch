@@ -1,0 +1,17 @@
+--- caches/dcache-eps.p.orig	2014-09-18 09:58:50.208822571 -0400
++++ caches/dcache-eps.p	2014-09-18 09:59:04.328822387 -0400
+@@ -1,11 +1,11 @@
+ set term postscript eps color
+-set title "Data Cache"
++set title "fft1 Data Cache"
+ set output "dcache.eps"
+ set xlabel "Program Point"
+ set ylabel "UCBs Shared with Subsequent Program Point"
+ set xtics 0,1
+-set xrange []
+-set yrange []
++set xrange [0:26]
++set yrange [0:55]
+ # Minimum Line Style
+ set linestyle 1 lt 1 lc rgb "black"
+ # Maximum Line Style

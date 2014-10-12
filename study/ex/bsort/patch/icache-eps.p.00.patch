@@ -1,0 +1,18 @@
+--- caches/icache-eps.p	2014-07-16 15:35:56.387982488 -0400
++++ caches/icache-eps.p.new	2014-07-16 15:38:24.617973925 -0400
+@@ -1,11 +1,11 @@
+ set term postscript eps color
+-set title "Instruction Cache"
+-set output "icache.eps"
++set title "bsort100 Instruction Cache"
++set output "bsort-icache.eps"
+ set xlabel "Program Point"
+ set ylabel "UCBs Shared with Subsequent Program Point"
+ set xtics 0,1
+-set xrange []
+-set yrange []
++set xrange [0:16]
++set yrange [120:190]
+ # Minimum Line Style
+ set linestyle 1 lt 1 lc rgb "black"
+ # Maximum Line Style
