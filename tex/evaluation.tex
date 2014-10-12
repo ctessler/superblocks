@@ -81,7 +81,7 @@ https://github.com/ctessler/superblocks/tree/master/study
 
 \subsubsection{Results}
 
-The results are presented as a comparison between the our proposed
+The results are presented as a comparison between the proposed
 method and the Bertonga approach. For a program point ${P_j}$ the 
 Bertogna \cite{bertogna:11} approach defines the UCBs (and therefor the CRPD) as:
 
@@ -118,17 +118,6 @@ time. Bertogna's approach would select the lowest value of the
 dashed line. The proposed approach would select the lowest value of
 the solid line. The difference between these two UCB counts is the
 benefit provided by the proposed approach.
- 
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/adpcm-dcache.eps}
-\end{center}
-
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/adpcm-icache.eps}
-\end{center}
-
-%% An alternative for a wider graph
-%% \includegraphics[width=\linewidth]{eps/fft1-icache.eps}
 
 \begin{center}
   \includegraphics[width=\linewidth]{eps/lms-dcache.eps}
@@ -138,13 +127,6 @@ benefit provided by the proposed approach.
   \includegraphics[width=\linewidth]{eps/lms-icache.eps}
 \end{center}
 
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/ndes-dcache.eps}
-\end{center}
-
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/ndes-icache.eps}
-\end{center}
 
 \begin{minipage}{\linewidth}
 \centering
@@ -208,6 +190,12 @@ instructions in the basic block between the final program points is
 relatively small; limiting the number of cache lines that could be
 filtered by the intersection.
 
+This behavior limits the appropriate type of analysis. The preceding
+table shows the maximum benefit of the proposed approach. If the
+minimum benefit were considered it would always be zero; since the
+difference in estimated shared UCBs converges at the final basic
+block.
+
 Drastic spikes downwards in the shared UCB counts for the minimum and
 maximum approaches coincide with function call boundaries, or large
 conditional blocks. At these boundaries, the maximum and minimum
@@ -222,13 +210,13 @@ section.
 
 \subsection{Breakdown Utilization}
 
-To determine the schedulability benefit of the explicit preemption
-placement approach another case study was performed. This study
-focuses on the breakdown utilization when comparing the UCB only
-approach for EDF \cite{lunniss:13} to the proposed method of explicit
-preemption point placement. For convenience the UCB Only approach for
-EDF will be referred to as ${UOE}$, and Explicit Preemption point
-Placement as ${EPP}$.
+The previous analysis illustrates the benefit of the proposed
+approach for an individual task, which does not illustrate the
+schedulability benefit. To determine the schedulability benefit a
+second case study was performed. Focusing on the breakdown utilization
+when comparing the UCB only approach for EDF \cite{lunniss:13}. For
+convenience the UCB Only approach for EDF will be referred to as
+${UOE}$, and Explicit Preemption Point Placement as ${EPP}$.
 
 The appropriate schedulablity test for ${UOE}$ is found in
 Luniss \emph{et~al.} \cite{lunniss:13}. It is comprised of three
@@ -292,6 +280,80 @@ and ${EPP}$ are summarized in the table below.
     \end{tabular}
 \end{minipage}
 
+Compared to \cite{lunniss:13} this evaluation of ${UOE}$ has a
+breakdown utilization 17\% lower. This is likely due to the
+(differing) selection of tasks and estimation of UCBs. The data used
+in \cite{lunniss:13} does not include UCB information per basic block,
+which is required for ${EPP}$. Necessitating the generation of new
+UCB estimations per task.
+
+\clearpage
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/adpcm-dcache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/adpcm-icache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/bsort100-dcache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/bsort100-icache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/cnt-dcache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/cnt-icache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/crc-dcache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/crc-icache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/fft1-dcache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/fft1-icache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/fibcall-dcache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/fibcall-icache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/ndes-dcache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/ndes-icache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/recursion-dcache.eps}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=\linewidth]{eps/recursion-icache.eps}
+\end{center}
+
+\clearpage
 
 \subsection {Taskset Schedulability Evaluation}\label{sec:taskset schedulability}
 The schedulability performance metrics we intend to compare various
