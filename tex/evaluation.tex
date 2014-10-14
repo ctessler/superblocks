@@ -2,17 +2,19 @@
 
 The evaluation of our preemption point placement algorithm will embody
 two methods: 1) characterization and measurement of preemption costs
-using real-time application code, and 2) a schedulability comparison
-of synthetic task set for various preemption models. 
+using real-time application code, and 2) a breakdown utilization schedulability
+comparison for various CRPD computational approaches.
+%2) a schedulability comparison
+%of synthetic task set for various preemption models.
 
 \subsection {Preemption Cost
-  Characterization}\label{sec:preemption_cost_measurement} 
+  Characterization}\label{sec:preemption_cost_measurement}
 To characterize the behavior and estimate the benefit of the approach
 proposed in this paper, a case study of representative tasks was
 performed. The tasks were selected from Malardalen University of
-Sweden's WCET benchmark suite \cite{mrtc:01}. Each task was built using Gaisler's
-Bare-C Cross Compiler \cite{gaisler:01} for the GRSIM
-LEON3 \cite{gaisler:02} simulated target. 
+Sweden's WCET benchmark suite~\cite{mrtc:01}. Each task was built using Gaisler's
+Bare-C Cross Compiler~\cite{gaisler:01} for the GRSIM
+LEON3~\cite{gaisler:02} simulated target.
 
 Within a task, variance in the number of shared UCBs between program
 points is related to the execution flow of the task through each of
@@ -24,8 +26,8 @@ result in a greater number of shared UCBs between the points. To
 accurately upper-bound the shared UCBs between points requires
 complete control flow information.
 
-Tasks were first analyzed using AbsInt's a\textsuperscript{3} WCET
-\cite{absint:01} to determine the set of basic blocks. Next, the basic
+Tasks were first analyzed using AbsInt's a\textsuperscript{3} WCET~\cite{absint:01}
+to determine the set of basic blocks. Next, the basic
 blocks ${\{B_1, B_2, ..., B_n\}}$ were serialized by recording their
 order during execution. Program points ${\{P_1, P_2, ..., P_n\}}$ were
 assigned by setting ${P_i}$ to the address of the final instruction of
@@ -45,9 +47,9 @@ each program point. A program point ${P_i}$ may be visited multiple
 times during a tasks execution. The UCBs shared between ${P_i}$ and a
 later point ${P_j}$ could change with each visit of ${P_i}$. During
 the final visit of ${P_i}$ the instruction and data cache contents
-were snapshotted, and recorded as ${I_i}$ and ${D_i}$. From these
+were captured, and recorded as ${I_i}$ and ${D_i}$. From these
 representative snapshots, a representative over-estimate of shared
-UCBs were made. 
+UCBs were made.
 
 Shared UCBs were calculated by intersecting the cache state from ${P_i}$
 to ${P_j}$, except ${P_j}$. A cache line that remains unchanged after
@@ -59,7 +61,7 @@ between ${P_i}$ and ${P_j}$ can be selected. The complete set of
 unchanged cache lines serves as a safe upper-bound on the shared UCBs
 between the two points. The equation below formalizes this idea, using
 ${H}$ as either the set of instruction cache or data cache snapshots.
-
+\vspace{-20pt}
 \begin{center}
   \begin{equation*}
     UCB(P_i, P_j) = \bigcap_{k=i}^{j-1} H_k
@@ -72,19 +74,14 @@ This method may be verified and reproduced using the same tools and
 data. Gaisler's compiler and simulator are freely available. AbsInt's
 a\textsuperscript{3} tool is available for educational and evaluation
 purposes. The programs written and data used in this paper can be
-found on GitHub at the following url:
-
-\begin{center}
-https://github.com/ctessler/superblocks/tree/master/study
-\end{center}
-
+found on GitHub~\cite{tessler:14} thereby permitting the research community
+to reproduce and leverage our work as needed.
 
 \subsubsection{Results}
 
-The results are presented as a comparison between the proposed
-method and the Bertonga approach. For a program point ${P_j}$ the 
+The results are presented as a comparison between the our proposed
+method and the Bertogna approach. For a program point ${P_j}$ the
 Bertogna \cite{bertogna:11} approach defines the UCBs (and therefor the CRPD) as:
-
 \begin{equation*}
   \max\{ UCB(P_i, P_j) \vert i < j \}
 \end{equation*}
@@ -93,11 +90,9 @@ To determine the maximum benefit of the new approach, the best case
 scenario is considered. When the preemption point is selected with the
 fewest number of UCBs based upon previous preemption.  For ${P_j}$ the
 determination is made by:
-
 \begin{equation*}
   \min\{ UCB(P_i, P_j) \vert i < j \}
 \end{equation*}
-
 
 In the following graphs, each point in the graph represents two points
 in the program. The first point of the program ${P_i}$ is fixed by the
@@ -106,27 +101,23 @@ point. The first graph, which represents the recursion benchmark's
 data cache, is for illustration. At program point four, the Bertogna
 approach finds 24 shared UCBs between point four and point five. The
 proposed method selects program point seven with a shared UCB count of
-14. 
-
+14.
 \begin{center}
   \includegraphics[width=\linewidth]{eps/recursion-dcache.eps}
 \end{center}
 
 To compare the two approaches their selection of two program points is
 simulated by assuming ${Q}$ is larger than the task's total execution
-time. Bertogna's approach would select the lowest value of the 
+time. Bertogna's approach would select the lowest value of the
 dashed line. The proposed approach would select the lowest value of
 the solid line. The difference between these two UCB counts is the
 benefit provided by the proposed approach.
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/lms-dcache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/lms-icache.eps}
 \end{center}
-
 
 \begin{minipage}{\linewidth}
 \centering
@@ -139,7 +130,7 @@ benefit provided by the proposed approach.
             & ${D}$ & 5 \\
       \hline
 
-      bsort & ${I}$ & 0 \\ 
+      bsort & ${I}$ & 0 \\
             & ${D}$ & 0 \\
       \hline
 
@@ -206,7 +197,7 @@ There is a sharp upward spike in the early program points for the
 maximum approach. This is likely due to the early initialization
 blocks built into tasks. The minimum approach shows a clear benefit of
 selecting a preemption point outside of the early initialization
-section. 
+section.
 
 \subsection{Breakdown Utilization}
 
@@ -214,26 +205,23 @@ The previous analysis illustrates the benefit of the proposed
 approach for an individual task, which does not illustrate the
 schedulability benefit. To determine the schedulability benefit a
 second case study was performed. Focusing on the breakdown utilization
-when comparing the UCB only approach for EDF \cite{lunniss:13}. For
+when comparing the UCB only approach for EDF~\cite{lunniss:13}. For
 convenience the UCB Only approach for EDF will be referred to as
 ${UOE}$, and Explicit Preemption Point Placement as ${EPP}$.
 
 The appropriate schedulablity test for ${UOE}$ is found in
-Luniss \emph{et~al.} \cite{lunniss:13}. It is comprised of three
+Lunniss \emph{et~al.}~\cite{lunniss:13}. It is comprised of three
 parts: ${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$. They represent
 the maximum CRPD for a task ${j}$, the utilization of the task ${j}$
 including the CRPD of the task, and the utilization of the task set.
 A task set is schedulable when ${U^* \le 1}$.
-
 \begin{equation}
   \gamma^{ucb}_{t,j} = BRT \cdot \max\limits_{\forall k \in aff(t,j)}
   \left\{ \left| UCB_k \right| \right\}
 \end{equation}
-
 \begin{equation}
   U^*_j = \frac{C_j \cdot \gamma^{ucb}_{t,j}}{T_j}
 \end{equation}
-
 \begin{equation}
   U^* = \sum_j U^*_j
 \end{equation}
@@ -252,22 +240,60 @@ The final parameter, ${UCB_k}$ is obtained by modifying the earlier
 evaluation section \emph{Preemption Cost Characterization}. For each
 task, the set of shared UCBs are calculated at each program
 point. Taking the maximum shared UCB count as ${UCB_k}$ for any task
-is safe and appropriate for calculating ${U^*}$.
+is safe and appropriate for calculating ${U^*}$.Similarly, for ${EPP}$,
+the shared UCB counts obtained in the earlier evaluation serve as input for
+the Explicit Preemption Point algorithm.  The last input variables required
+for both approaches are ${C_i}$ and ${BRT}$. ${C_i}$ was captured as the
+total number of cycles required to complete the task without preemptions.
+The ${BRT}$ is set to 7.8 ${{\mu}s}$, the refresh time of main memory.
 
-Similarly, for ${EPP}$, the shared UCB counts obtained in the earlier
-evaluation serve as input for the Explicit Preemption Point
-algorithm. 
+The breakdown utilization determination leverages our iterative schedulability
+and preemption point placement algorithm as outlined in the following steps below
+as given in Algorithm~\ref{alg:iterative-breakdown-utilization-algo}.
 
-The last input variables required for both approaches are ${C_i}$ and
-${BRT}$. ${C_i}$ was captured as the total number of cycles required
-to complete the task without preemptions. The ${BRT}$ is set to 7.8
-${{\mu}s}$, the refresh time of main memory.
+\begin{algorithm}
+\caption{Iterative Breakdown Utilization Evaluation Algorithm}
+\label{alg:iterative-breakdown-utilization-algo}
+\begin{algorithmic}[1]
+\State{Start with a task system that may or may not be feasible.}
+\State{Assume the CRPD of the task system is initially zero.}
+\Repeat
+    \Repeat
+        \State\begin{varwidth}[t]{\linewidth}
+        Run the Baruah algorithm to obtain the maximum \par
+        \hskip\algorithmicindent non-preemptive region $Q_i$ for each task.
+        \end{varwidth}
+        \State\begin{varwidth}[t]{\linewidth}
+        Select optimal preemption points using our \par
+        \hskip\algorithmicindent dynamic programming algorithm.
+        \end{varwidth}
+        \State\begin{varwidth}[t]{\linewidth}
+        Compute the CRPD and the preemptive WCET \par
+        \hskip\algorithmicindent $C_i$ from the selected preemption points.
+        \end{varwidth}
+    \Until{the selected preemption points do not change.}
 
-\emph{EPP evaluation to be written by John}
+    \If{the task system is feasible/schedulable}
+        \State\begin{varwidth}[t]{\linewidth}
+        Increase the system utilization by decreasing the \par
+        \hskip\algorithmicindent periods via a binary search.
+        \end{varwidth}
+    \Else
+        \State\begin{varwidth}[t]{\linewidth}
+        Decrease the system utilization by increasing the \par
+        \hskip\algorithmicindent periods via a binary search.
+        \end{varwidth}
+    \EndIf
+\Until\begin{varwidth}[t]{\linewidth}
+the system utilization change is less than some \par
+\hskip\algorithmicindent tolerance.
+\end{varwidth}
+\State{The breakdown utilization is given by U.}
+\end{algorithmic}
+\end{algorithm}
 
 Using ten tasks, the breakdown utilization comparison between ${UOE}$
 and ${EPP}$ are summarized in the table below.
-
 
 \begin{minipage}{\linewidth}
   \bigskip
@@ -286,117 +312,100 @@ breakdown utilization 17\% lower. This is likely due to the
 in \cite{lunniss:13} does not include UCB information per basic block,
 which is required for ${EPP}$. Necessitating the generation of new
 UCB estimations per task.
-
-\clearpage
-
+%
+%\clearpage
+%
 \begin{center}
   \includegraphics[width=\linewidth]{eps/adpcm-dcache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/adpcm-icache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/bsort100-dcache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/bsort100-icache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/cnt-dcache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/cnt-icache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/cover-dcache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/cover-icache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/crc-dcache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/crc-icache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/fft1-dcache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/fft1-icache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/fibcall-dcache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/fibcall-icache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/ndes-dcache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/ndes-icache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/recursion-dcache.eps}
 \end{center}
-
 \begin{center}
   \includegraphics[width=\linewidth]{eps/recursion-icache.eps}
 \end{center}
-
-\clearpage
-
-\subsection {Taskset Schedulability Evaluation}\label{sec:taskset schedulability}
-The schedulability performance metrics we intend to compare various
-preemption models with are: 1) the percentage of schedulable task sets
-as a function of the task set utilization, 2) the percentage of
-schedulable task sets as a function of the number of tasks, 3) the
-percentage of schedulable task sets as a function of the maximum CRPD,
-and 4) the percentage of schedulable task sets as a function of the
-variability of the CRPD variance \begin{math}\sigma_{CRPD}\end{math}.
-The following preemption models will be studied namely: 1) fully
-non-preemptive, 2) fully preemptive, 3) limited preemption naive
-approach, 4) limited preemption point placement with fixed CRPD
-preemption cost, 5) limited preemption point placement with variable
-CRPD preemption cost, and 6) optimal preemption point placement with
-enhanced CRPD preemption cost. 
-
-Our approach for generating the synthetic task sets involves a number
-of steps which is summarized as follows.  The number of basic blocks
-generated each task is in the
-interval \begin{math}[N_{i}(min),N_{i}(max)]\end{math} using a random
-uniform distribution.  Each basic block non-preemptive WCET is
-generated using a Gaussian distribution with
-mean \begin{math}\mu_{WCET}\end{math} and
-variance \begin{math}\sigma_{WCET}\end{math}.  The  utilization of
-each task has been generated using the approach proposed in [TBD12].
-The task periods \begin{math}T_{i}\end{math} were then computed
-dividing the non-preemptive WCET \begin{math}C_{i}^{NP}\end{math} by
-the utilization \begin{math}U_{i}\end{math} of each task.  Preemption
-costs were randomly generated using the following function (TBD), to
-achieve a realistic distribution similar to the one derived
-empirically).  The enhanced CRPD is generated to be a percentage of
-the WCET in the interval [0, 0.50] with a random uniform
-distribution. Cache related preemption delay (CRPD) values are
-generated for each pair of potential preemption points.  The variable
-CRPD preemption cost model uses the CRPD cost from the each preemption
-point to the end of the task. The fixed CRPD preemption cost model
-uses the maximum CRPD cost of all variable CRPD preemption cost
-values.  
+%
+%\clearpage
+%
+%\subsection {Taskset Schedulability Evaluation}\label{sec:taskset schedulability}
+%The schedulability performance metrics we intend to compare various
+%preemption models with are: 1) the percentage of schedulable task sets
+%as a function of the task set utilization, 2) the percentage of
+%schedulable task sets as a function of the number of tasks, 3) the
+%percentage of schedulable task sets as a function of the maximum CRPD,
+%and 4) the percentage of schedulable task sets as a function of the
+%variability of the CRPD variance \begin{math}\sigma_{CRPD}\end{math}.
+%The following preemption models will be studied namely: 1) fully
+%non-preemptive, 2) fully preemptive, 3) limited preemption naive
+%approach, 4) limited preemption point placement with fixed CRPD
+%preemption cost, 5) limited preemption point placement with variable
+%CRPD preemption cost, and 6) optimal preemption point placement with
+%enhanced CRPD preemption cost.
+%
+%Our approach for generating the synthetic task sets involves a number
+%of steps which is summarized as follows.  The number of basic blocks
+%generated each task is in the
+%interval \begin{math}[N_{i}(min),N_{i}(max)]\end{math} using a random
+%uniform distribution.  Each basic block non-preemptive WCET is
+%generated using a Gaussian distribution with
+%mean \begin{math}\mu_{WCET}\end{math} and
+%variance \begin{math}\sigma_{WCET}\end{math}.  The  utilization of
+%each task has been generated using the approach proposed in [TBD12].
+%The task periods \begin{math}T_{i}\end{math} were then computed
+%dividing the non-preemptive WCET \begin{math}C_{i}^{NP}\end{math} by
+%the utilization \begin{math}U_{i}\end{math} of each task.  Preemption
+%costs were randomly generated using the following function (TBD), to
+%achieve a realistic distribution similar to the one derived
+%empirically).  The enhanced CRPD is generated to be a percentage of
+%the WCET in the interval [0, 0.50] with a random uniform
+%distribution. Cache related preemption delay (CRPD) values are
+%generated for each pair of potential preemption points.  The variable
+%CRPD preemption cost model uses the CRPD cost from the each preemption
+%point to the end of the task. The fixed CRPD preemption cost model
+%uses the maximum CRPD cost of all variable CRPD preemption cost
+%values.

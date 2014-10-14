@@ -1,3 +1,33 @@
 \section{Conclusion}\label{sec:conclusion}
 
-TBD 
+In this paper we presented an enhanced approach for calculating the 
+CRPD taking into account the selected preemption points resulting 
+in greater accuracy.  Using the enhanced CRPD calculation, we also
+presented an improved algorithm for selecting a limited number of 
+preemption points for each task subject to schedulability constraints.
+Our improved preemption placement algorithm was demonstrated to
+minimize the overall preemption cost, an important result in achieving
+schedulability in real-time system.  We highlighted the iterative nature
+of considering schedulability constraints in our preemption point 
+placement algorithm and proposed an algorithm combining schedulability
+analysis with limited preemption point placement.  This approach
+effectively illustrates how the individual tasks non-preemption
+region parameters $Q_i$ and the optimal selected preemption points will  
+eventually converge.  Furthermore, our enhanced algorithm was demonstrated to be 
+optimal in that if a feasible schedule is not found, then no feasible 
+schedule exists by any method.  Our algorithm was shown to run in quadratic time
+complexity.  Potential preemption points can be defined automatically
+using Gaisler's compiler and simulator along with AbsInt's
+a\textsuperscript{3} tool or defined manually by the programmer during design
+and implementation. Our experiments demonstrated the effectiveness of 
+the enhanced CRPD calculation by illustrating the benefits using the 
+task set from Malardalen University of Sweden's WCET benchmark suite~\cite{mrtc:01}.
+We also demonstrated the benefits of our enhanced limited optimal preemption
+point placement algorithm and its increased system schedulability as 
+compared to other algorithms.  While our task model is defined using a linear 
+sequence of basic blocks, it was deemed a highly suitable model to introduce
+our revised methods for enhanced CRPD calculation and optimal limited
+preemption point placement.  In future work, we plan to 1) a schedulability comparison
+of synthetic task set for various preemption models, and 2) remove the linear
+basic block restriction thereby permitting arbitrarily connected basic
+block structures.
