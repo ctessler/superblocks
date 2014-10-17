@@ -11,6 +11,7 @@ all: $(NAME)-dmatrix.txt $(NAME)-imatrix.txt \
 $(NAME)-dcache.png $(NAME)-dcache.eps : patches
 	cd caches ; gnuplot dcache.p
 	cd caches ; gnuplot dcache-eps.p
+	cp caches/ucb_bound.txt $(NAME)-ucb.txt
 	cp caches/$(NAME)-dcache.png $(NAME)-dcache.png
 	cp caches/$(NAME)-dcache.eps $(NAME)-dcache.eps
 
@@ -52,4 +53,5 @@ clean:
 	rm -f $(NAME)-cycles.txt $(NAME)-dmatrix.txt $(NAME)-imatrix.txt
 	rm -f $(NAME)-icache.png $(NAME)-icache.eps
 	rm -f $(NAME)-dcache.png $(NAME)-dcache.eps
+	rm -f $(NAME)-ucb.txt
 	rm -rf caches

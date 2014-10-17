@@ -9,6 +9,7 @@ all: $(NAME)-dmatrix.txt $(NAME)-imatrix.txt \
 $(NAME)-dcache.png $(NAME)-dcache.eps : caches/PATCHED
 	cd caches ; gnuplot dcache.p
 	cd caches ; gnuplot dcache-eps.p
+	cp caches/ucb_bound.txt $(NAME)-ucb.txt
 	cp -a caches/bsort-dcache.png $(NAME)-dcache.png
 	cp -a caches/bsort-dcache.eps $(NAME)-dcache.eps
 
@@ -35,7 +36,6 @@ caches/ISET: caches
 
 caches: $(NAME)-observed.txt
 	collect-caches.pl $(NAME) $(NAME)-observed.txt
-	touch caches
 
 $(NAME)-observed.txt: $(NAME)-ordered.txt
 	time-blocks.pl $(NAME) $(NAME)-ordered.txt
@@ -53,4 +53,5 @@ clean:
 	rm -f $(NAME)-cycles.txt $(NAME)-dmatrix.txt $(NAME)-imatrix.txt
 	rm -f $(NAME)-icache.png $(NAME)-icache.eps
 	rm -f $(NAME)-dcache.png $(NAME)-dcache.eps
+	rm -f $(NAME)-ucb.txt
 	rm -rf caches
