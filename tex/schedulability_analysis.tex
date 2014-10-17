@@ -27,7 +27,7 @@ where \begin{math}\rho^{i}\end{math} is the set of selected preemption points fo
 \end{equation}
 
 \noindent
-and \begin{math}B_{k,m}^{i}\end{math} is the WCET with preemption overhead of basic blocks k to m of task \begin{math}\tau_{i}\end{math} as given by:
+and \begin{math}B_{k,m}^{i}\end{math} is the WCET with preemption overhead of basic blocks $k$ to $m$ of task \begin{math}\tau_{i}\end{math} as given by:
 \begin{equation}\label{eqn:bbkwcet-cost}
 \begin{split}
    B_{k,m}^{i}(\rho^{i}) = \min_{\delta_{j}^{i}} \Big[&B_{j-1}^{i}(\rho^{i}(\delta_{j-1}^{i})) + \xi(\delta_{j}^{i},\rho_{next}^{i}(\delta_{j}^{i})) + \\ &\sum_{n=k}^{m}b_{n}^{i}\Big].
@@ -45,10 +45,13 @@ where the term \begin{math}\rho_{next}^{i}(\delta_{j}^{i})\end{math} is the next
 \noindent
 The maximum blocking time \begin{math}\beta_{i}\end{math} that each task may tolerate utilizes the computed task WCET parameter \begin{math}C_{i}\end{math}.  The method for obtaining the maximum blocking time is eloquently summarized for the Earliest Deadline First (EDF) and Fixed Priority (FP) scheduling by Bertogna et. al. algorithms~\cite{bertogna:11}~\cite{bertogna:10}.  The circular dependency between the maximum blocking time \begin{math}\beta_{i}\end{math} and task WCET \begin{math}C_{i}\end{math} parameters suggests an iterative approach to allow the two parameters to convergence to a steady state.  One such iterative approach contains the following steps as given in Algorithm~\ref{alg:iterative-schedulability-optimal-ppp}.
 
+%\begin{spacing}{2.0}
+{\fontsize{10}{10}\selectfont
 \begin{algorithm}
 \caption{Iterative Schedulability and Preemption Point Placement Algorithm}
 \label{alg:iterative-schedulability-optimal-ppp}
 \begin{algorithmic}[1]
+\small
 \State{Start with a task system that may or may not be feasible.}
 \State{Assume the CRPD of the task system is initially zero.}
 %\Repeat
@@ -83,5 +86,9 @@ The maximum blocking time \begin{math}\beta_{i}\end{math} that each task may tol
 %\hskip\algorithmicindent tolerance.
 %\end{varwidth}
 %\State{The breakdown utilization is given by U.}
+\normalsize
 \end{algorithmic}
 \end{algorithm}
+}
+%\end{spacing}
+\vspace{-10pt} 

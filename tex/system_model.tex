@@ -13,17 +13,18 @@ The task release jitter \begin{math}J_{i}\end{math} is defined as the maximum ti
 Blocking time \begin{math}\beta_{i}\end{math} is the time which task \begin{math}\tau_{i}\end{math} is subject to accounting for the maximum time that a lower priority task either executes non-preemptively or holds a resource that is shared with task \begin{math}\tau_{i}\end{math} or any other task of equal or higher priority.
 
 %In our work, we remove the restriction of a linear basic block structure thereby permitting an arbitrarily %connected basic block structure.
-A direct-mapped cache is assumed, though the techniques described here can be readily extended to set- associative caches. Tasks may be preempted by multiple higher-priority tasks identified by the variable $k$ where
+A direct-mapped cache is assumed, though the techniques described here can be readily extended to set-associative caches. Tasks may be preempted by multiple higher-priority tasks identified by the variable $k$ where
 \begin{equation}\label{eqn:hp-tasks}
     k \in hp(i) = \{k | P_{k} > P_{i}\}.
 \end{equation}
 \noindent
 comprising the set of higher priority tasks for task \begin{math}\tau_{i}\end{math}.  This set needs to be filtered by tasks that may preempt during the execution window of task \begin{math}\tau_{i}\end{math}.  The number of times task \begin{math}\tau_{k}\end{math} can preempt task \begin{math}\tau_{i}\end{math} during task \begin{math}\tau_{i}\end{math}'s execution is given by the term
 \begin{equation}\label{eqn:num-preemptions}
-    N_{p}(\tau_{i},\tau_{k})=\lceil(C_{i} + J_{k})/T_{k})\rceil \geq 1.
+    N_{p}(\tau_{i},\tau_{k})=\lceil(C_{i}/T_{k})\rceil \geq 1.
+%    N_{p}(\tau_{i},\tau_{k})=\lceil(C_{i} + J_{k})/T_{k})\rceil \geq 1.
 \end{equation}
 \noindent
-where $k$ is the index of the preempting task \begin{math}\tau_{k}\end{math} and $i$ is the index of the preempted task \begin{math}\tau_{i}\end{math}.  In a limited preemption approach, each task is permitted to execute non-preemptively for a maximum amount of time denoted by \begin{math}Q_{i}\end{math}.  The following figure shown below illustrates the linear basic block connection structure denoted as \begin{math}\delta_{b}^{i}\end{math} using our convention.
+where $k$ is the index of the preempting task \begin{math}\tau_{k}\end{math} and $i$ is the index of the preempted task \begin{math}\tau_{i}\end{math}.  In a limited preemption approach, each task is permitted to execute non-preemptively for a maximum amount of time denoted by \begin{math}Q_{i}\end{math}.  Figure~\ref{fig:system_model} shown below illustrates the linear basic block connection structure denoted as \begin{math}\delta_{b}^{i}\end{math} using our convention.
 
 \begin{figure}[h!]
 \begin{center}
@@ -31,6 +32,7 @@ where $k$ is the index of the preempting task \begin{math}\tau_{k}\end{math} and
 \caption{System Model.}
 \label{fig:system_model}
 \end{center}
+\vspace{-20pt}
 \end{figure}
 %
 %\begin{center}

@@ -22,6 +22,8 @@
 \usepackage{caption}
 \usepackage{float}
 \usepackage{varwidth}
+%\usepackage{algorithmic}
+%\algsetup{linenosize=\small}
 %\usepackage{latex8}
 
 % Theorem Styles
@@ -44,6 +46,9 @@
   \addtolength{\algorithmicindent}{\myindent}
 }
 \newcommand\eindent{\endgroup}
+
+\captionsetup[table]{font=small,skip=0pt}
+\captionsetup[figure]{font=small,skip=0pt}
 
 %\textwidth 6.0in
 %\textheight 8.5in
@@ -94,6 +99,7 @@ Wayne State University\\
 \scriptsize\addtolength{\baselineskip}{-2mm}
 \bibliographystyle{IEEEtran}
 \bibliography{web-bib}
+\input{appendix}
 
 
 %end document

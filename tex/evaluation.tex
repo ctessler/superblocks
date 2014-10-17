@@ -102,77 +102,137 @@ data cache, is for illustration. At program point four, the Bertogna
 approach finds 24 shared UCBs between point four and point five. The
 proposed method selects program point seven with a shared UCB count of
 14.
+%
+\begin{figure}[h!]
+\vspace{-10pt}
 \begin{center}
-  \includegraphics[width=\linewidth]{eps/recursion-dcache.eps}
+\includegraphics[width=\linewidth]{eps/recursion-dcache.eps}
+\caption{Recursion Data Cache.}
+\label{fig:recusion_data_cache}
 \end{center}
-
+\vspace{-20pt}
+\end{figure}
 To compare the two approaches their selection of two program points is
 simulated by assuming ${Q}$ is larger than the task's total execution
 time. Bertogna's approach would select the lowest value of the
 dashed line. The proposed approach would select the lowest value of
 the solid line. The difference between these two UCB counts is the
 benefit provided by the proposed approach.
+\begin{figure}[h!]
+\vspace{-10pt}
 \begin{center}
-  \includegraphics[width=\linewidth]{eps/lms-dcache.eps}
+\includegraphics[width=\linewidth]{eps/lms-dcache.eps}
+\caption{LMS Data Cache.}
+\label{fig:lms_data_cache}
 \end{center}
+\end{figure}
+%
+\begin{figure}[h!]
+\vspace{-20pt}
 \begin{center}
-  \includegraphics[width=\linewidth]{eps/lms-icache.eps}
+\includegraphics[width=\linewidth]{eps/lms-icache.eps}
+\caption{LMS Instruction Cache.}
+\label{fig:lms_instruction_cache}
 \end{center}
-
+\vspace{-10pt}
+\end{figure}
+%
+\begin{table}[h!]
+%{\fontsize{10}{10}\selectfont
+\small
 \begin{minipage}{\linewidth}
 \centering
-%  \caption {Benefit of Proposed Method}
-    \begin{tabular}{l l | l}
-      Task & Cache & Benefit \\
+    \begin{tabular}{l | l | l | l | l | l}
+      Task & Cache & Benefit & Task & Cache & Benefit\\
       \hline
 
-      adpcm & ${I}$ & 143 \\
-            & ${D}$ & 5 \\
+      adpcm & ${I}$ & 143 & fft1 & ${I}$ & 72 \\
+            & ${D}$ & 5 & & ${D}$ & 13\\
       \hline
 
-      bsort & ${I}$ & 0 \\
-            & ${D}$ & 0 \\
+      bsort & ${I}$ & 0 & fibcall & ${I}$ & 1 \\
+            & ${D}$ & 0 & & ${D}$ & 1 \\
       \hline
 
-      cnt & ${I}$ & 63 \\
-          & ${D}$ & 2 \\
+      cnt & ${I}$ & 63 & lms & ${I}$ & 158 \\
+          & ${D}$ & 2 & & ${D}$ & 18 \\
       \hline
 
-      cover & ${I}$ & 135 \\
-            & ${D}$ & 2 \\
+      cover & ${I}$ & 135 & ndes & ${I}$ & 96 \\
+            & ${D}$ & 2 & & ${D}$ & 15 \\
       \hline
 
-      crc & ${I}$ & 18 \\
-          & ${D}$ & 1 \\
-      \hline
-
-      fft1 & ${I}$ & 72 \\
-           & ${D}$ & 13 \\
-      \hline
-
-      fibcall & ${I}$ & 1 \\
-              & ${D}$ & 1 \\
-      \hline
-
-      lms & ${I}$ & 158 \\
-          & ${D}$ & 18 \\
-      \hline
-
-      ndes & ${I}$ & 96 \\
-           & ${D}$ & 15 \\
-      \hline
-
-      recursion & ${I}$ & 7 \\
-                & ${D}$ & 10 \\
+      crc & ${I}$ & 18 & recursion & ${I}$ & 7 \\
+          & ${D}$ & 1 & & ${D}$ & 10  \\
       \hline
 
     \end{tabular}
     \bigskip
-
-    Benefit of Proposed Method
-    \bigskip
+    \caption {Benefit of Proposed Method}
+    \label{tab:proposed_method_benefit}
+%
+%    Benefit of Proposed Method
+%    \bigskip
 \end{minipage}
-
+\normalsize
+%}
+\vspace{-20pt}
+\end{table}
+%
+%\begin{minipage}{\linewidth}
+%\centering
+%  \caption {Benefit of Proposed Method}
+%    \begin{tabular}{l l | l}
+%      Task & Cache & Benefit \\
+%      \hline
+%
+%      adpcm & ${I}$ & 143 \\
+%            & ${D}$ & 5 \\
+%      \hline
+%
+%      bsort & ${I}$ & 0 \\
+%            & ${D}$ & 0 \\
+%      \hline
+%
+%      cnt & ${I}$ & 63 \\
+%          & ${D}$ & 2 \\
+%      \hline
+%
+%      cover & ${I}$ & 135 \\
+%            & ${D}$ & 2 \\
+%      \hline
+%
+%      crc & ${I}$ & 18 \\
+%          & ${D}$ & 1 \\
+%      \hline
+%
+%      fft1 & ${I}$ & 72 \\
+%           & ${D}$ & 13 \\
+%      \hline
+%
+%      fibcall & ${I}$ & 1 \\
+%              & ${D}$ & 1 \\
+%      \hline
+%
+%      lms & ${I}$ & 158 \\
+%          & ${D}$ & 18 \\
+%      \hline
+%
+%      ndes & ${I}$ & 96 \\
+%           & ${D}$ & 15 \\
+%      \hline
+%
+%      recursion & ${I}$ & 7 \\
+%                & ${D}$ & 10 \\
+%      \hline
+%
+%    \end{tabular}
+%    \bigskip
+%
+%    Benefit of Proposed Method
+%    \bigskip
+%\end{minipage}
+%
 Examining the graphs for all tasks and caches (instruction and data)
 there are a few common traits. The minimum shared UCBs sharply
 increases at the end of the tasks execution. This is due to the nature
@@ -198,7 +258,6 @@ maximum approach. This is likely due to the early initialization
 blocks built into tasks. The minimum approach shows a clear benefit of
 selecting a preemption point outside of the early initialization
 section.
-
 \subsection{Breakdown Utilization}
 
 The previous analysis illustrates the benefit of the proposed
@@ -250,29 +309,34 @@ The ${BRT}$ is set to 7.8 ${{\mu}s}$, the refresh time of main memory.
 The breakdown utilization determination leverages our iterative schedulability
 and preemption point placement algorithm as outlined in the following steps below
 as given in Algorithm~\ref{alg:iterative-breakdown-utilization-algo}.
-
+%{\fontsize{10}{10}\selectfont
 \begin{algorithm}
 \caption{Iterative Breakdown Utilization Evaluation Algorithm}
 \label{alg:iterative-breakdown-utilization-algo}
 \begin{algorithmic}[1]
+\small
 \State{Start with a task system that may or may not be feasible.}
 \State{Assume the CRPD of the task system is initially zero.}
 \Repeat
-    \Repeat
-        \State\begin{varwidth}[t]{\linewidth}
-        Run the Baruah algorithm to obtain the maximum \par
-        \hskip\algorithmicindent non-preemptive region $Q_i$ for each task.
-        \end{varwidth}
-        \State\begin{varwidth}[t]{\linewidth}
-        Select optimal preemption points using our \par
-        \hskip\algorithmicindent dynamic programming algorithm.
-        \end{varwidth}
-        \State\begin{varwidth}[t]{\linewidth}
-        Compute the CRPD and the preemptive WCET \par
-        \hskip\algorithmicindent $C_i$ from the selected preemption points.
-        \end{varwidth}
-    \Until{the selected preemption points do not change.}
-
+   \State\begin{varwidth}[t]{\linewidth}
+    Run the Iterative Schedulability and Preemption Point Placement Algorithm \ref{alg:iterative-schedulability-optimal-ppp} \par
+    \end{varwidth}
+%
+%    \Repeat
+%        \State\begin{varwidth}[t]{\linewidth}
+%        Run the Baruah algorithm to obtain the maximum \par
+%        \hskip\algorithmicindent non-preemptive region $Q_i$ for each task.
+%        \end{varwidth}
+%        \State\begin{varwidth}[t]{\linewidth}
+%        Select optimal preemption points using our \par
+%        \hskip\algorithmicindent dynamic programming algorithm.
+%        \end{varwidth}
+%        \State\begin{varwidth}[t]{\linewidth}
+%        Compute the CRPD and the preemptive WCET \par
+%        \hskip\algorithmicindent $C_i$ from the selected preemption points.
+%        \end{varwidth}
+%    \Until{the selected preemption points do not change.}
+%
     \If{the task system is feasible/schedulable}
         \State\begin{varwidth}[t]{\linewidth}
         Increase the system utilization by decreasing the \par
@@ -285,90 +349,41 @@ as given in Algorithm~\ref{alg:iterative-breakdown-utilization-algo}.
         \end{varwidth}
     \EndIf
 \Until\begin{varwidth}[t]{\linewidth}
-the system utilization change is less than some \par
-\hskip\algorithmicindent tolerance.
+the utilization change is less than some tolerance.
 \end{varwidth}
 \State{The breakdown utilization is given by U.}
+\normalsize
 \end{algorithmic}
 \end{algorithm}
-
+%}
 Using ten tasks, the breakdown utilization comparison between ${UOE}$
 and ${EPP}$ are summarized in the table below.
-
+\begin{table}[h!]
+\small
 \begin{minipage}{\linewidth}
+\vspace{-20pt}
   \bigskip
   \centering
     \begin{tabular}{c | c}
       Method & Utilization \\
       \hline
-      \\
       UOE & .29 \\
+      EPP & TBD \\
     \end{tabular}
+    \bigskip
+    \caption {Breakdown Utilization Summary}
+    \label{tab:breakdown_utilization_summary}
+\normalsize
 \end{minipage}
-
+\normalsize
+%\vspace{-20pt}
+\end{table}
 Compared to \cite{lunniss:13} this evaluation of ${UOE}$ has a
 breakdown utilization 17\% lower. This is likely due to the
 (differing) selection of tasks and estimation of UCBs. The data used
 in \cite{lunniss:13} does not include UCB information per basic block,
 which is required for ${EPP}$. Necessitating the generation of new
 UCB estimations per task.
-%
-%\clearpage
-%
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/adpcm-dcache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/adpcm-icache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/bsort100-dcache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/bsort100-icache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/cnt-dcache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/cnt-icache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/cover-dcache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/cover-icache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/crc-dcache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/crc-icache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/fft1-dcache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/fft1-icache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/fibcall-dcache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/fibcall-icache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/ndes-dcache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/ndes-icache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/recursion-dcache.eps}
-\end{center}
-\begin{center}
-  \includegraphics[width=\linewidth]{eps/recursion-icache.eps}
-\end{center}
 %
 %\clearpage
 %
