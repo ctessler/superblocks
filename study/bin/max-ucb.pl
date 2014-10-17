@@ -13,7 +13,7 @@ use vars qw/%OPTS/;
 #
 # False entry point for perl
 #
-sub main { 
+sub main {
 	my $ok = arguments(result => \%OPTS);
 	if (!$ok) {
 		return -1;
@@ -31,7 +31,7 @@ sub main {
 
 sub read_cache {
 	my $file = shift;
-	
+
 	my %cache;
 	open(CACHE, "$file") || return ();
 	<CACHE>; # Get rid of the header.
@@ -84,7 +84,6 @@ sub maxed {
 
 	return $max;
 }
-	
 
 #
 # Prints a message if the verbosity level is appropriate.

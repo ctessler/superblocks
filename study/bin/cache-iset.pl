@@ -32,7 +32,7 @@ sub main {
 		push(@iCaches, $cache);
 	}
 	print "Processing " . scalar(@iCaches) . " instruction cache snapshots\n";
-	
+
 	my @dCaches;
 	foreach my $fname (@daCaches) {
 		my $cache = new Cache(name => $fname);
@@ -43,14 +43,17 @@ sub main {
 
 	print "Calculating UCBs for instruction caches\n";
 	my %iUCBs = calcUCBs(@iCaches);
+	my $iUCBu = UCBMax(@iCaches);
 
 	print "Calculating UCBs for data caches\n";
 	my %dUCBs = calcUCBs(@dCaches);
+	my $dUCBu = UCBMax(@dCaches);
 
 	#
 	# Instruction Cache
 	#
 	print "\nInstruction Cache UCB Estimates\n";
+	dispTaskUCBs($iUCBu);
 	dispUCBs(%iUCBs);
 
 	print "\nInstruction Cache Minimums\n";
@@ -68,10 +71,11 @@ sub main {
 		    file => 'icache.png',
 		    title => 'Instruction Cache');
 
-	# 
+	#
 	# Data Cache
 	#
 	print "\nData Cache UCB Estimates\n";
+	dispTaskUCBs($dUCBu);
 	dispUCBs(%dUCBs);
 
 	print "\nData Cache Minimums\n";
@@ -90,8 +94,24 @@ sub main {
 		    title => 'Data Cache');
 
 	#
+	# Task Totals
+	#
+	open CACHETASKUCB, '>ucb_bound.txt';
+	select CACHETASKUCB; $| = 1;
+	dispTaskUCB($iUCBu, $dUCBu);
+	select STDOUT;
+	close CACHETASKUCB;
+
+
+	#
 	# Instruction Cache
-	# 
+	#
+	open ICACHETASKUCB, '>iucb_bound.txt';
+	select ICACHETASKUCB; $| = 1;
+	dispTaskUCBs($iUCBu);
+	select STDOUT;
+	close ICACHETASKUCB;
+
 	open ICACHEMIN, '>icache.min.dat';
 	select ICACHEMIN; $| = 1;
 	dispMINs(minUCBs(%iUCBs));
@@ -132,6 +152,12 @@ sub main {
 	#
 	# Data Cache
 	#
+	open DCACHETASKUCB, '>ducb_bound.txt';
+	select DCACHETASKUCB; $| = 1;
+	dispTaskUCBs($dUCBu);
+	select STDOUT;
+	close DCACHETASKUCB;
+
 	open DCACHEMIN, '>dcache.min.dat';
 	select DCACHEMIN; $| = 1;
 	dispMINs(minUCBs(%dUCBs));
@@ -204,12 +230,24 @@ sub calcUCBs {
 				$cache = $cache->intersect($caches[$l]);
 			}
 			$cache->removeBlanks();
-#			$cache->nameSet(($p + 1) . " given " . ($l + 1));
 			$ucbs{$p + 1}->{$l + 1} = $cache;
 		}
 	}
 	print "\n";
 	return %ucbs;
+}
+
+sub UCBMax {
+	my (@caches, $total);
+	@caches = @_;
+
+	my $union = new Cache();
+	foreach my $cache (@caches) {
+		$union = $union->union($cache);
+	}
+
+	$union->removeBlanks();
+	return $union->lineCount();
 }
 
 #
@@ -335,7 +373,7 @@ sub maxUCBs {
 	for my $given_point (1 .. scalar(keys(%ucbs))) {
 		my $point = $given_point + 1;
 		my $max = $ucbs{$point}->{$given_point}->lineCount();
-		
+
 		for my $later_point (sort {$a <=> $b} keys (%ucbs)) {
 			if (!exists($ucbs{$later_point}->{$given_point})) {
 				next;
@@ -351,7 +389,6 @@ sub maxUCBs {
 
 	return %maxUCBs;
 }
-	
 
 #
 # Displays the maximum UCB points
@@ -367,6 +404,19 @@ sub dispMAXs {
 	}
 }
 
+#
+# Displays the task UCBs
+#
+sub dispTaskUCBs {
+	printf("Task UCB bound: %d\n", $_[0])
+}
+
+#
+# Displays the tasks total ucbs
+#
+sub dispTaskUCB {
+	printf("Task UCB bound: %d\n", $_[0] + $_[1]);
+}
 
 sub gnuplotUCBs {
 	my (%args, $file, $title, $min, $max);

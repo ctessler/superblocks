@@ -38,7 +38,7 @@ sub main {
 	my ($handle, $hok);
 	use Expect;
 	$handle = Expect->spawn("tsim-leon3", $OPTS{binary});
-	$handle->log_stdout(0);
+	$handle->log_stdout($OPTS{verbose} >= 2 ? 1 : 0);
 	$hok = $handle->expect(3, 'tsim>');
 	vout(1, "Connected.\n");
 
@@ -46,27 +46,35 @@ sub main {
 	if (!defined($breakps)) {
 		last;
 	}
-	
+
 	vout(1, "Setting breakpoints $breakps\n");
 	print $handle $breakps;
 	$handle->expect(3, 'tsim>');
 
-	my %result = first_bp(handle => $handle);
+	my %result = last_bp(handle => $handle);
+	my %delta = delta_cycles(\%result);
 
-	@blocks = sort {$a <=> $b} grep { /\d+/ } keys %result;
+	@blocks = sort {$a <=> $b} grep { /\d+/ } keys %delta;
 
 	foreach my $bp (sort { $a <=> $b } @blocks) {
-		print "$bp $trimmed[$bp - 1] cycles: $result{$bp}\n";
+		print "$bp $trimmed[$bp - 1] cycles: $delta{$bp}\n";
 	}
+
 
 	print "Removing first block, due to inclusion of initialization cycles\n";
 	shift @blocks;
-	
+
+	my $sum = 0;
+	foreach my $bp (sort { $a <=> $b } @blocks) {
+		$sum += $delta{$bp};
+	}
+
 	# Write the results to files.
 	# Number of cycles for the program
 	print "Writing execution time to $OPTS{efile}\n";
 	open(EFILE, ">$OPTS{efile}");
-	print EFILE "$result{c}\n";
+	print EFILE "WCET of task: $result{c}\n";
+	print EFILE "WCET of timed blocks: $sum\n";
 	close(EFILE);
 
 	# Reduced (and correct number) of basic blocks
@@ -76,16 +84,14 @@ sub main {
 		print OFILE "$trimmed[$b - 1]\n";
 	}
 	close(OFILE);
-	
+
 	# The cycle time of each block
 	print "Writing execution time of each block to $OPTS{cfile}\n";
 	open(CFILE, ">$OPTS{cfile}");
 	foreach my $b (@blocks) {
-		print CFILE "$trimmed[$b - 1] $result{$b}\n";
+		print CFILE "$trimmed[$b - 1] $delta{$b}\n";
 	}
 	close(CFILE);
-	    
-	
 
 	return 0;
 }
@@ -163,7 +169,6 @@ sub arguments {
 		$opts->{efile} = $opts->{binary} . "-c.txt"
 	}
 
-	
 	vout(1, "Binary being used is " . $opts->{binary} . "\n");
 	vout(1, "blocklist being used is " . $opts->{blocklist}
 	     . "\n");
@@ -191,7 +196,7 @@ sub gen_breakpoints {
 #
 # Finds the last breakpoint from those that are set
 #
-sub first_bp {
+sub last_bp {
 	my (%args, $handle, %result);
 	%args = @_;
 	$handle = $args{handle};
@@ -203,8 +208,9 @@ sub first_bp {
 	$running = 1;
 	$lastbp = 0;
 	$prevbp = 0;
-	$last_cycle = 0;
 
+	vout(1, "Gathering block order and cycle counts\n");
+	vout(1, "\t");
 	while ($running) {
 		$handle->expect(10,
 				[ qr/breakpoint\s+\d+\s+[^(at)]/,
@@ -225,18 +231,23 @@ sub first_bp {
 			last;
 		}
 		my $cycles = get_cycles(handle => $handle);
+		vout(1, ".") if (($cycles % 100) == 0);
 		if ($lastbp != $prevbp) {
 			# First time hitting the new block
-			$result{$lastbp} = $cycles - $last_cycle;
+			$result{$lastbp} = $cycles;
 		}
-		$last_cycle = $cycles;
 		$prevbp = $lastbp;
 
 		print $handle "c\n";
 	}
 
 	$result{c} = get_cycles(handle => $handle);
-	
+	vout(1, "\nFinished after $result{c} cycles\n");
+	vout(1, "Result:\n");
+	for my $key (keys %result) {
+		vout(1, "$key: $result{$key}\n");
+	}
+
 	return %result;
 }
 
@@ -261,6 +272,40 @@ sub get_cycles {
 	$handle->expect('trsim>');
 
 	return $cycles;
+}
+
+
+#
+# The last_bp records the cycles in the a result hash where
+# %result = ( 1 => cycle count[1],
+#             2 => cycle count[2] ... )
+#
+# What we want is the delta between the two
+#
+# %delta = delta_cycles(\%result)
+#        = ( 1 => cycle count[1] - 0,
+#            2 => cycle count[2] - cycle count[1], ... )
+#
+sub delta_cycles(\%) {
+	my $href = shift;
+
+	my %delta = ();
+	my @keys = grep { /\d+/ } keys %$href;
+	foreach my $key (sort {$a <=> $b} @keys) {
+		my $prev = 0;
+		my $i = 1;
+		while ((($key - $i) >= 1) && ($prev == 0)) {
+			$prev = $href->{$key - $i}
+			    if defined($href->{$key - $i});
+			$i++;
+		}
+		$delta{$key} = $href->{$key} - $prev;
+
+		my $msg = "Breakpoint $key, previous $prev\n";
+		$msg .= "\t" . $href->{$key} . " - $prev = $delta{$key}\n";
+		vout(1, $msg);
+	}
+	return %delta;
 }
 
 

@@ -13,12 +13,26 @@ use vars qw/%OPTS/;
 #
 # False entry point for perl
 #
-sub main { 
+sub main {
 	my $ok = arguments(result => \%OPTS);
 	if (!$ok) {
 		return -1;
 	}
 
+	do {
+		my $usage = breakdown();
+		print sprintf("BRT: %3d U: %.2f\n", $OPTS{brt}, $usage);
+		if (!$OPTS{table}) {
+			$OPTS{brt} = 0;
+		} else {
+			$OPTS{brt} -= 10;
+		}
+	} while ($OPTS{brt} > 0);
+
+	return 0;
+}
+
+sub breakdown {
 	my @TASKS;
 	foreach my $file (@{$OPTS{files}}) {
 		my %task = read_file($file);
@@ -40,7 +54,7 @@ sub main {
 		# We're going to let perl's inaccuracy determine the
 		# end point 
 		($gu, $usage) = calc_u(u => $u, tasks => \@TASKS);
-		print "Constant: $u, CRPDu: $gu, U: $usage\n";
+		qprint("Constant: $u, CRPDu: $gu, U: $usage\n");
 		$done = 1 if $usage == $prev;
 
 		if ($gu > 1) {
@@ -49,11 +63,10 @@ sub main {
 			$mod /= 2;
 			$u -= $mod;
 		}
-		
+
 		$prev = $usage;
-		
 	}
-	return 0;
+	return $usage;
 }
 
 sub read_file {
@@ -64,7 +77,7 @@ sub read_file {
 	$result{name} = $file;
 	foreach my $line (<FILE>) {
 		chomp($line);
-		
+
 		if ($line =~ /WCET:\s+(\d+)/) {
 			$result{c} = $1;
 		}
@@ -150,6 +163,16 @@ sub vout {
 	print @m;
 }
 
+#
+# Displays a message only if it is not quiet
+#
+# Usage:
+#     qprint(@messages);
+sub qprint {
+	return if $OPTS{quiet};
+	print @_;
+}
+
 
 #
 # Parses the command line arguments.
@@ -162,11 +185,14 @@ sub arguments {
 	%args = @_;
 	$opts = $args{result};
 
+	$opts->{quiet} = 0;
 	$opts->{verbose} = 0;
 	$opts->{brt} = 3; # default
 
 	my $ok = GetOptions("verbose|v+" => \$opts->{verbose},
-			    "brt|b=i" => \$opts->{brt}
+			    "quiet|q" => \$opts->{quiet},
+			    "brt|b=i" => \$opts->{brt},
+			    "table|t" => \$opts->{table}
 	    );
 
 	vout(1, "BRT is " . $opts->{brt} . " cycles\n");
@@ -217,6 +243,15 @@ Each --verbose or -v option will increase the verbosity of the output.
 =item --brt|-b
 
 The number of cycles to use for the block reload time, default is 3.
+
+=item --quiet|-q
+
+Disables all output except the final breakdown utilization
+
+=item --table|-t
+
+Outputs a table of decreasing block BRT values instead of a single
+value.
 
 =back
 

@@ -43,7 +43,7 @@ sub zeroStr {
 }
 
 #
-# 
+#
 #
 sub equals {
 	my ($self, $other);
