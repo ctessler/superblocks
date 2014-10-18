@@ -142,7 +142,7 @@ benefit provided by the proposed approach.
 \small
 \begin{minipage}{\linewidth}
 \centering
-    \begin{tabular}{l | l | l | l | l | l}
+    \begin{tabular}{l | l | l || l | l | l}
       Task & Cache & Benefit & Task & Cache & Benefit\\
       \hline
 
@@ -270,19 +270,19 @@ ${UOE}$, and Explicit Preemption Point Placement as ${EPP}$.
 
 The appropriate schedulablity test for ${UOE}$ is found in
 Lunniss \emph{et~al.}~\cite{lunniss:13}. It is comprised of three
-parts: ${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$. They represent
+parts: ${\gamma^{ucb}_j}$, ${U^*_j}$, and ${U^*}$. They represent
 the maximum CRPD for a task ${j}$, the utilization of the task ${j}$
 including the CRPD of the task, and the utilization of the task set.
 A task set is schedulable when ${U^* \le 1}$.
 \begin{equation}
-  \gamma^{ucb}_{t,j} = BRT \cdot \max\limits_{\forall k \in aff(t,j)}
+  \gamma^{ucb}_j = BRT \cdot \max\limits_{k \in \tau}
   \left\{ \left| UCB_k \right| \right\}
 \end{equation}
 \begin{equation}
-  U^*_j = \frac{C_j \cdot \gamma^{ucb}_{t,j}}{T_j}
+  U^*_j = \frac{C_j \gamma^{ucb}_j}{T_j}
 \end{equation}
 \begin{equation}
-  U^* = \sum_j U^*_j
+  U^* = \sum_{i \in \tau} U^*_i
 \end{equation}
 
 The task set from which the breakdown utilization benefit is
