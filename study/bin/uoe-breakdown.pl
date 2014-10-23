@@ -43,7 +43,7 @@ sub breakdown {
 	}
 
 	# u is the utilization parameter being modified
-	my ($u, $gu, $usage, $done);
+	my ($u, $gu, $usage, $done, $dbg);
 	$u = scalar(@TASKS);
 
 	# $prev - previous utilization
@@ -52,8 +52,8 @@ sub breakdown {
 	($prev, $mod) = (0, .25);
 	for ($done = 0; !$done; ) {
 		# We're going to let perl's inaccuracy determine the
-		# end point 
-		($gu, $usage) = calc_u(u => $u, tasks => \@TASKS);
+		# end point
+		($gu, $usage, $dbg) = calc_u(u => $u, tasks => \@TASKS);
 		qprint("Constant: $u, CRPDu: $gu, U: $usage\n");
 		$done = 1 if $usage == $prev;
 
@@ -65,6 +65,9 @@ sub breakdown {
 		}
 
 		$prev = $usage;
+	}
+	foreach my $dbg (@$dbg) {
+		vout(1, $dbg);
 	}
 	return $usage;
 }
@@ -108,7 +111,7 @@ sub read_file {
 # ($CRPDu, $NOCRPDu) = calc_u(u => $u, tasks => \@TASKS);
 #
 sub calc_u {
-	my (%args, $u, @t);
+	my (%args, $u, @t, @dbg);
 	%args = @_;
 	$u = $args{u};
 	@t = @{$args{tasks}};
@@ -123,26 +126,33 @@ sub calc_u {
 	# utilization without CRPD
 	my ($gsum, $usum); 
 	($gsum, $usum) = (0, 0);
-	
+
 	foreach my $task (@t) {
 		# calc aff($task, @t);
-		my @aff = map { $_->{p} > $task->{p} ? $_ : () } @t;
+		# my @aff = map { $_->{p} > $task->{p} ? $_ : () } @t;
+		my @aff = map { $_ != $task ? $_ : () } @t;
 		my $maxucb = 0;
 		foreach my $a (@aff) {
 			if ($a->{g} > $maxucb) {
-				vout(1, $task->{name} .
+				vout(3, $task->{name} .
 				     " UCB: " . $a->{g} .
 				     "\n");
 				$maxucb = $a->{g};
 			}
 		}
+
+		push @dbg,
+		  sprintf("%-10s\tWCET:%-10i BRT*UCBmax:%-10i WCET+BRT*UCBmax:%-10i\n",
+			  $task->{name}, $task->{c}, $maxucb,
+			  $task->{c}, $maxucb);
+
 		my $gu = ($task->{c} + $maxucb) / $task->{p};
 		my $pu = $task->{c} / $task->{p};
 		$usum += $pu;
 		$gsum += $gu;
 	}
 
-	return ($gsum, $usum);
+	return ($gsum, $usum, \@dbg);
 }
 
 #
@@ -195,7 +205,7 @@ sub arguments {
 			    "table|t" => \$opts->{table}
 	    );
 
-	vout(1, "BRT is " . $opts->{brt} . " cycles\n");
+	vout(1, "Starting BRT is " . $opts->{brt} . " cycles\n");
 
 	push @{$opts->{files}}, @ARGV;
 	vout(1, "Task files:\n\t" . join("\n\t", @{$opts->{files}}) . "\n");
