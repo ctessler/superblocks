@@ -1,0 +1,18 @@
+--- caches/dcache.p.orig	2014-10-11 14:53:32.066553936 -0400
++++ caches/dcache.p	2014-10-11 14:59:24.647563378 -0400
+@@ -1,11 +1,11 @@
+ set term pngcairo dashed
+-set title "Data Cache"
+-set output "dcache.png"
++set title "fibcall Data Cache"
++set output "fibcall-dcache.png"
+ set xlabel "Program Point"
+ set ylabel "UCBs Shared with Subsequent Program Point"
+ set xtics 0,1
+-set xrange []
+-set yrange []
++set xrange [0:12]
++set yrange [13:18]
+ # Minimum Line Style
+ set linestyle 1 lt 1 lc rgb "black"
+ # Maximum Line Style
