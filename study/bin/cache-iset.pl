@@ -20,10 +20,38 @@ BEGIN {
 
 use Cache;
 
-# False entrypoint for perl
-sub main {
+
+#
+# Parses the command line arguments.
+#
+# Usage:
+#     $ok = arguments(result => \%opts)
+#
+# Side Effects
+#     %opts = ( iterations => $num,
+#               address => $cache_addr,
+#               verbose => $num );
+#
+sub arguments {
+	my (%args, $opts);
+	%args = @_;
+	$opts = $args{result};
+
+	$opts->{data} = 1;
+	$opts->{instruction} = 1;
+	use Getopt::Long
+	  qw(:config no_bundling no_ignore_case no_auto_abbrev auto_help);
+
+	my $ok = GetOptions("verbose|v+" => \$opts->{verbose},
+			    "data|d!" => \$opts->{data},
+			    "instruction|i!" => \$opts->{instruction},
+	    );
+	return $ok;
+}
+
+
+sub do_instruction {
 	my @inCaches = grep {/icache.dat./} <./*>;
-	my @daCaches = grep {/dcache.dat./} <./*>;
 
 	my @iCaches;
 	foreach my $fname (@inCaches) {
@@ -31,23 +59,12 @@ sub main {
 		$cache->importFile($fname);
 		push(@iCaches, $cache);
 	}
-	print "Processing " . scalar(@iCaches) . " instruction cache snapshots\n";
 
-	my @dCaches;
-	foreach my $fname (@daCaches) {
-		my $cache = new Cache(name => $fname);
-		$cache->importFile($fname);
-		push(@dCaches, $cache);
-	}
-	print "Processing " . scalar(@dCaches) . " data cache snapshots\n";
+	print "Processing " . scalar(@iCaches) . " instruction cache snapshots\n";
 
 	print "Calculating UCBs for instruction caches\n";
 	my %iUCBs = calcUCBs(@iCaches);
 	my $iUCBu = UCBMax(@iCaches);
-
-	print "Calculating UCBs for data caches\n";
-	my %dUCBs = calcUCBs(@dCaches);
-	my $dUCBu = UCBMax(@dCaches);
 
 	#
 	# Instruction Cache
@@ -70,38 +87,6 @@ sub main {
 		    max => 'icache.max.dat',
 		    file => 'icache.png',
 		    title => 'Instruction Cache');
-
-	#
-	# Data Cache
-	#
-	print "\nData Cache UCB Estimates\n";
-	dispTaskUCBs($dUCBu);
-	dispUCBs(%dUCBs);
-
-	print "\nData Cache Minimums\n";
-	dispMINs(minUCBs(%dUCBs));
-
-	print "\nData Cache Maximums\n";
-	dispMAXs(maxUCBs(%dUCBs));
-
-	print "\nData Cache Matrix\n";
-	matrixUCBs(%dUCBs);
-
-	print "\nData Cache plot\n";
-	gnuplotUCBs(min => 'dcache.min.dat',
-		    max => 'dcache.max.dat',
-		    file => 'dcache.png',
-		    title => 'Data Cache');
-
-	#
-	# Task Totals
-	#
-	open CACHETASKUCB, '>ucb_bound.txt';
-	select CACHETASKUCB; $| = 1;
-	dispTaskUCB($iUCBu, $dUCBu);
-	select STDOUT;
-	close CACHETASKUCB;
-
 
 	#
 	# Instruction Cache
@@ -148,6 +133,46 @@ sub main {
 	select STDOUT;
 	close ICACHEPLOT;
 
+	return $iUCBu;
+}
+
+sub do_data {
+	my @daCaches = grep {/dcache.dat./} <./*>;
+	print "Processing " . scalar(@daCaches) . " data cache snapshots\n";
+
+	my @dCaches;
+	foreach my $fname (@daCaches) {
+		my $cache = new Cache(name => $fname);
+		$cache->importFile($fname);
+		push(@dCaches, $cache);
+	}
+
+	print "Calculating UCBs for data caches\n";
+	my %dUCBs = calcUCBs(@dCaches);
+	my $dUCBu = UCBMax(@dCaches);
+
+	#
+	# Data Cache
+	#
+	print "\nData Cache UCB Estimates\n";
+	dispTaskUCBs($dUCBu);
+	dispUCBs(%dUCBs);
+
+	print "\nData Cache Minimums\n";
+	dispMINs(minUCBs(%dUCBs));
+
+	print "\nData Cache Maximums\n";
+	dispMAXs(maxUCBs(%dUCBs));
+
+	print "\nData Cache Matrix\n";
+	matrixUCBs(%dUCBs);
+
+	print "\nData Cache plot\n";
+	gnuplotUCBs(min => 'dcache.min.dat',
+		    max => 'dcache.max.dat',
+		    file => 'dcache.png',
+		    title => 'Data Cache');
+
 
 	#
 	# Data Cache
@@ -193,6 +218,45 @@ sub main {
 		title => 'Data Cache');
 	select STDOUT;
 	close DCACHEPLOT;
+
+	return $dUCBu;
+}
+
+# False entrypoint for perl
+sub main {
+	my %OPTS;
+	my $ok = arguments(result => \%OPTS);
+	if (!$ok) {
+		return -1;
+	}
+
+	print "Performing instruction caches: $OPTS{instruction}\n";
+	print "Performing data caches: $OPTS{data}\n";
+
+	my ($iucb, $ducb);
+	$iucb = $ducb = 0;
+
+	if ($OPTS{instruction}) {
+		$iucb = do_instruction();
+	}
+
+	if ($OPTS{data}) {
+		$ducb = do_data();
+	}
+
+
+	if (!$OPTS{data} || !$OPTS{instruction}) {
+		# Poison the task total data
+		$iucb = $ducb = -1;
+	}
+	#
+	# Task Totals
+	#
+	open CACHETASKUCB, '>ucb_bound.txt';
+	select CACHETASKUCB; $| = 1;
+	dispTaskUCB($iucb, $ducb);
+	select STDOUT;
+	close CACHETASKUCB;
 
 	return 0;
 }
