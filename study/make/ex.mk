@@ -56,8 +56,13 @@ $(NAME)-icache.png $(NAME)-icache.eps : caches/PATCHED
 	cp -a caches/*icache.png $(NAME)-icache.png
 	cp -a caches/*icache.eps $(NAME)-icache.eps
 
-caches/PATCHED: caches
-	cd caches ; for i in ../patch/*; do patch -p1 < $$i; done
+caches/PATCHED: caches/ISET
+	if (( $(ICACHE) == 1 )) ; then \
+		cd caches ; for i in ../patch/icache*; do patch -p1 < $$i; done \
+	fi	
+	if (( $(DCACHE) == 1 )) ; then \
+		cd caches ; for i in ../patch/dcache*; do patch -p1 < $$i; done \
+	fi
 	touch caches/PATCHED
 
 $(NAME)-dmatrix.txt: caches/ISET
