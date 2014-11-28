@@ -13,7 +13,7 @@ $(SUBDIRS):
 	cd $@ ; make $(TARGET)
 
 DATE := $(shell date +%F.%H%M)
-package:
+package: $(SUBDIRS)
 	mkdir $(DATE)
 	cd $(DATE); mkdir $(SUBDIRS)
 	for dir in $(SUBDIRS) ; do \
