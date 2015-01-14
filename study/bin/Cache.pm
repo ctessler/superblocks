@@ -40,7 +40,7 @@ has 'line' => (
 sub importFile {
 	my ($self, $filename, $fh);
 	($self, $filename) = @_;
-	
+
 	open($fh, $filename);
 
 	while (my $line = <$fh>) {
@@ -97,6 +97,43 @@ sub intersect {
 		$cache->linePush($line);
 	}
 
+	return $cache;
+}
+
+#
+# Calculates the union of two caches
+#
+# Usage:
+#    $newCache = $cache->union($anotherCache);
+#
+sub union {
+	my ($self, $other, $cache);
+	($self, $other) = @_;
+	$cache = new Cache();
+
+	# For each cache line
+	for (my $i = 0; $i < $other->lineCount(); $i++) {
+		my ($s, $o, $line);
+		$s = $self->lineGet($i);
+		$o = $other->lineGet($i);
+
+		$line = new CacheLine();
+		for (my $j=0; $j < $o->addressCount(); $j++) {
+			my ($addr, $zero);
+			$zero = $o->zeroStr();
+			$addr = $o->addressGet($j);
+
+			if ($addr eq $zero) {
+				if ($s && $s->addressCount() > $j) {
+					$addr = $s->addressGet($j);
+				}
+			}
+			# $addr may still be zero
+			$line->addressPush($addr);
+		}
+		$cache->linePush($line);
+
+	}
 	return $cache;
 }
 
