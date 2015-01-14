@@ -1,50 +1,51 @@
+\vspace{-10pt}
 \section{Integrated WCET/CRPD Calculation}\label{sec:schedulability_analysis}
 
 The modified preemption cost as a function of the current and next preemption points and the preempting task \begin{math}\tau_{k}\end{math} is given by:
 \begin{equation}\label{eqn:prempt-cost}
 \begin{split}
-    \xi(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k})\ =\ &\gamma(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k}) + \pi + \sigma + \\ &\eta(\gamma(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k})).
+    \xi_{i}(\delta_{i}^{curr},\delta_{i}^{next},\tau_{k})\ =\ &\gamma_{i}(\delta_{i}^{curr},\delta_{i}^{next},\tau_{k}) + \pi + \sigma + \\ &\eta(\gamma_{i}(\delta_{i}^{curr},\delta_{i}^{next},\tau_{k})).
 \end{split}
 \end{equation}
 
  \noindent
  where \begin{math}\pi\end{math} is the pipeline cost, \begin{math}\sigma\end{math} is the scheduler processing cost, and \begin{math}\eta()\end{math} is the front side bus contention resulting from the cache reload interference as described in~\cite{pellizzoni:07} ~\cite{pellizzoni:08} ~\cite{pellizzoni:11}.  Commensurate with our worst case analysis, the preemption overhead cost as a function of the current and next selected preemption points is:
 \begin{equation}\label{eqn:prempt-cost}
-    \xi(\delta_{curr}^{i},\delta_{next}^{i}) = \textit{max}_{k \in hp(i)} [ \xi(\delta_{curr}^{i},\delta_{next}^{i},\tau_{k})].
+    \xi_{i}(\delta_{i}^{curr},\delta_{i}^{next}) = \textit{max}_{k \in hp(i)} [ \xi_{i}(\delta_{i}^{curr},\delta_{i}^{next},\tau_{k})].
 \end{equation}
 
 The output of our algorithm is an optimal set of preemption points subject to the maximum allowable non-preemption region \begin{math}Q_{i}\end{math}.  The optimal set of preemption points obtained using the enhanced accuracy of our preemption cost computation is used to calculate each task's WCET given by:
 \begin{equation}\label{eqn:wcet-cost}
-   C_{i} = B_{0,N_{i}}^{i}(\rho^{i}) = C_{i}^{NP} + \sum_{m=1}^{|\rho^{i}|-1} [\xi(\rho_{m}^{i},\rho_{m+1}^{i})].
+   C_{i} = B_{i}^{0,N_{i}}(\rho_{i}) = C_{i}^{NP} + \sum_{m=1}^{|\rho_{i}|-1} [\xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1})].
 \end{equation}
 
 \noindent
-where \begin{math}\rho^{i}\end{math} is the set of selected preemption points for task \begin{math}\tau_{i}\end{math}:
-\begin{equation}\label{eqn:pp-set}
+where \begin{math}\rho_{i}\end{math} is the set of selected preemption points for task \begin{math}\tau_{i}\end{math}:
+\begin{equation*}\label{eqn:pp-set}
 \begin{split}
-   \rho^{i} \stackrel{\text{def}}{=} \{\delta_{m}^{i}|&\delta_{m}^{i} \text{ is a selected preemption point of task } \tau_{i}\ \wedge \\ &m \in [1,N_{i}]\}
+   \rho_{i} \stackrel{\text{def}}{=} \{\delta_{i}^{m}|&\delta_{i}^{m} \text{ is a selected preemption point of task } \tau_{i}\ \wedge \\ &m \in [1,N_{i}]\}
 \end{split}
-\end{equation}
-
+\end{equation*}
+%
 \noindent
-and \begin{math}B_{k,m}^{i}\end{math} is the WCET with preemption overhead of basic blocks $k$ to $m$ of task \begin{math}\tau_{i}\end{math} as given by:
+and \begin{math}B_{i}^{k,m}\end{math} is the WCET with preemption overhead of basic blocks $k$ to $m$ of task \begin{math}\tau_{i}\end{math} as given by:
 \begin{equation}\label{eqn:bbkwcet-cost}
 \begin{split}
-   B_{k,m}^{i}(\rho^{i}) = \min_{\delta_{j}^{i}} \Big[&B_{j-1}^{i}(\rho^{i}(\delta_{j-1}^{i})) + \xi(\delta_{j}^{i},\rho_{next}^{i}(\delta_{j}^{i})) + \\ &\sum_{n=k}^{m}b_{n}^{i}\Big].
+   B_{i}^{k,m}(\rho_{i}) = \min_{\delta_{i}^{j} \in \tau_{i}} \Big[&B_{i}^{j-1}(\rho_{i}(\delta_{i}^{j-1})) + \\ &\xi_{i}(\delta_{i}^{j},\rho_{i}^{next}(\delta_{i}^{j})) + \sum_{n=k}^{m}b_{i}^{n}\Big]
 \end{split}
 \end{equation}
-
+%
 \noindent
-where the term \begin{math}\rho_{next}^{i}(\delta_{j}^{i})\end{math} is the next potential/selected preemption point from basic block \begin{math}\delta_{j}^{i}\end{math}:
+where the term \begin{math}\rho_{i}^{next}(\delta_{i}^{j})\end{math} is the next potential/selected preemption point from basic block \begin{math}\delta_{i}^{j}\end{math}:
 \begin{equation}\label{eqn:ppnext-set}
 \begin{split}
-   \rho_{next}^{i}(\delta_{k}^{i}) \stackrel{\text{def}}{=} \{\delta_{j}^{i}|&\delta_{j}^{i} = \rho_{m+1}^{i} \wedge \delta_{j}^{i} = \rho_{m+1}^{i} \\ &\textrm{ for some } m \in [1,N_{i}-1]\}
+   \rho_{i}^{next}(\delta_{i}^{k}) \stackrel{\text{def}}{=} \{\delta_{i}^{j}|&\delta_{i}^{j} = \rho_{i}^{m+1} \wedge \delta_{i}^{j} = \rho_{i}^{m+1} \\ &\textrm{ for some } m \in [1,N_{i}-1]\}
 \end{split}
 \end{equation}
 
 \noindent
 The maximum blocking time \begin{math}\beta_{i}\end{math} that each task may tolerate utilizes the computed task WCET parameter \begin{math}C_{i}\end{math}.  The method for obtaining the maximum blocking time is eloquently summarized for the Earliest Deadline First (EDF) and Fixed Priority (FP) scheduling by Bertogna et. al. algorithms~\cite{bertogna:11}~\cite{bertogna:10}.  The circular dependency between the maximum blocking time \begin{math}\beta_{i}\end{math} and task WCET \begin{math}C_{i}\end{math} parameters suggests an iterative approach to allow the two parameters to convergence to a steady state.  One such iterative approach contains the following steps as given in Algorithm~\ref{alg:iterative-schedulability-optimal-ppp}.
-
+%
 %\begin{spacing}{2.0}
 {\fontsize{10}{10}\selectfont
 \begin{algorithm}
@@ -91,4 +92,4 @@ The maximum blocking time \begin{math}\beta_{i}\end{math} that each task may tol
 \end{algorithm}
 }
 %\end{spacing}
-\vspace{-10pt} 
+%\vspace{-10pt} 

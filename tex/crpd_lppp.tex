@@ -26,6 +26,23 @@
 %\algsetup{linenosize=\small}
 %\usepackage{latex8}
 
+%% Define own float style called "algorithm"
+%\makeatletter
+%\newcommand\fs@algorithm{%
+%  \let\@fs@capt\floatc@algorithm
+%  \def\@fs@pre{\hrule height.8pt depth0pt\relax}% \kern2pt removed
+%  \def\@fs@mid{\hrule\kern2pt}%  \kern2pt removed
+%  \def\@fs@post{\kern2pt\hrule\relax}%
+%  \let\@fs@iftopcapt\iftrue}
+%\makeatother
+%
+%% Make the algorithm environment use the algorithm float style
+%\floatstyle{algorithm}
+%\restylefloat{algorithm}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
+
 % Theorem Styles
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
@@ -99,7 +116,7 @@ Wayne State University\\
 \scriptsize\addtolength{\baselineskip}{-2mm}
 \bibliographystyle{IEEEtran}
 \bibliography{web-bib}
-\input{appendix}
+%\input{appendix}
 
 
 %end document

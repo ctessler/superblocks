@@ -1,12 +1,12 @@
+\vspace{-10pt}
 \section{Evaluation}\label{sec:evaluation}
-
 The evaluation of our preemption point placement algorithm will embody
 two methods: 1) characterization and measurement of preemption costs
 using real-time application code, and 2) a breakdown utilization schedulability
 comparison for various CRPD computational approaches.
 %2) a schedulability comparison
 %of synthetic task set for various preemption models.
-
+%\vspace{-10pt}
 \subsection {Preemption Cost
   Characterization}\label{sec:preemption_cost_measurement}
 To characterize the behavior and estimate the benefit of the approach
@@ -67,9 +67,7 @@ ${H}$ as either the set of instruction cache or data cache snapshots.
     UCB(P_i, P_j) = \bigcap_{k=i}^{j-1} H_k
   \end{equation*}
 \end{center}
-
 \subsubsection{Availability}
-
 This method may be verified and reproduced using the same tools and
 data. Gaisler's compiler and simulator are freely available. AbsInt's
 a\textsuperscript{3} tool is available for educational and evaluation
@@ -78,7 +76,6 @@ found on GitHub~\cite{tessler:14} thereby permitting the research community
 to reproduce and leverage our work as needed.
 
 \subsubsection{Results}
-
 The results are presented as a comparison between the our proposed
 method and the Bertogna approach. For a program point ${P_j}$ the
 Bertogna \cite{bertogna:11} approach defines the UCBs (and therefor the CRPD) as:
@@ -110,7 +107,7 @@ proposed method selects program point seven with a shared UCB count of
 \caption{Recursion Data Cache.}
 \label{fig:recusion_data_cache}
 \end{center}
-\vspace{-20pt}
+\vspace{-10pt}
 \end{figure}
 To compare the two approaches their selection of two program points is
 simulated by assuming ${Q}$ is larger than the task's total execution
@@ -125,59 +122,60 @@ benefit provided by the proposed approach.
 \caption{LMS Data Cache.}
 \label{fig:lms_data_cache}
 \end{center}
-\end{figure}
-%
-\begin{figure}[h!]
-\vspace{-20pt}
-\begin{center}
-\includegraphics[width=\linewidth]{eps/lms-icache.eps}
-\caption{LMS Instruction Cache.}
-\label{fig:lms_instruction_cache}
-\end{center}
 \vspace{-10pt}
 \end{figure}
+%\vspace{-20pt}
+\begin{figure}[h!]
+\vspace{-10pt}
+\begin{center}
+\includegraphics[width=\linewidth]{eps/adpcm-dcache.eps}
+\caption{ADPCM Data Cache.}
+\label{fig:adpcm_data_cache}
+\end{center}
+\vspace{-20pt}
+\end{figure}
 %
-\begin{table}[h!]
-%{\fontsize{10}{10}\selectfont
-\small
-\begin{minipage}{\linewidth}
-\centering
-    \begin{tabular}{l | l | l | l | l | l}
-      Task & Cache & Benefit & Task & Cache & Benefit\\
-      \hline
-
-      adpcm & ${I}$ & 143 & fft1 & ${I}$ & 72 \\
-            & ${D}$ & 5 & & ${D}$ & 13\\
-      \hline
-
-      bsort & ${I}$ & 0 & fibcall & ${I}$ & 1 \\
-            & ${D}$ & 0 & & ${D}$ & 1 \\
-      \hline
-
-      cnt & ${I}$ & 63 & lms & ${I}$ & 158 \\
-          & ${D}$ & 2 & & ${D}$ & 18 \\
-      \hline
-
-      cover & ${I}$ & 135 & ndes & ${I}$ & 96 \\
-            & ${D}$ & 2 & & ${D}$ & 15 \\
-      \hline
-
-      crc & ${I}$ & 18 & recursion & ${I}$ & 7 \\
-          & ${D}$ & 1 & & ${D}$ & 10  \\
-      \hline
-
-    \end{tabular}
-    \bigskip
-    \caption {Benefit of Proposed Method}
-    \label{tab:proposed_method_benefit}
+%\begin{table}[h!]
+%%{\fontsize{10}{10}\selectfont
+%\small
+%\begin{minipage}{\linewidth}
+%\centering
+%    \begin{tabular}{l | l | l || l | l | l}
+%      Task & Cache & Benefit & Task & Cache & Benefit\\
+%      \hline
+%
+%      adpcm & ${I}$ & 143 & fft1 & ${I}$ & 72 \\
+%            & ${D}$ & 5 & & ${D}$ & 13\\
+%      \hline
+%
+%      bsort & ${I}$ & 0 & fibcall & ${I}$ & 1 \\
+%            & ${D}$ & 0 & & ${D}$ & 1 \\
+%      \hline
+%
+%      cnt & ${I}$ & 63 & lms & ${I}$ & 158 \\
+%          & ${D}$ & 2 & & ${D}$ & 18 \\
+%      \hline
+%
+%      cover & ${I}$ & 135 & ndes & ${I}$ & 96 \\
+%            & ${D}$ & 2 & & ${D}$ & 15 \\
+%      \hline
+%
+%      crc & ${I}$ & 18 & recursion & ${I}$ & 7 \\
+%          & ${D}$ & 1 & & ${D}$ & 10  \\
+%      \hline
+%
+%    \end{tabular}
+%    \bigskip
+%    \caption {Benefit of Proposed Method}
+%    \label{tab:proposed_method_benefit}
 %
 %    Benefit of Proposed Method
 %    \bigskip
-\end{minipage}
-\normalsize
+%\end{minipage}
+%\normalsize
 %}
-\vspace{-20pt}
-\end{table}
+%\vspace{-20pt}
+%\end{table}
 %
 %\begin{minipage}{\linewidth}
 %\centering
@@ -232,7 +230,7 @@ benefit provided by the proposed approach.
 %    Benefit of Proposed Method
 %    \bigskip
 %\end{minipage}
-%
+
 Examining the graphs for all tasks and caches (instruction and data)
 there are a few common traits. The minimum shared UCBs sharply
 increases at the end of the tasks execution. This is due to the nature
@@ -250,16 +248,16 @@ block.
 Drastic spikes downwards in the shared UCB counts for the minimum and
 maximum approaches coincide with function call boundaries, or large
 conditional blocks. At these boundaries, the maximum and minimum
-approaches have similar UCB counts. This may be an area for further
-study, using a greater number of tasks.
+approaches have similar UCB counts. 
+%This may be an area for further study, using a greater number of tasks.
 
 There is a sharp upward spike in the early program points for the
 maximum approach. This is likely due to the early initialization
 blocks built into tasks. The minimum approach shows a clear benefit of
 selecting a preemption point outside of the early initialization
 section.
+\vspace{-10pt}
 \subsection{Breakdown Utilization}
-
 The previous analysis illustrates the benefit of the proposed
 approach for an individual task, which does not illustrate the
 schedulability benefit. To determine the schedulability benefit a
@@ -267,24 +265,37 @@ second case study was performed. Focusing on the breakdown utilization
 when comparing the UCB only approach for EDF~\cite{lunniss:13}. For
 convenience the UCB Only approach for EDF will be referred to as
 ${UOE}$, and Explicit Preemption Point Placement as ${EPP}$.
-
-The appropriate schedulablity test for ${UOE}$ is found in
-Lunniss \emph{et~al.}~\cite{lunniss:13}. It is comprised of three
-parts: ${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$. They represent
+%
+The appropriate schedulablity test for ${UOE}$ is comprised of three parts: 
+${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$ each representing
 the maximum CRPD for a task ${j}$, the utilization of the task ${j}$
-including the CRPD of the task, and the utilization of the task set.
+including the CRPD of the task, and the utilization of the task set 
+respectively as documented in Lunniss \emph{et~al.}~\cite{lunniss:13}.  
 A task set is schedulable when ${U^* \le 1}$.
-\begin{equation}
-  \gamma^{ucb}_{t,j} = BRT \cdot \max\limits_{\forall k \in aff(t,j)}
-  \left\{ \left| UCB_k \right| \right\}
-\end{equation}
-\begin{equation}
-  U^*_j = \frac{C_j \cdot \gamma^{ucb}_{t,j}}{T_j}
-\end{equation}
-\begin{equation}
-  U^* = \sum_j U^*_j
-\end{equation}
-
+%
+%The appropriate schedulablity test for ${UOE}$ is found in
+%Lunniss \emph{et~al.}~\cite{lunniss:13}. It is comprised of three
+%parts: ${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$. They represent
+%the maximum CRPD for a task ${j}$, the utilization of the task ${j}$
+%including the CRPD of the task, and the utilization of the task set.
+%A task set is schedulable when ${U^* \le 1}$.
+%\begin{equation}
+%  \gamma^{ucb}_{t,j} = BRT \cdot \max\limits_{\forall k \in aff(t,j)}
+%  \left\{ \left| UCB_k \right| \right\}
+%\end{equation}
+%\begin{equation}
+%  U^*_j = \frac{C_j + \gamma^{ucb}_{t,j}}{T_j}
+%\end{equation}
+%\begin{equation}
+%  U^* = \sum^{N}_{j=1} U^*_j
+%\end{equation}
+%where $aff(t,j)$ is the set of tasks that can be preempted by jobs of
+%task $\tau_{i}$ in an interval of length t~\cite{lunniss:13} as shown below.
+%\begin{equation}
+%  aff(t,j) = \{\forall\ \tau_{i}\ |\ t\ \geq D_{i} > D_{j}\}
+%\end{equation}
+\newline
+\indent
 The task set from which the breakdown utilization benefit is
 calculated comes, again, from the MRTC suite \cite{mrtc:01}. Borrowing
 the technique from \cite{lunniss:13}, each task has its deadline (and
@@ -294,10 +305,10 @@ of tasks (ten) and is increased in steps of .25 until the task set
 becomes schedulable. Incremental negative adjustments are then made to
 determine when the set becomes unschedulable, indicating the breakdown
 utilization.
-
-The final parameter, ${UCB_k}$ is obtained by modifying the earlier
-evaluation section \emph{Preemption Cost Characterization}. For each
-task, the set of shared UCBs are calculated at each program
+%
+%The final parameter, ${UCB_k}$ is obtained by modifying the earlier
+%evaluation section \emph{Preemption Cost Characterization}. 
+For each task, the set of shared UCBs are calculated at each program
 point. Taking the maximum shared UCB count as ${UCB_k}$ for any task
 is safe and appropriate for calculating ${U^*}$.Similarly, for ${EPP}$,
 the shared UCB counts obtained in the earlier evaluation serve as input for
@@ -305,13 +316,13 @@ the Explicit Preemption Point algorithm.  The last input variables required
 for both approaches are ${C_i}$ and ${BRT}$. ${C_i}$ was captured as the
 total number of cycles required to complete the task without preemptions.
 The ${BRT}$ is set to 7.8 ${{\mu}s}$, the refresh time of main memory.
-
+%
 The breakdown utilization determination leverages our iterative schedulability
 and preemption point placement algorithm as outlined in the following steps below
 as given in Algorithm~\ref{alg:iterative-breakdown-utilization-algo}.
 %{\fontsize{10}{10}\selectfont
 \begin{algorithm}
-\caption{Iterative Breakdown Utilization Evaluation Algorithm}
+\caption{Breakdown Utilization Evaluation Algorithm}
 \label{alg:iterative-breakdown-utilization-algo}
 \begin{algorithmic}[1]
 \small
@@ -356,28 +367,37 @@ the utilization change is less than some tolerance.
 \end{algorithmic}
 \end{algorithm}
 %}
-Using ten tasks, the breakdown utilization comparison between ${UOE}$
-and ${EPP}$ are summarized in the table below.
-\begin{table}[h!]
-\small
-\begin{minipage}{\linewidth}
-\vspace{-20pt}
-  \bigskip
-  \centering
-    \begin{tabular}{c | c}
-      Method & Utilization \\
-      \hline
-      UOE & .29 \\
-      EPP & TBD \\
-    \end{tabular}
-    \bigskip
-    \caption {Breakdown Utilization Summary}
-    \label{tab:breakdown_utilization_summary}
-\normalsize
-\end{minipage}
-\normalsize
+Using ten tasks, the breakdown utilization comparison between ${UOE}$,
+${Bertoga EPP}$, and ${EPP}$ are summarized in the figure below.
+\begin{figure}[h!]
+\vspace{-10pt}
+\begin{center}
+\includegraphics[width=\linewidth]{eps/breakdown.eps}
+\caption{Breakdown Utilization.}
+\label{fig:breakdown_utilization}
+\end{center}
+\vspace{-10pt}
+\end{figure}
+%\begin{table}[h!]
+%\small
+%\begin{minipage}{\linewidth}
 %\vspace{-20pt}
-\end{table}
+%  \bigskip
+%  \centering
+%    \begin{tabular}{c | c}
+%      Method & Utilization \\
+%      \hline
+%      UOE & .29 \\
+%      EPP & TBD \\
+%    \end{tabular}
+%    \bigskip
+%    \caption {Breakdown Utilization Summary}
+%    \label{tab:breakdown_utilization_summary}
+%\normalsize
+%\end{minipage}
+%\normalsize
+%\vspace{-20pt}
+%\end{table}
 Compared to \cite{lunniss:13} this evaluation of ${UOE}$ has a
 breakdown utilization 17\% lower. This is likely due to the
 (differing) selection of tasks and estimation of UCBs. The data used
@@ -423,4 +443,4 @@ UCB estimations per task.
 %CRPD preemption cost model uses the CRPD cost from the each preemption
 %point to the end of the task. The fixed CRPD preemption cost model
 %uses the maximum CRPD cost of all variable CRPD preemption cost
-%values.
+%values. 
