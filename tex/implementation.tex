@@ -127,7 +127,7 @@ The algorithm is summarized in Algorithm~\ref{alg:dynamic-optimal-ppp} shown bel
 \begin{algorithmic}[1]
 \small
 \Function{$Select\_Optimal\_PPP$}{$N_{i}$,$b_{i}$,$Q_{i}$,$\xi_i$}
-\State {$N_{p}\ \gets\ \infty\ q_{i}\ \gets\ \infty\ B_{i}\ \gets\ \infty\ \rho_{prev}\ \gets\ \{\delta_{i}^{0}\}$};
+\State {$C_{i}^{NP}\ \gets\ \infty\ q_{i}\ \gets\ \infty\ B_{i}\ \gets\ \infty\ \rho_{prev}\ \gets\ \{\delta_{i}^{0}\}$};
 \If {$b_{i}^{k} > Q_{i}\ for\ some\ k\ \in\ [1,N_{i}]$}
 \State\Return{INFEASIBLE;}
 \EndIf
@@ -152,7 +152,7 @@ The algorithm is summarized in Algorithm~\ref{alg:dynamic-optimal-ppp} shown bel
 \Function{$Compute\_PPCost$}{$\delta_{i}^{j}$,$\delta_{i}^{k}$}
 \If {$q_{i}(\delta_{i}^{j},\delta_{i}^{k})$ = $\infty$}
 \State{$Compute\ \xi_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ using\ Equation\ (\ref{eqn:prempt-cost})$};
-\State{$Compute\ N_{p}(\delta_{i}^{j}$,$\delta_{i}^{k})$};
+\State{$Compute\ C_{i}^{NP}(\delta_{i}^{j}$,$\delta_{i}^{k})$};
 \State{$Compute\ q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})$};
 \If {$q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ \leq\ Q_{i}$}
 \State{$B_{i}(\delta_{i}^{j},\delta_{i}^{k}) \gets q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})$};
@@ -185,7 +185,7 @@ The algorithm is summarized in Algorithm~\ref{alg:dynamic-optimal-ppp} shown bel
 %\showthe\intextsep 12pt
 To exemplify how our algorithm works, consider the following example.
 \begin{figure}[h!]
-\vspace{-10pt}
+\vspace{-5pt}
 \begin{center}
 \includegraphics[width=0.45\textwidth]{algo_example.png}
 \caption{Algorithm Example.}
@@ -193,9 +193,9 @@ To exemplify how our algorithm works, consider the following example.
 \end{center}
 \vspace{-10pt}
 \end{figure}
-Let $N_i=6$ and $Q_i=12$ for the following basic block structure with WCET and preemption costs shown in Figure~\ref{fig:algo_example}.  The algorithm computes and stores the cumulative non-preemptive execution costs for starting and ending basic block pairs in a matrix denoted $N_p$.  Using this information, the combined WCET and CRPD costs for each basic block pair is computed and stored in a matrix denoted $q_{i}$.  These matrices are shown in Figure~\ref{fig:algo_example_2}.  The shaded cells in the $q_{i}$ matrix represent cases where the combined WCET and CRPD costs for these basic block pairs exceed the maximum allowable non-preemptive region parameter $Q_i$.  During execution of the algorithm, the minimum combined WCET + CRPD costs are computed for each basic block pair and stored in a matrix denoted $B_{i}$.  The $B_{i}$ matrix stores the non-preemptive execution cost above the diagonal and the preemptive execution cost below the diagonal.  Basic block pairs with preemptive costs that are less than or equal to $Q_i$ are candidates for selection.  When a lower cost is determined for a given basic block pair, the predecessor preemption point is updated in the $\rho_{prev}$ array which keeps track of the selected predecessor preemption point for each basic block forming a daisy chain containing the entire set of selected preemption points.  The final results are illustrated in Figure~\ref{fig:algo_example_3}.
+Let $N_i=6$ and $Q_i=12$ for the following basic block structure with WCET and preemption costs shown in Figure~\ref{fig:algo_example}.  The algorithm computes and stores the cumulative non-preemptive execution costs for starting and ending basic block pairs in a matrix denoted $C_{i}^{NP}(\delta_{i}^{j}$,$\delta_{i}^{k})$.  Using this information, the combined WCET and CRPD costs for each basic block pair is computed and stored in a matrix denoted $q_{i}$.  These matrices are shown in Figure~\ref{fig:algo_example_2}.  The shaded cells in the $q_{i}$ matrix represent cases where the combined WCET and CRPD costs for these basic block pairs exceed the maximum allowable non-preemptive region parameter $Q_i$.  During execution of the algorithm, the minimum combined WCET + CRPD costs are computed for each basic block pair and stored in a matrix denoted $B_{i}$.  The $B_{i}$ matrix stores the non-preemptive execution cost above the diagonal and the preemptive execution cost below the diagonal.  Basic block pairs with preemptive costs that are less than or equal to $Q_i$ are candidates for selection.  When a lower cost is determined for a given basic block pair, the predecessor preemption point is updated in the $\rho_{prev}$ array which keeps track of the selected predecessor preemption point for each basic block forming a daisy chain containing the entire set of selected preemption points.  The final results are illustrated in Figures~\ref{fig:algo_example_2} and~\ref{fig:algo_example_3} below.
 \begin{figure}[h!]
-\vspace{-10pt}
+\vspace{-5pt}
 \begin{center}
 \includegraphics[width=0.45\textwidth]{algo_example_2.png}
 \caption{Combined WCET and CPRD Costs.}

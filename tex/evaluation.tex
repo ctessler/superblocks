@@ -18,9 +18,9 @@ LEON3~\cite{gaisler:02} simulated target.
 
 Within a task, variance in the number of shared UCBs between program
 points is related to the execution flow of the task through each of
-the points. For instance, one path to ${P_j}$ may include only ${P_h}$,
-while another path to ${P_j}$ may contain ${P_h}$ followed by
-${P_i}$. The set of UCBs shared between ${P_h}$ and ${P_j}$ may differ
+the points. For instance, one path to ${\varrho_i^j}$ may include only ${\varrho_i^h}$,
+while another path to ${\varrho_i^j}$ may contain ${\varrho_i^h}$ followed by
+${\varrho_i^m}$. The set of UCBs shared between ${\varrho_i^h}$ and ${\varrho_i^j}$ may differ
 based on the path between them. If the paths differ one of them may
 result in a greater number of shared UCBs between the points. To
 accurately upper-bound the shared UCBs between points requires
@@ -28,43 +28,43 @@ complete control flow information.
 
 Tasks were first analyzed using AbsInt's a\textsuperscript{3} WCET~\cite{absint:01}
 to determine the set of basic blocks. Next, the basic
-blocks ${\{B_1, B_2, ..., B_n\}}$ were serialized by recording their
-order during execution. Program points ${\{P_1, P_2, ..., P_n\}}$ were
-assigned by setting ${P_i}$ to the address of the final instruction of
-each basic block ${B_i}$ for ${i}$ from ${0}$ to ${n}$.
+blocks ${\{\delta_i^1, \delta_i^2, ..., \delta_i^{N_i}\}}$ were serialized by recording their
+order during execution. Program points ${\{\varrho_i^1, \varrho_i^2, ..., \varrho_i^{N_i}\}}$ were
+assigned by setting ${\varrho_i^j}$ to the address of the final instruction of
+each basic block ${\delta_i^j}$ for $j \in [0, N_i]$.
 
-Each program point ${P_j}$ served as a breakpoint when running the
+Each program point ${\varrho_i^j}$ served as a breakpoint when running the
 task on the simulator. As the task was executed, at each breakpoint
-${P_j}$, the instruction and data cache states were saved as ${I_j}$
-and ${D_j}$. Given the limitations of the simulator and
+${\varrho_i^j}$, the instruction and data cache states were saved as ${\Upsilon_I(\delta_i^j)}$
+and ${\Upsilon_D(\delta_i^j)}$. Given the limitations of the simulator and
 a\textsuperscript{3} it was not possible record the actual control
 flow. Thus, calculating an accurate over-estimate of the UCBs shared
 between program points was not possible. A selection of cache
 snapshots were chosen to representation the actual behavior.
 
 The representative cache contents were selected as the final visit of
-each program point. A program point ${P_i}$ may be visited multiple
-times during a tasks execution. The UCBs shared between ${P_i}$ and a
-later point ${P_j}$ could change with each visit of ${P_i}$. During
-the final visit of ${P_i}$ the instruction and data cache contents
-were captured, and recorded as ${I_i}$ and ${D_i}$. From these
-representative snapshots, a representative over-estimate of shared
+each program point. A program point ${\varrho_i^j}$ may be visited multiple
+times during a tasks execution. The UCBs shared between ${\varrho_i^j}$ and a
+later point ${\varrho_i^k}$ could change with each visit of ${\varrho_i^j}$. During
+the final visit of ${\varrho_i^j}$ the instruction and data cache contents
+were captured, and recorded as ${\Upsilon_I(\delta_i^j)}$ and ${\Upsilon_D(\delta_i^j)}$. 
+From these representative snapshots, a representative over-estimate of shared
 UCBs were made.
 
-Shared UCBs were calculated by intersecting the cache state from ${P_i}$
-to ${P_j}$, except ${P_j}$. A cache line that remains unchanged after
-the execution of ${\langle}$ ${P_i}$, ${P_{i+1}}$, ..., ${P_{j-1}}$
-${\rangle}$ will be
-present in the cache before execution of the basic block that ${P_j}$
+Shared UCBs were calculated by intersecting the cache state from ${\varrho_i^j}$
+to ${\varrho_i^k}$, except ${\varrho_i^k}$. A cache line that remains unchanged after
+the execution of $\{$ ${\varrho_i^j}$, ${\varrho_i^{j+1}}$, ..., ${\varrho_i^{k-1}}$
+$\}$ will be present in the cache before execution of the basic block that ${\varrho_i^k}$
 represents. It is only from these unchanged cache lines that the shared UCBs
-between ${P_i}$ and ${P_j}$ can be selected. The complete set of
+between ${\varrho_i^j}$ and ${\varrho_i^k}$ can be selected. The complete set of
 unchanged cache lines serves as a safe upper-bound on the shared UCBs
 between the two points. The equation below formalizes this idea, using
-${H}$ as either the set of instruction cache or data cache snapshots.
+${\Upsilon_I(\delta_i^j)}$ or ${\Upsilon_D(\delta_i^j)}$ as either the set of instruction 
+cache or data cache snapshots respectively.
 \vspace{-20pt}
 \begin{center}
   \begin{equation*}
-    UCB(P_i, P_j) = \bigcap_{k=i}^{j-1} H_k
+    UCB(\varrho_i^j, \varrho_i^k) = \bigcap_{m=j}^{k-1} {\Upsilon_D(\delta_i^m)}
   \end{equation*}
 \end{center}
 \subsubsection{Availability}
@@ -77,22 +77,22 @@ to reproduce and leverage our work as needed.
 
 \subsubsection{Results}
 The results are presented as a comparison between the our proposed
-method and the Bertogna approach. For a program point ${P_j}$ the
+method and the Bertogna approach. For a program point ${\varrho_i^j}$ the
 Bertogna \cite{bertogna:11} approach defines the UCBs (and therefor the CRPD) as:
 \begin{equation*}
-  \max\{ UCB(P_i, P_j) \vert i < j \}
+  \max\{ UCB(\varrho_i^j, \varrho_i^k) \vert j < k \}
 \end{equation*}
 
 To determine the maximum benefit of the new approach, the best case
 scenario is considered. When the preemption point is selected with the
-fewest number of UCBs based upon previous preemption.  For ${P_j}$ the
+fewest number of UCBs based upon previous preemption.  For ${\varrho_i^j}$ the
 determination is made by:
 \begin{equation*}
-  \min\{ UCB(P_i, P_j) \vert i < j \}
+  \min\{ UCB(\varrho_i^j, \varrho_i^k) \vert j < k \}
 \end{equation*}
 
 In the following graphs, each point in the graph represents two points
-in the program. The first point of the program ${P_i}$ is fixed by the
+in the program. The first point of the program ${\varrho_i^j}$ is fixed by the
 x-axis. The y-axis indicates the shared UCB count with a later program
 point. The first graph, which represents the recursion benchmark's
 data cache, is for illustration. At program point four, the Bertogna
@@ -110,11 +110,11 @@ proposed method selects program point seven with a shared UCB count of
 \vspace{-10pt}
 \end{figure}
 To compare the two approaches their selection of two program points is
-simulated by assuming ${Q}$ is larger than the task's total execution
+simulated by assuming ${Q_i}$ is larger than the task's total execution
 time. Bertogna's approach would select the lowest value of the
 dashed line. The proposed approach would select the lowest value of
 the solid line. The difference between these two UCB counts is the
-benefit provided by the proposed approach.
+benefit provided by our proposed approach.
 \begin{figure}[h!]
 \vspace{-10pt}
 \begin{center}
@@ -122,17 +122,17 @@ benefit provided by the proposed approach.
 \caption{LMS Data Cache.}
 \label{fig:lms_data_cache}
 \end{center}
-\vspace{-10pt}
+\vspace{-15pt}
 \end{figure}
 %\vspace{-20pt}
 \begin{figure}[h!]
-\vspace{-10pt}
+\vspace{-15pt}
 \begin{center}
 \includegraphics[width=\linewidth]{eps/adpcm-dcache.eps}
 \caption{ADPCM Data Cache.}
 \label{fig:adpcm_data_cache}
 \end{center}
-\vspace{-20pt}
+\vspace{-10pt}
 \end{figure}
 %
 %\begin{table}[h!]
@@ -248,7 +248,7 @@ block.
 Drastic spikes downwards in the shared UCB counts for the minimum and
 maximum approaches coincide with function call boundaries, or large
 conditional blocks. At these boundaries, the maximum and minimum
-approaches have similar UCB counts. 
+approaches have similar UCB counts.
 %This may be an area for further study, using a greater number of tasks.
 
 There is a sharp upward spike in the early program points for the
@@ -266,11 +266,11 @@ when comparing the UCB only approach for EDF~\cite{lunniss:13}. For
 convenience the UCB Only approach for EDF will be referred to as
 ${UOE}$, and Explicit Preemption Point Placement as ${EPP}$.
 %
-The appropriate schedulablity test for ${UOE}$ is comprised of three parts: 
+The appropriate schedulablity test for ${UOE}$ is comprised of three parts:
 ${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$ each representing
 the maximum CRPD for a task ${j}$, the utilization of the task ${j}$
-including the CRPD of the task, and the utilization of the task set 
-respectively as documented in Lunniss \emph{et~al.}~\cite{lunniss:13}.  
+including the CRPD of the task, and the utilization of the task set
+respectively as documented in Lunniss \emph{et~al.}~\cite{lunniss:13}.
 A task set is schedulable when ${U^* \le 1}$.
 %
 %The appropriate schedulablity test for ${UOE}$ is found in
@@ -318,10 +318,10 @@ determine when the set becomes unschedulable, indicating the breakdown
 utilization.
 %
 %The final parameter, ${UCB_k}$ is obtained by modifying the earlier
-%evaluation section \emph{Preemption Cost Characterization}. 
+%evaluation section \emph{Preemption Cost Characterization}.
 For each task, the set of shared UCBs are calculated at each program
 point. Taking the maximum shared UCB count as ${UCB_k}$ for any task
-is safe and appropriate for calculating ${U^*}$.Similarly, for ${EPP}$,
+is safe and appropriate for calculating ${U^*}$. Similarly, for ${EPP}$,
 the shared UCB counts obtained in the earlier evaluation serve as input for
 the Explicit Preemption Point algorithm.  The last input variables required
 for both approaches are ${C_i}$ and ${BRT}$. ${C_i}$ was captured as the

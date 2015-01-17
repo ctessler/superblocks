@@ -80,7 +80,7 @@ If a cache block is evicted the cost is paid where the preemptions occur.  In or
 \noindent
 \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next},\tau_{k})\end{math} denotes set set of cache blocks re-loaded during execution of the non-preemptive region between basic block \begin{math}\delta_{i}^{curr}\end{math} and basic block \begin{math}\delta_{i}^{next}\end{math}, resulting from preemption of task \begin{math}\tau_{i}\end{math} by task \begin{math}\tau_{k}\end{math}, where basic block location \begin{math}\delta_{i}^{curr}\end{math} and \begin{math}\delta_{i}^{next}\end{math} are the potential/selected preemption point and next potential/selected preemption point respectively in task \begin{math}\tau_{i}\end{math}.
 
-The definition of \textit{LCB} is introduced to capture the set of task reloaded memory at a specific basic block as a function of the current and next selected preemption points, and the preempting task.  As previously stated, there are two options in terms of where the cache block reload cost can be paid: 1) the cost can be paid where the next memory accesses occur; or 2) The cost can also be paid where the preemptions occur.  In this paper, we use the cost paid where the preemptions occur as per below.
+The definition of \textit{LCB} is introduced to capture the set of reloaded cache memory at a specific basic block as a function of the current and next selected preemption points, and the preempting task.  As previously stated, there are two options in terms of where the cache block reload cost can be paid: 1) the cost can be paid where the next memory accesses occur; or 2) The cost can also be paid where the preemptions occur.  In this paper, we use the cost paid where the preemptions occur as per below.
 %This results in two similar formulations for computing loaded cache blocks (LCBs) as per below.
 %\newline
 %\newline
@@ -145,8 +145,8 @@ where
 \end{equation}
 
 \noindent where BRT is the cache block reload time; \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next},\tau_{k})\end{math} represents the loaded cache blocks or memory accessed by the preempted task \begin{math}\tau_{i}\end{math} at basic block \begin{math}\delta_{i}^{curr}\end{math} caused by preempting task \begin{math}\tau_{k}\end{math}.
-\newline
-\newline
-\noindent
-To illustrate our approach for performing CRPD computations, consider the following example as shown below.
+%\newline
+%\newline
+%\noindent
+%To illustrate our approach for performing CRPD computations, consider the following example as shown below.
 %\vspace{-10pt}
