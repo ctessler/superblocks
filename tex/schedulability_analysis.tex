@@ -1,4 +1,4 @@
-\vspace{-5pt}
+%\vspace{-5pt}
 \section{Integrated WCET/CRPD Calculation}\label{sec:schedulability_analysis}
 
 The modified preemption cost as a function of the current and next preemption points is given by:
@@ -7,7 +7,7 @@ The modified preemption cost as a function of the current and next preemption po
     \xi_{i}(\delta_{i}^{curr},\delta_{i}^{next})\ =\ &\gamma_{i}(\delta_{i}^{curr},\delta_{i}^{next}) + \pi + \sigma + \\ &\eta(\gamma_{i}(\delta_{i}^{curr},\delta_{i}^{next})).
 \end{split}
 \end{equation}
-
+%
  \noindent
  where \begin{math}\pi\end{math} is the pipeline cost, \begin{math}\sigma\end{math} is the scheduler processing cost, and \begin{math}\eta()\end{math} is the front side bus contention resulting from the cache reload interference as described in~\cite{pellizzoni:07},~\cite{pellizzoni:08}, ~\cite{pellizzoni:11}.
  %Commensurate with our worst case analysis, the preemption overhead cost as a function of the current and next selected preemption points is:
@@ -19,15 +19,6 @@ The output of our algorithm is an optimal set of preemption points subject to th
 \begin{equation}\label{eqn:wcet-cost}
    C_{i} = B_{i}(\rho_{i}) = C_{i}^{NP} + \sum_{m=1}^{|\rho_{i}|-1} [\xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1})]
 \end{equation}
-\noindent
- The complete problem formulation with constraints for finding the minimum WCET with preemption overhead cost \begin{math}B_{i}(\rho_{i})\end{math} for task \begin{math}\tau_{i}\end{math} is given by:
-\begin{equation}\label{eqn:global-bbkwcet-cost}
-\begin{split}
-   B_{i}(\rho_{i}) = \min_{\rho_{i} \in \tau_{i}} \Big\{&\Big[\sum_{m=1}^{|\rho_{i}|-1} \xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1}) + \sum_{n=1}^{N_i}b_{i}^{n}\Big]\ |\\
-   &\Psi_{i}(\rho_{i})\ =\ True\Big\}
-\end{split}
-\end{equation}
-%
 \noindent
 where \begin{math}\rho_{i}\end{math} is the set of selected preemption points for task \begin{math}\tau_{i}\end{math}:
 \begin{equation*}\label{eqn:pp-set}
@@ -43,7 +34,16 @@ and \begin{math}\rho_{i}^{m}\end{math} is the \textrm{$m^{th}$} selected preempt
    \rho_{i}^{m} \stackrel{\text{def}}{=} \{\delta_{i}^{j}|&\delta_{i}^{j} \text{ is the $m^{th}$ selected preemption point of task } \tau_{i}\ \\ &\wedge j \in [1, 2, \ldots, N_{i}]\}
 \end{split}
 \end{equation*}
-
+%
+\noindent
+The complete problem formulation with constraints for finding the minimum WCET with preemption overhead cost \begin{math}B_{i}(\rho_{i})\end{math} for task \begin{math}\tau_{i}\end{math} is given by:
+\begin{equation}\label{eqn:global-bbkwcet-cost}
+\begin{split}
+   B_{i}(\rho_{i}) = \min_{\rho_{i} \in \tau_{i}} \Big\{&\Big[\sum_{m=1}^{|\rho_{i}|-1} \xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1}) + \sum_{n=1}^{N_i}b_{i}^{n}\Big]\ |\\
+   &\Psi_{i}(\rho_{i})\ =\ True\Big\}
+\end{split}
+\end{equation}
+%
 \noindent
 The selection of optimal preemption points is subject to the constraint \begin{math}\Psi_{i}(\rho_{i})\end{math} that no non-preemptive region in task \begin{math}\tau_{i}\end{math} exceeds the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math}: \begin{equation}\label{eqn:global-pp-constraint}
    \Psi_{i}(\rho_{i}) =
@@ -54,14 +54,14 @@ The selection of optimal preemption points is subject to the constraint \begin{m
 \end{array}
 \right\}~
 \end{equation}
-
+%
 \noindent
 where \begin{math}q_{i}^{m}(\rho_{i})\end{math} represents the \begin{math}m^{th}\end{math} non-preemptive-region (NPR) time for task \begin{math}\tau_{i}\end{math}:
 \begin{equation}\label{eqn:global-mthnpr-time}
    q_{i}^{m}(\rho_{i}) = \Big[\xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1}) + \sum_{n=\rho_{i}^{m}}^{\rho_{i}^{m+1}}b_{i}^{n}\Big]
 \end{equation}
 \noindent
-\newline
+%\newline
 Our approach employs the results of schedulability analysis and the aforementioned WCET + CRPD calculation with the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math} computed for each task \begin{math}\tau_{i}\end{math}.  The objective is to select a subset of preemption points that minimizes each tasks WCET + CRPD parameter \begin{math}C_{i}\end{math}. We introduce slight variations of terms \begin{math}\Psi_{i}\end{math}, \begin{math}q_{i}\end{math}, and \begin{math}B_{i}\end{math}, used in solving intermediate sub-problems of our proposed algorithm.  The selection of optimal preemption points is subject to the constraint that no non-preemptive region in task \begin{math}\tau_{i}\end{math} exceeds the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math}:
 \begin{equation}\label{eqn:pp-constraint}
    \Psi_{i}(\delta_{i}^{j},\delta_{i}^{k}) =

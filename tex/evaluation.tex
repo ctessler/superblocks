@@ -67,7 +67,7 @@ The results are presented as a comparison between our proposed method and the Be
 
 In the following graphs, each point in the graph represents two points in the program. The first point of the program ${\delta_i^j}$ is fixed by the x-axis. The y-axis indicates the shared LCB count with a later program
 point. The first graph, representing the recursion benchmark task data cache in Figure~\ref{fig:recusion_data_cache}, shows the minimum and maximum shared LCBs between various program
-points. At each point on the graph, the index of the next preemption point associated with the respective minimum or maximum graph value at that location is shown.  At program point ${\delta_i^4}$, the minimum CRPD value is coupled with program point ${\delta_i^7}$ with a shared LCB count of 14 whereas the single valued CRPD computation method finds 24 shared LCBs coupled at program point ${\delta_i^5}$.
+points. At each point on the graph, the index of the next preemption point associated with the respective minimum or maximum graph value at that location is shown.  At program point ${\delta_i^4}$, the minimum CRPD value is coupled with program point ${\delta_i^7}$ having a shared LCB count of 14 whereas the single valued CRPD computation method finds 24 shared LCBs coupled at program point ${\delta_i^5}$.
 %
 \begin{figure}[h!]
 \vspace{-10pt}
@@ -80,7 +80,7 @@ points. At each point on the graph, the index of the next preemption point assoc
 \end{figure}
 
 To compare the two preemption point placement algorithms their selection of two program points is
-simulated by assuming ${Q_i}$ is larger than the task's total execution time. Bertogna's algorithm would select the preemption point commensurate with the lowest value of the dashed line. Our algorithm would select the preemption point commensurate with the lowest value of the solid line.  The difference between the performance of these two preemption point placement algorithms is an example of the benefit provided by considering location aware CRPD cost as outlined in this paper.
+simulated by assuming ${Q_i}$ is larger than the task's total execution time. Bertogna's algorithm would select the preemption point commensurate with the lowest value of the dashed line. Our algorithm would select the preemption point commensurate with the lowest value of the solid line.  The difference between the performance of these two preemption point placement algorithms is an example of the benefit provided by considering location aware CRPD cost.
 
 The second graph represents the lms benchmark task data cache shown in Figure~\ref{fig:lms_data_cache}, and the third graph represents the adpcm benchmark task data cache shown in Figure~\ref{fig:adpcm_data_cache}. Similar to the recursion benchmark data cache, the variability in the minimum and maximum shared LCBs for each program point further exemplifies the benefit of using location aware CRPD cost in preemption point placement.  Maximum and minimum data cache costs for the other seven tasks show similar variability but are not shown here due to space limitations.
 \begin{figure}[h!]
@@ -199,7 +199,7 @@ The second graph represents the lms benchmark task data cache shown in Figure~\r
 %    \bigskip
 %\end{minipage}
 
-In examining the graphs for all tasks and data caches a few common traits were noted. The minimum shared LCBs sharply increases at the end of each task's execution. This is due to the nature of the conservative estimation of shared LCBs and the tasks, the number of instructions in the basic block between the final program points is relatively small thereby limiting the number of data cache lines that could be eliminated by the intersection.
+In examining the graphs for all tasks and data caches a few common traits were noted. The minimum shared LCBs sharply increases at the end of each task's execution. This is due to the nature of the conservative estimation of shared LCBs and the tasks, and the number of instructions in the basic block between the final program points is relatively small thereby limiting the number of data cache lines that could be eliminated by the intersection.
 %
 %This behavior limits the appropriate type of analysis. The preceding table shows the maximum benefit of the proposed approach. If the minimum benefit %were considered it would always be zero; since the difference in estimated shared LCBs converges at the final basic block.
 
@@ -208,10 +208,10 @@ Drastic spikes downwards in the shared LCB counts for the minimum and maximum cu
 \vspace{-10pt}
 \subsection{Breakdown Utilization}
 The previous analysis illustrates the benefit of using location aware CRPD cost in preemption point placement thereby reducing the preemption overhead
-for an individual task, however, it does not address the benefits to taskset schedulability. To evaluate taskset schedulability benefits a second case study was performed focusing on the breakdown utilization of the MRTC WCET benchmark suite~\cite{mrtc:01} for various algorithms.  Our study compares the Luniss et. al. UCB only approach for EDF~\cite{lunniss:13}, the Bertogna et. al. Explicit Preemption Point Placement algorithm~\cite{bertogna:11}, and our improved Explicit Preemption Point Placement algorithm. For notational convenience the UCB Only approach for EDF will be referred to as ${UOE}$, the Bertogna Explicit Preemption Point Placement algorithm as ${BEPP}$, and our Explicit Preemption Point Placement algorithm as ${EPP}$.
+for an individual task, however, it does not address the benefits to task set schedulability. To evaluate task set schedulability benefits a second case study was performed focusing on the breakdown utilization of the MRTC WCET benchmark suite~\cite{mrtc:01} for various algorithms.  Our study compares the Luniss et. al. UCB only approach for EDF~\cite{lunniss:13}, the Bertogna et. al. Explicit Preemption Point Placement algorithm~\cite{bertogna:11}, and our improved Explicit Preemption Point Placement algorithm. For notational convenience the UCB Only approach for EDF will be referred to as ${UOE}$, the Bertogna Explicit Preemption Point Placement algorithm as ${BEPP}$, and our Explicit Preemption Point Placement algorithm as ${EPP}$.
 
 The appropriate schedulablity test for ${UOE}$ is comprised of three parts: ${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$ each representing
-the maximum CRPD for a task ${j}$, the utilization of the task ${j}$ including the CRPD of the task, and the utilization of the task set
+the maximum CRPD for task \begin{math}\tau_{j}\end{math}, the utilization of task \begin{math}\tau_{j}\end{math} including CRPD, and the utilization of the task set
 respectively as documented in Lunniss \emph{et~al.}~\cite{lunniss:13}. A task set is schedulable when ${U^* \le 1}$.
 %
 %The appropriate schedulablity test for ${UOE}$ is found in
@@ -250,13 +250,13 @@ respectively as documented in Lunniss \emph{et~al.}~\cite{lunniss:13}. A task se
 %
 %The task set from which the breakdown utilization benefit is
 %calculated comes, again, from the MRTC suite \cite{mrtc:01}.
-Borrowing the breakdown utilization evaluation technique from \cite{lunniss:13}, each task has its deadline (and therefore period) set to ${T_i = u \cdot C_i}$ where ${u}$ is a constant. The constant, ${u}$, begins at the number of tasks (ten) and is increased in steps of 0.25 until the task set becomes schedulable. Incremental negative adjustments are then made to determine when the set becomes unschedulable, indicating the final breakdown utilization.
+Borrowing the breakdown utilization evaluation technique from \cite{lunniss:13}, each task has its deadline and period set to ${T_i = P_i = u \cdot C_i}$ where ${u}$ is a constant. The constant, ${u}$, begins at the number of tasks (ten) and is increased in steps of 0.25 until the task set becomes schedulable. Incremental negative adjustments are then made to determine when the set becomes unschedulable, indicating the final breakdown utilization.
 %
 %The final parameter, ${UCB_k}$ is obtained by modifying the earlier
 %evaluation section \emph{Preemption Cost Characterization}.
 For each task, the set of shared LCBs are calculated at each program point. Taking the maximum shared LCB count for any task is safe and appropriate for calculating ${U^*}$.
 
-For ${BEPP}$, the maximum shared LCB counts obtained in the earlier evaluation serve as input. Lastly, for ${EPP}$, the shared LCB counts obtained in the earlier evaluation serve as input for our Explicit Preemption Point algorithm.  The last input variables required for both approaches are ${C_i}$ and ${BRT}$. ${C_i}$ was captured as the total number of cycles required to complete the task without preemptions. The breakdown utilization study sweeps the ${BRT}$ parameter from 10 ${{\mu}s}$ to 390 ${{\mu}s}$, representing values across several different types of processors.
+For ${BEPP}$, the maximum shared LCB counts obtained in the earlier evaluation serve as input. Lastly, for ${EPP}$, the shared LCB counts obtained in the earlier evaluation serve as input for our Explicit Preemption Point Placement algorithm.  The last input variables required for both approaches are ${C_i}$ and ${BRT}$. ${C_i}$ was captured as the total number of cycles required to complete the task without preemptions. The breakdown utilization study sweeps the ${BRT}$ parameter from 10 ${{\mu}s}$ to 390 ${{\mu}s}$, representing values across several different types of processors.
 
 The breakdown utilization determination leverages our iterative schedulability and preemption point placement algorithm as outlined in the following steps below as given in Algorithm~\ref{alg:iterative-breakdown-utilization-algo}.
 %{\fontsize{10}{10}\selectfont

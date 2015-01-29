@@ -79,9 +79,9 @@ In order to determine which cache blocks are reloaded once preemption occurs, we
 \textbf{Loaded cache block (LCB)}: A memory block of the preempted task is called a loaded cache block, if it may be re-loaded during the execution following a preempting task.
 \end{definition}
 \noindent
-\begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next},\tau_{k})\end{math} denotes set set of cache blocks re-loaded during execution of the non-preemptive region between basic block \begin{math}\delta_{i}^{curr}\end{math} and basic block \begin{math}\delta_{i}^{next}\end{math}, resulting from preemption of task \begin{math}\tau_{i}\end{math} by task \begin{math}\tau_{k}\end{math}, where basic block location \begin{math}\delta_{i}^{curr}\end{math} and \begin{math}\delta_{i}^{next}\end{math} are the potential/selected preemption point and next potential/selected preemption point respectively in task \begin{math}\tau_{i}\end{math}.
+\begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} denotes set set of cache blocks re-loaded during execution of the non-preemptive region between basic block \begin{math}\delta_{i}^{curr}\end{math} and basic block \begin{math}\delta_{i}^{next}\end{math}, resulting from preemption of task \begin{math}\tau_{i}\end{math}, where basic block location \begin{math}\delta_{i}^{curr}\end{math} and \begin{math}\delta_{i}^{next}\end{math} are the potential/selected preemption point and next potential/selected preemption point respectively.
 
-The definition of \textit{LCB} is introduced to capture the set of reloaded cache memory at a specific basic block as a function of the current and next selected preemption points, and the preempting task.  Here, we account for the overhead within a non-preemptive region (i.e., series of basic blocks with no preemptions) for reloading UCBs that could have potentially been evicted by the preemption occurring immediately after $\delta_i^{curr}$ and used by some basic block prior to the preemption occurring immediately after $\delta_i^{next}$.
+The definition of \textit{LCB} is introduced to capture the set of reloaded cache memory at a specific basic block as a function of the current and next selected preemption points.  Here, we account for the overhead within a non-preemptive region (i.e., series of basic blocks with no preemptions) for reloading UCBs that could have potentially been evicted by the preemption occurring immediately after $\delta_i^{curr}$ and used by some basic block prior to the preemption occurring immediately after $\delta_i^{next}$.
 %As previously stated, there are two options in terms of where the cache block reload cost can be paid: 1) the cost can be paid where the next memory %accesses occur; or 2) The cost can also be paid where the preemptions occur.  In this paper, we use the cost paid where the preemptions occur as per %below.
 %This results in two similar formulations for computing loaded cache blocks (LCBs) as per below.
 %\newline
@@ -93,7 +93,7 @@ The definition of \textit{LCB} is introduced to capture the set of reloaded cach
 %    &\left[\textit{DC-UCB}_{\textrm{out}}(\delta_{i}^{curr})\ \cap \left[\cup_\lambda
 %    \textit{AUCB}_{\textrm{out}}(\delta_{i}^{\lambda})\right]\right] \cap \textit{ECB}(\tau_{k})\\
     \lefteqn{\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next}) =} & \\
-    &\left[\textit{UCB}_{\textrm{out}}(\delta_{i}^{curr})\ \cap \left[\cup_{\nu \in \lambda} \textit{AUCB}_{\textrm{out}}(\delta_{i}^{\nu})\right]\right] \cap [\cup_{\tau_{k}\neq\tau_{i}} \textit{ECB}(\tau_{k})]\\
+    &\left[\textit{UCB}_{\textrm{out}}(\delta_{i}^{curr})\ \cap \left[\cup_{\nu \in \lambda} \textit{AUCB}_{\textrm{out}}(\delta_{i}^{\nu})\right]\right] \cap [\cup_{\tau_{k}\in hp_(i)} \textit{ECB}(\tau_{k})]\\
 \end{split}
 \end{equation}
 
@@ -106,7 +106,7 @@ where
 
 \noindent
 %\begin{math}\textit{AUCB}_{\textrm{out}}(\delta_{i}^{x})\end{math} represents the accessed useful cache blocks or memory of interest accessed by the preempted %task \begin{math}\tau_{i}\end{math} at basic block \begin{math}\delta_{i}^{x}\end{math};
-\begin{math}\delta_{i}^{curr}\end{math} represents the current selected preemption point where \begin{math}\delta_{i}^{curr} \in \rho(\tau_{i})\end{math} and \begin{math}\delta_{i}^{next}\end{math} represents the current selected preemption point where \begin{math}\delta_{i}^{next} \in \rho(\tau_{i})\end{math}.  This formula for \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} results in the accounting of loaded cache blocks where the preemption occurs.  Note that this notation assumes a sequential basic block structure. Once we have the set of cache blocks that must be re-loaded due to preemption, the CRPD related preemption overhead may be computed as per below.
+\begin{math}\delta_{i}^{curr}\end{math} represents the current selected preemption point where \begin{math}\delta_{i}^{curr} \in \rho(\tau_{i})\end{math} and \begin{math}\delta_{i}^{next}\end{math} represents the next selected preemption point where \begin{math}\delta_{i}^{next} \in \rho(\tau_{i})\end{math}.  This formula for \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} results in the accounting of loaded cache blocks where the preemption occurs.  Note that this notation assumes a sequential basic block structure. Once we have the set of cache blocks that must be re-loaded due to preemption, the CRPD related preemption overhead may be computed as shown below.
 %\newline
 %\newline
 %\noindent\textbf{Preemption Cost Paid Where Memory Reloads Occur}
@@ -147,7 +147,7 @@ where
     \gamma(\delta_{i}^{curr},\delta_{i}^{next}) = | \textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next}) | \cdot BRT.
 \end{equation}
 
-\noindent where BRT is the cache block reload time; \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} represents the loaded cache blocks or memory accessed by the preempted task \begin{math}\tau_{i}\end{math} at basic block \begin{math}\delta_{i}^{curr}\end{math} caused by a preempting task \begin{math}\tau_{k}\end{math}.
+\noindent where BRT is the cache block reload time; and \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} represents the loaded cache blocks or memory accessed by the preempted task \begin{math}\tau_{i}\end{math} at basic block \begin{math}\delta_{i}^{curr}\end{math} caused by higher priority preempting tasks.
 %\newline
 %\newline
 %\noindent
