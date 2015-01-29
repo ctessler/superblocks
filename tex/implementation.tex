@@ -20,9 +20,9 @@ Our dynamic programming preemption point placement algorithm is summarized in Al
 %\Comment{$at\ BB\ \delta_{i}^{0}\ and\ BB\ \delta_{i}^{k}$}
 \State\Call{$Compute\_PPCost$}{$\delta_{i}^{0}$,$\delta_{i}^{j}$};
 \State\Call{$Compute\_PPCost$}{$\delta_{i}^{j}$,$\delta_{i}^{k}$};
-\State{$P_{cost}\ \gets\ B_{i}(\delta_{i}^{0},\delta_{i}^{j})\ +\ B_{i}(\delta_{i}^{j},\delta_{i}^{k})$};
-\If {$P_{cost} < B_{i}(\delta_{i}^{0},\delta_{i}^{k})$}
-\State{$B_{i}(\delta_{i}^{0},\delta_{i}^{k}) \gets P_{cost}$};
+\State{$P_{cost}\ \gets\ B_{i}(\delta_{i}^{j})\ +\ q_{i}(\delta_{i}^{j},\delta_{i}^{k})$};
+\If {$P_{cost} < B_{i}(\delta_{i}^{k})$}
+\State{$B_{i}(\delta_{i}^{k}) \gets P_{cost}$};
 \State{$\rho_{prev}(\delta_{i}^{k}) \gets \delta_{i}^{j}$};
 \EndIf
 \EndFor
@@ -36,8 +36,8 @@ Our dynamic programming preemption point placement algorithm is summarized in Al
 \State{$Compute\ \xi_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ using\ Equation\ (\ref{eqn:prempt-cost})$};
 \State{$Compute\ C_{i}^{NP}(\delta_{i}^{j}$,$\delta_{i}^{k})\ using\ Equation\ (\ref{eqn:c-np2})$};
 \State{$Compute\ q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ using\ Equation\ (\ref{eqn:mthnpr-time})$};
-\If {$q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ \leq\ Q_{i}$}
-\State{$B_{i}(\delta_{i}^{j},\delta_{i}^{k}) \gets q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})$};
+\If {$q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ \leq\ Q_{i}\ and\ \delta_{i}^{j}\ =\ \delta_{i}^{0}$}
+\State{$B_{i}(\delta_{i}^{k}) \gets q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})$};
 \State{$\rho_{prev}(\delta_{i}^{k}) \gets \delta_{i}^{j}$};
 %\Else
 %\If {$j-k\ =\ 1$}
