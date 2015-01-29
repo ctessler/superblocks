@@ -11,94 +11,64 @@ comparison for various CRPD computational approaches.
   Characterization}\label{sec:preemption_cost_measurement}
 To characterize the behavior and estimate the benefit of the approach
 proposed in this paper, a case study of representative tasks was
-performed. The tasks were selected from Malardalen University of
-Sweden's WCET benchmark suite~\cite{mrtc:01}. Each task was built using Gaisler's
-Bare-C Cross Compiler~\cite{gaisler:01} for the GRSIM
-LEON3~\cite{gaisler:02} simulated target.
-
-Within a task, variance in the number of shared UCBs between program
-points is related to the execution flow of the task through each of
-the points. For instance, one path to ${\varrho_i^j}$ may include only ${\varrho_i^h}$,
-while another path to ${\varrho_i^j}$ may contain ${\varrho_i^h}$ followed by
-${\varrho_i^m}$. The set of UCBs shared between ${\varrho_i^h}$ and ${\varrho_i^j}$ may differ
-based on the path between them. If the paths differ one of them may
-result in a greater number of shared UCBs between the points. To
-accurately upper-bound the shared UCBs between points requires
-complete control flow information.
+performed. The tasks were selected from the Malardalen University (MRTC) WCET benchmark suite~\cite{mrtc:01}. Each task was built using Gaisler's Bare-C Cross Compiler~\cite{gaisler:01} for the GRSIM LEON3~\cite{gaisler:02} simulated target.
+%
+%During execution of a task within a specific basic block, variance in the number of shared
+%UCBs between program points is related to the execution flow of the task through each of
+%the points. For instance, one path to program point ${\varrho_i^j}$ may include only ${\varrho_i^h}$,
+%while another path to ${\varrho_i^j}$ may contain ${\varrho_i^h}$ followed by
+%${\varrho_i^m}$. The set of UCBs shared between ${\varrho_i^h}$ and ${\varrho_i^j}$ may differ
+%based on the path between them. If the paths differ one of them may
+%result in a greater number of shared UCBs between the points. To
+%accurately upper-bound the shared UCBs between points requires
+%complete control flow information.
 
 Tasks were first analyzed using AbsInt's a\textsuperscript{3} WCET~\cite{absint:01}
-to determine the set of basic blocks. Next, the basic
-blocks ${\{\delta_i^1, \delta_i^2, ..., \delta_i^{N_i}\}}$ were serialized by recording their
-order during execution. Program points ${\{\varrho_i^1, \varrho_i^2, ..., \varrho_i^{N_i}\}}$ were
-assigned by setting ${\varrho_i^j}$ to the address of the final instruction of
-each basic block ${\delta_i^j}$ for $j \in [0, N_i]$.
+to determine the set of basic blocks. Next, the basic blocks ${\{\delta_i^1, \delta_i^2, ..., \delta_i^{N_i}\}}$ were serialized by recording their order during execution. Program points were identified as the address of the final instruction of each basic block ${\delta_i^j}$ for $j \in [0, N_i]$ to match the sequential basic block structure used by our preemption point placement algorithm. Each program point served as a breakpoint when running the task on the simulator. In accordance with the sequential basic block structure used in our algorithm, only the data cache is used to compute CRPD as the linear basic block structure offers only limited opportunities for instruction cache blocks to be revisited.
 
-Each program point ${\varrho_i^j}$ served as a breakpoint when running the
-task on the simulator. As the task was executed, at each breakpoint
-${\varrho_i^j}$, the instruction and data cache states were saved as ${\Upsilon_I(\delta_i^j)}$
-and ${\Upsilon_D(\delta_i^j)}$. Given the limitations of the simulator and
-a\textsuperscript{3} it was not possible record the actual control
-flow. Thus, calculating an accurate over-estimate of the UCBs shared
-between program points was not possible. A selection of cache
-snapshots were chosen to representation the actual behavior.
+During the execution of each basic block, the data cache states were saved as ${\Upsilon_D(\delta_i^j)}$ at each breakpoint. As expected, the data cache contents were highly dependent on the actual basic block instruction control flow during execution.  The cache snapshots were selected as the final visit of each program point where the data cache contents ${\Upsilon_D(\delta_i^j)}$ were captured, and recorded. From the final ${\Upsilon_D(\delta_i^j)}$ snapshots, a conservative estimate of LCBs shared between program points was determined.
+%Given the limitations of the simulator and a\textsuperscript{3} it was not possible to record the actual control flow.
+%Thus, calculating an accurate over-estimate of the LCBs shared between program points was not possible. A %selection of cache snapshots were chosen as an estimation of the actual cache behavior.
+%
+%A program point ${\varrho_i^j}$ may be visited multiple
+%times during a tasks execution. The UCBs shared between ${\varrho_i^j}$ and a
+%later point ${\varrho_i^k}$ could change with each visit of ${\varrho_i^j}$. During
+%the final visit of ${\varrho_i^j}$ the instruction and data cache contents
+%were captured, and recorded as ${\Upsilon_I(\delta_i^j)}$ and ${\Upsilon_D(\delta_i^j)}$.
+%From these representative snapshots, a representative over-estimate of shared
+%UCBs were made.
 
-The representative cache contents were selected as the final visit of
-each program point. A program point ${\varrho_i^j}$ may be visited multiple
-times during a tasks execution. The UCBs shared between ${\varrho_i^j}$ and a
-later point ${\varrho_i^k}$ could change with each visit of ${\varrho_i^j}$. During
-the final visit of ${\varrho_i^j}$ the instruction and data cache contents
-were captured, and recorded as ${\Upsilon_I(\delta_i^j)}$ and ${\Upsilon_D(\delta_i^j)}$. 
-From these representative snapshots, a representative over-estimate of shared
-UCBs were made.
-
-Shared UCBs were calculated by intersecting the cache state from ${\varrho_i^j}$
-to ${\varrho_i^k}$, except ${\varrho_i^k}$. A cache line that remains unchanged after
-the execution of $\{$ ${\varrho_i^j}$, ${\varrho_i^{j+1}}$, ..., ${\varrho_i^{k-1}}$
-$\}$ will be present in the cache before execution of the basic block that ${\varrho_i^k}$
-represents. It is only from these unchanged cache lines that the shared UCBs
-between ${\varrho_i^j}$ and ${\varrho_i^k}$ can be selected. The complete set of
-unchanged cache lines serves as a safe upper-bound on the shared UCBs
-between the two points. The equation below formalizes this idea, using
-${\Upsilon_I(\delta_i^j)}$ or ${\Upsilon_D(\delta_i^j)}$ as either the set of instruction 
-cache or data cache snapshots respectively.
+Shared LCBs were calculated by intersecting the cache state snapshots from ${\delta_i^j}$
+to ${\delta_i^k}$, except ${\delta_i^k}$. A cache line that remains unchanged after
+the execution of $\{{\delta_i^j}$, ${\delta_i^{j+1}}$, ..., ${\delta_i^{k-1}}\}$ will be present in the cache before execution of the basic block that ${\delta_i^k}$ represents. It is only from these unchanged cache lines that the shared LCBs between ${\delta_i^j}$ and ${\delta_i^k}$ can be selected. The complete set of
+unchanged cache lines serves as a safe upper-bound on the LCBs shared between each basic block pair. The equation below formalizes this idea, using the data cache snapshots ${\Upsilon_D(\delta_i^j)}$.
 \vspace{-20pt}
 \begin{center}
-  \begin{equation*}
-    UCB(\varrho_i^j, \varrho_i^k) = \bigcap_{m=j}^{k-1} {\Upsilon_D(\delta_i^m)}
-  \end{equation*}
+  \begin{equation}
+    LCB(\delta_i^j,\delta_i^k) \subseteq \bigcap_{m=j}^{k-1} {\Upsilon_D(\delta_i^m)}
+  \end{equation}
 \end{center}
 \subsubsection{Availability}
-This method may be verified and reproduced using the same tools and
-data. Gaisler's compiler and simulator are freely available. AbsInt's
-a\textsuperscript{3} tool is available for educational and evaluation
-purposes. The programs written and data used in this paper can be
-found on GitHub~\cite{tessler:14} thereby permitting the research community
-to reproduce and leverage our work as needed.
-
+This method may be verified and reproduced using the same tools and data. Gaisler's compiler and simulator are freely available. AbsInt's a\textsuperscript{3} tool is available for educational and evaluation purposes. The programs written and data used in this paper can be found on GitHub~\cite{tessler:14} thereby permitting the research community to reproduce and leverage our work as needed.
+\newline
 \subsubsection{Results}
-The results are presented as a comparison between the our proposed
-method and the Bertogna approach. For a program point ${\varrho_i^j}$ the
-Bertogna \cite{bertogna:11} approach defines the UCBs (and therefor the CRPD) as:
-\begin{equation*}
-  \max\{ UCB(\varrho_i^j, \varrho_i^k) \vert j < k \}
-\end{equation*}
+The results are presented as a comparison between our proposed method and the Bertogna method\cite{bertogna:11}, which uses a single value for CRPD at each program point.  In terms of LCB computation this implies that the maximum LCB value over all subsequent program points must be used as the CRPD cost:
 
-To determine the maximum benefit of the new approach, the best case
-scenario is considered. When the preemption point is selected with the
-fewest number of UCBs based upon previous preemption.  For ${\varrho_i^j}$ the
-determination is made by:
-\begin{equation*}
-  \min\{ UCB(\varrho_i^j, \varrho_i^k) \vert j < k \}
-\end{equation*}
+\begin{equation}
+  \max\{LCB(\delta_i^j,\delta_i^k)\ \vert\ j\ <\ k\}
+\end{equation}
+%
+%To determine the maximum benefit of the new approach, the best case
+%scenario is considered. When the preemption point is selected with the
+%fewest number of UCBs based upon previous preemption.  For ${\varrho_i^j}$ the
+%determination is made by:
+%\begin{equation*}
+%  \min\{ UCB(\varrho_i^j, \varrho_i^k) \vert j < k \}
+%\end{equation*}
 
-In the following graphs, each point in the graph represents two points
-in the program. The first point of the program ${\varrho_i^j}$ is fixed by the
-x-axis. The y-axis indicates the shared UCB count with a later program
-point. The first graph, which represents the recursion benchmark's
-data cache, is for illustration. At program point four, the Bertogna
-approach finds 24 shared UCBs between point four and point five. The
-proposed method selects program point seven with a shared UCB count of
-14.
+In the following graphs, each point in the graph represents two points in the program. The first point of the program ${\delta_i^j}$ is fixed by the x-axis. The y-axis indicates the shared LCB count with a later program
+point. The first graph, representing the recursion benchmark task data cache in Figure~\ref{fig:recusion_data_cache}, shows the minimum and maximum shared LCBs between various program
+points. At each point on the graph, the index of the next preemption point associated with the respective minimum or maximum graph value at that location is shown.  At program point ${\delta_i^4}$, the minimum CRPD value is coupled with program point ${\delta_i^7}$ with a shared LCB count of 14 whereas the single valued CRPD computation method finds 24 shared LCBs coupled at program point ${\delta_i^5}$.
 %
 \begin{figure}[h!]
 \vspace{-10pt}
@@ -109,12 +79,11 @@ proposed method selects program point seven with a shared UCB count of
 \end{center}
 \vspace{-10pt}
 \end{figure}
-To compare the two approaches their selection of two program points is
-simulated by assuming ${Q_i}$ is larger than the task's total execution
-time. Bertogna's approach would select the lowest value of the
-dashed line. The proposed approach would select the lowest value of
-the solid line. The difference between these two UCB counts is the
-benefit provided by our proposed approach.
+
+To compare the two preemption point placement algorithms their selection of two program points is
+simulated by assuming ${Q_i}$ is larger than the task's total execution time. Bertogna's algorithm would select the preemption point commensurate with the lowest value of the dashed line. Our algorithm would select the preemption point commensurate with the lowest value of the solid line.  The difference between the performance of these two preemption point placement algorithms is an example of the benefit provided by considering location aware CRPD cost as outlined in this paper.
+
+The second graph represents the lms benchmark task data cache shown in Figure~\ref{fig:lms_data_cache}, and the third graph represents the adpcm benchmark task data cache shown in Figure~\ref{fig:adpcm_data_cache}. Similar to the recursion benchmark data cache, the variability in the minimum and maximum shared LCBs for each program point further exemplifies the benefit of using location aware CRPD cost in preemption point placement.  Maximum and minimum data cache costs for the other seven tasks show similar variability but are not shown here due to space limitations.
 \begin{figure}[h!]
 \vspace{-10pt}
 \begin{center}
@@ -122,11 +91,11 @@ benefit provided by our proposed approach.
 \caption{LMS Data Cache.}
 \label{fig:lms_data_cache}
 \end{center}
-\vspace{-15pt}
+\vspace{-10pt}
 \end{figure}
 %\vspace{-20pt}
 \begin{figure}[h!]
-\vspace{-15pt}
+\vspace{-10pt}
 \begin{center}
 \includegraphics[width=\linewidth]{eps/adpcm-dcache.eps}
 \caption{ADPCM Data Cache.}
@@ -231,47 +200,20 @@ benefit provided by our proposed approach.
 %    \bigskip
 %\end{minipage}
 
-Examining the graphs for all tasks and caches (instruction and data)
-there are a few common traits. The minimum shared UCBs sharply
-increases at the end of the tasks execution. This is due to the nature
-of the over-estimation of shared UCBs and the tasks, the number of
-instructions in the basic block between the final program points is
-relatively small; limiting the number of cache lines that could be
-filtered by the intersection.
+In examining the graphs for all tasks and data caches a few common traits were noted. The minimum shared LCBs sharply increases at the end of each task's execution. This is due to the nature of the conservative estimation of shared LCBs and the tasks, the number of instructions in the basic block between the final program points is relatively small thereby limiting the number of data cache lines that could be eliminated by the intersection.
+%
+%This behavior limits the appropriate type of analysis. The preceding table shows the maximum benefit of the proposed approach. If the minimum benefit %were considered it would always be zero; since the difference in estimated shared LCBs converges at the final basic block.
 
-This behavior limits the appropriate type of analysis. The preceding
-table shows the maximum benefit of the proposed approach. If the
-minimum benefit were considered it would always be zero; since the
-difference in estimated shared UCBs converges at the final basic
-block.
-
-Drastic spikes downwards in the shared UCB counts for the minimum and
-maximum approaches coincide with function call boundaries, or large
-conditional blocks. At these boundaries, the maximum and minimum
-approaches have similar UCB counts.
+Drastic spikes downwards in the shared LCB counts for the minimum and maximum curves coincide with function call boundaries, or large conditional blocks. At these boundaries, the maximum and minimum LCB counts are approximately the same. There is a sharp upward spike in the early program points for the maximum curves. This trend is due to the early initialization blocks built into tasks. In our analysis, the minimum curves show a clear benefit of selecting preemption points outside of the early initialization section.
 %This may be an area for further study, using a greater number of tasks.
-
-There is a sharp upward spike in the early program points for the
-maximum approach. This is likely due to the early initialization
-blocks built into tasks. The minimum approach shows a clear benefit of
-selecting a preemption point outside of the early initialization
-section.
 \vspace{-10pt}
 \subsection{Breakdown Utilization}
-The previous analysis illustrates the benefit of the proposed
-approach for an individual task, which does not illustrate the
-schedulability benefit. To determine the schedulability benefit a
-second case study was performed. Focusing on the breakdown utilization
-when comparing the UCB only approach for EDF~\cite{lunniss:13}. For
-convenience the UCB Only approach for EDF will be referred to as
-${UOE}$, and Explicit Preemption Point Placement as ${EPP}$.
-%
-The appropriate schedulablity test for ${UOE}$ is comprised of three parts:
-${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$ each representing
-the maximum CRPD for a task ${j}$, the utilization of the task ${j}$
-including the CRPD of the task, and the utilization of the task set
-respectively as documented in Lunniss \emph{et~al.}~\cite{lunniss:13}.
-A task set is schedulable when ${U^* \le 1}$.
+The previous analysis illustrates the benefit of using location aware CRPD cost in preemption point placement thereby reducing the preemption overhead
+for an individual task, however, it does not address the benefits to taskset schedulability. To evaluate taskset schedulability benefits a second case study was performed focusing on the breakdown utilization of the MRTC WCET benchmark suite~\cite{mrtc:01} for various algorithms.  Our study compares the Luniss et. al. UCB only approach for EDF~\cite{lunniss:13}, the Bertogna et. al. Explicit Preemption Point Placement algorithm~\cite{bertogna:11}, and our improved Explicit Preemption Point Placement algorithm. For notational convenience the UCB Only approach for EDF will be referred to as ${UOE}$, the Bertogna Explicit Preemption Point Placement algorithm as ${BEPP}$, and our Explicit Preemption Point Placement algorithm as ${EPP}$.
+
+The appropriate schedulablity test for ${UOE}$ is comprised of three parts: ${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$ each representing
+the maximum CRPD for a task ${j}$, the utilization of the task ${j}$ including the CRPD of the task, and the utilization of the task set
+respectively as documented in Lunniss \emph{et~al.}~\cite{lunniss:13}. A task set is schedulable when ${U^* \le 1}$.
 %
 %The appropriate schedulablity test for ${UOE}$ is found in
 %Lunniss \emph{et~al.}~\cite{lunniss:13}. It is comprised of three
@@ -307,30 +249,17 @@ A task set is schedulable when ${U^* \le 1}$.
 %  U^* = \sum_{i \in \tau} U^*_i
 %\end{equation}
 %
-The task set from which the breakdown utilization benefit is
-calculated comes, again, from the MRTC suite \cite{mrtc:01}. Borrowing
-the technique from \cite{lunniss:13}, each task has its deadline (and
-therefor period) set to ${T_i = u \cdot C_i}$
-where ${u}$ is a constant. The constant, ${u}$, begins at the number
-of tasks (ten) and is increased in steps of .25 until the task set
-becomes schedulable. Incremental negative adjustments are then made to
-determine when the set becomes unschedulable, indicating the breakdown
-utilization.
+%The task set from which the breakdown utilization benefit is
+%calculated comes, again, from the MRTC suite \cite{mrtc:01}.
+Borrowing the breakdown utilization evaluation technique from \cite{lunniss:13}, each task has its deadline (and therefore period) set to ${T_i = u \cdot C_i}$ where ${u}$ is a constant. The constant, ${u}$, begins at the number of tasks (ten) and is increased in steps of 0.25 until the task set becomes schedulable. Incremental negative adjustments are then made to determine when the set becomes unschedulable, indicating the final breakdown utilization.
 %
 %The final parameter, ${UCB_k}$ is obtained by modifying the earlier
 %evaluation section \emph{Preemption Cost Characterization}.
-For each task, the set of shared UCBs are calculated at each program
-point. Taking the maximum shared UCB count as ${UCB_k}$ for any task
-is safe and appropriate for calculating ${U^*}$. Similarly, for ${EPP}$,
-the shared UCB counts obtained in the earlier evaluation serve as input for
-the Explicit Preemption Point algorithm.  The last input variables required
-for both approaches are ${C_i}$ and ${BRT}$. ${C_i}$ was captured as the
-total number of cycles required to complete the task without preemptions.
-The ${BRT}$ is set to 7.8 ${{\mu}s}$, the refresh time of main memory.
-%
-The breakdown utilization determination leverages our iterative schedulability
-and preemption point placement algorithm as outlined in the following steps below
-as given in Algorithm~\ref{alg:iterative-breakdown-utilization-algo}.
+For each task, the set of shared LCBs are calculated at each program point. Taking the maximum shared LCB count for any task is safe and appropriate for calculating ${U^*}$.
+
+For ${BEPP}$, the maximum shared LCB counts obtained in the earlier evaluation serve as input. Lastly, for ${EPP}$, the shared LCB counts obtained in the earlier evaluation serve as input for our Explicit Preemption Point algorithm.  The last input variables required for both approaches are ${C_i}$ and ${BRT}$. ${C_i}$ was captured as the total number of cycles required to complete the task without preemptions. The breakdown utilization study sweeps the ${BRT}$ parameter from 10 ${{\mu}s}$ to 390 ${{\mu}s}$, representing values across several different types of processors.
+
+The breakdown utilization determination leverages our iterative schedulability and preemption point placement algorithm as outlined in the following steps below as given in Algorithm~\ref{alg:iterative-breakdown-utilization-algo}.
 %{\fontsize{10}{10}\selectfont
 \begin{algorithm}
 \caption{Breakdown Utilization Evaluation Algorithm}
@@ -378,13 +307,12 @@ the utilization change is less than some tolerance.
 \end{algorithmic}
 \end{algorithm}
 %}
-Using ten tasks, the breakdown utilization comparison between ${UOE}$,
-${Bertoga EPP}$, and ${EPP}$ are summarized in the figure below.
+Using ten tasks, the breakdown utilization comparison between ${UOE}$, ${BEPP}$, and ${EPP}$ are summarized in Figure~\ref{fig:breakdown_utilization}.
 \begin{figure}[h!]
 \vspace{-10pt}
 \begin{center}
 \includegraphics[width=\linewidth]{eps/breakdown.eps}
-\caption{Breakdown Utilization.}
+\caption{Breakdown Utilization Comparison.}
 \label{fig:breakdown_utilization}
 \end{center}
 \vspace{-10pt}
@@ -409,12 +337,8 @@ ${Bertoga EPP}$, and ${EPP}$ are summarized in the figure below.
 %\normalsize
 %\vspace{-20pt}
 %\end{table}
-Compared to \cite{lunniss:13} this evaluation of ${UOE}$ has a
-breakdown utilization 17\% lower. This is likely due to the
-(differing) selection of tasks and estimation of UCBs. The data used
-in \cite{lunniss:13} does not include UCB information per basic block,
-which is required for ${EPP}$. Necessitating the generation of new
-UCB estimations per task.
+The breakdown utilization results indicate that $BEPP$ dominates the $UOE$ algorithm primarily due to the limited preemption model utilizing CRPD cost at the basic block level.  $EPP$ dominates $BEPP$ resulting from the more accurate location aware CRPD cost used in our preemption point placement algorithm.  As expected, the breakdown utilization converges for all three methods convergence for small ${BRT}$ values.
+%Compared to \cite{lunniss:13} this evaluation of ${UOE}$ has an average breakdown utilization approximately 17\% lower. This is likely due to a %different selection of benchmark tasks and our subsequent estimation technique used for computing the set of UCBs. The data used in \cite{lunniss:13} %does not include UCB information per basic block, which is required for ${BEPP}$ and ${EPP}$, thereby necessitating the generation of new LCB estimates %for each task.
 %
 %\clearpage
 %

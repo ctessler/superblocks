@@ -15,19 +15,25 @@ effectively illustrates how the individual tasks non-preemption
 region parameters $Q_i$ and the optimal selected preemption points will
 eventually converge.  Furthermore, our enhanced algorithm was demonstrated to be
 optimal in that if a feasible schedule is not found, then no feasible
-schedule exists by any method.  Our algorithm was shown to run in quadratic time
-complexity.  Potential preemption points can be defined automatically
-using Gaisler's compiler and simulator along with AbsInt's
+schedule exists by any known method utilizing a static $Q_i$ value.  Our algorithm
+was shown to run in quadratic time complexity.  Potential preemption points can be
+defined automatically using Gaisler's compiler and simulator along with AbsInt's
 a\textsuperscript{3} tool or defined manually by the programmer during design
 and implementation. Our experiments demonstrated the effectiveness of
 the enhanced CRPD calculation by illustrating the benefits using the
-task set from Malardalen University of Sweden's WCET benchmark suite~\cite{mrtc:01}.
+task set from the MRTC WCET benchmark suite~\cite{mrtc:01}.
 We also demonstrated the benefits of our enhanced limited optimal preemption
 point placement algorithm and its increased system schedulability as
 compared to other algorithms.  While our task model is defined using a linear
 sequence of basic blocks, it was deemed a highly suitable model to introduce
 our revised methods for enhanced CRPD calculation and optimal limited
-preemption point placement.  In future work, we plan to 1) a schedulability comparison
-of synthetic task set for various preemption models, and 2) remove the linear
-basic block restriction thereby permitting arbitrarily connected basic
+preemption point placement.  The need to subsume higher level programming constructs
+being the prominent assumption of the linear basic block structure can potentially
+diminish the utility of our approach if the non-preemptive execution time of any basic block
+violates the constraint \begin{math}C_{i}^{NP}\end{math} \begin{math}>\end{math} \begin{math}Q_{i}\end{math}.
+%To overcome this limitation in future work, we plan to relax the linear basic block structure assumption and
+%address arbitrarily connected basic block structures.
+In future work, we plan to 1) extend the techniques described here to set-associative caches,
+2) perform a schedulability comparison of synthetic task set for various preemption models, and
+3) remove the linear basic block restriction thereby permitting arbitrarily connected basic
 block structures.
