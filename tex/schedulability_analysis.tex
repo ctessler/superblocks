@@ -9,31 +9,32 @@ The modified preemption cost as a function of the current and next preemption po
 \end{equation}
 %
  \noindent
- where \begin{math}\pi\end{math} is the pipeline cost, \begin{math}\sigma\end{math} is the scheduler processing cost, and \begin{math}\eta()\end{math} is the front side bus contention resulting from the cache reload interference as described in~\cite{pellizzoni:07},~\cite{pellizzoni:08}, ~\cite{pellizzoni:11}.
- %Commensurate with our worst case analysis, the preemption overhead cost as a function of the current and next selected preemption points is:
+ where \begin{math}\pi\end{math} is the pipeline cost, \begin{math}\sigma\end{math} is the scheduler processing cost, and \begin{math}\eta()\end{math} is the front side bus contention resulting from the cache reload interference as described in~\cite{pellizzoni:07,pellizzoni:08,pellizzoni:11}.
+%Commensurate with our worst case analysis, the preemption overhead cost as a function of the current and next %selected preemption points is:
 %\begin{equation}\label{eqn:prempt-cost}
 %    \xi_{i}(\delta_{i}^{curr},\delta_{i}^{next}) = \textit{max}_{k \in hp(i)} [ \xi_{i}(\delta_{i}^{curr},\delta_{i}^{next},\tau_{k})].
 %\end{equation}
 %
-The output of our algorithm is an optimal set of preemption points subject to the maximum allowable non-preemption region \begin{math}Q_{i}\end{math}.  The optimal set of preemption points obtained using the enhanced accuracy of our preemption cost computation is used to calculate each task's WCET with preemption overhead given by:
+The output of our algorithm is an optimal set of preemption points, with respect to our computed preemption cost $\xi_i()$, subject to the maximum allowable non-preemption region \begin{math}Q_{i}\end{math}.  The optimal set of preemption points obtained using the enhanced accuracy of our preemption cost computation is used to calculate each task's WCET with preemption overhead given by:
 \begin{equation}\label{eqn:wcet-cost}
    C_{i} = B_{i}(\rho_{i}) = C_{i}^{NP} + \sum_{m=1}^{|\rho_{i}|-1} [\xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1})]
 \end{equation}
 \noindent
-where \begin{math}\rho_{i}\end{math} is the set of selected preemption points for task \begin{math}\tau_{i}\end{math}:
+where $\rho_i \subset \{\delta_i^0, \delta_i^1,  \ldots, \delta_i^{N_i}\}$ is an ordered set by ascending index of selected preemption points for task \begin{math}\tau_{i}\end{math}:
+%\begin{math}\rho_{i}\end{math} is the set of selected preemption points for task
 \begin{equation*}\label{eqn:pp-set}
 \begin{split}
-   \rho_{i} \stackrel{\text{def}}{=} \{\delta_{i}^{m}|&\delta_{i}^{m} \text{ is a selected preemption point of task } \tau_{i}\ \\ &\wedge m \in [1, 2, \ldots, N_{i}]\}
+   \rho_{i} \stackrel{\text{def}}{=} \{\delta_{i}^{m}|&\delta_{i}^{m} \text{ is a selected preemption point of task } \tau_{i}\ \\ &\wedge m \in [0, 1, 2, \ldots, N_{i}]\}
 \end{split}
 \end{equation*}
 %
 \noindent
-and \begin{math}\rho_{i}^{m}\end{math} is the \textrm{$m^{th}$} selected preemption point for task \begin{math}\tau_{i}\end{math}:
-\begin{equation*}\label{eqn:pp-mth}
-\begin{split}
-   \rho_{i}^{m} \stackrel{\text{def}}{=} \{\delta_{i}^{j}|&\delta_{i}^{j} \text{ is the $m^{th}$ selected preemption point of task } \tau_{i}\ \\ &\wedge j \in [1, 2, \ldots, N_{i}]\}
-\end{split}
-\end{equation*}
+and \begin{math}\rho_{i}^{m}\end{math} is the \textrm{$m^{th}$} selected preemption point for task \begin{math}\tau_{i}\end{math}.  To further clarify what we mean by preemption, we say that $\delta_i^m$ is a ``preemption point'' if the preemption between basic blocks $\delta_i^m$ and $\delta_i^{m+1}$ is enabled, meaning the scheduler may preempt between these two basic blocks.  Commensurate with our preemption point placement algorithm discussed later, preemptions are always taken at basic blocks $\delta_i^0$ and $\delta_i^{N_i}$ hence $\delta_i^0,\ \delta_i^{N_i}\ \in\ \rho_{i}$.
+%\begin{equation*}\label{eqn:pp-mth}
+%\begin{split}
+%   \rho_{i}^{m} \stackrel{\text{def}}{=} \{\delta_{i}^{j}|&\delta_{i}^{j} \text{ is the $m^{th}$ selected %preemption point of task } \tau_{i}\ \\ &\wedge j \in [0, 1, 2, \ldots, N_{i}]\}
+%\end{split}
+%\end{equation*}
 %
 \noindent
 The complete problem formulation with constraints for finding the minimum WCET with preemption overhead cost \begin{math}B_{i}(\rho_{i})\end{math} for task \begin{math}\tau_{i}\end{math} is given by:
@@ -45,7 +46,8 @@ The complete problem formulation with constraints for finding the minimum WCET w
 \end{equation}
 %
 \noindent
-The selection of optimal preemption points is subject to the constraint \begin{math}\Psi_{i}(\rho_{i})\end{math} that no non-preemptive region in task \begin{math}\tau_{i}\end{math} exceeds the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math}: \begin{equation}\label{eqn:global-pp-constraint}
+The selection of optimal preemption points is subject to the constraint \begin{math}\Psi_{i}(\rho_{i})\end{math} that no non-preemptive region in task \begin{math}\tau_{i}\end{math} exceeds the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math}: 
+\begin{equation}\label{eqn:global-pp-constraint}
    \Psi_{i}(\rho_{i}) =
 \left\{
 \begin{array}{lr}
@@ -56,9 +58,10 @@ The selection of optimal preemption points is subject to the constraint \begin{m
 \end{equation}
 %
 \noindent
-where \begin{math}q_{i}^{m}(\rho_{i})\end{math} represents the \begin{math}m^{th}\end{math} non-preemptive-region (NPR) time for task \begin{math}\tau_{i}\end{math}:
+where \begin{math}q_{i}^{m}(\rho_{i})\end{math} represents the \begin{math}m^{th}\end{math} non-preemptive-region (NPR) time for task \begin{math}\tau_{i}\end{math}, capturing the cost of the preemption $\rho_i^m$ given that $\rho_i^{m+1}$ is the next selected preemption point, plus the basic block cost of all blocks between $\rho_i^m$ and $\rho_i^{m+1}$:
 \begin{equation}\label{eqn:global-mthnpr-time}
-   q_{i}^{m}(\rho_{i}) = \Big[\xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1}) + \sum_{n=\rho_{i}^{m}}^{\rho_{i}^{m+1}}b_{i}^{n}\Big]
+   q_{i}^{m}(\rho_{i}) = \Big[\xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1}) +
+   \sum_{n: \delta_i^n \in \{\rho_i^m,\ldots, \rho_i^{m+1}\}} b_{i}^{n}\Big]
 \end{equation}
 \noindent
 %\newline
@@ -76,19 +79,27 @@ Our approach employs the results of schedulability analysis and the aforemention
 \noindent
 where \begin{math}q_{i}(\delta_{i}^{j},\delta_{i}^{k})\end{math} represents a possible candidate optimal non-preemptive-region (NPR) time with successive preemption points at basic block locations \begin{math}\delta_{i}^{j}\end{math} and \begin{math}\delta_{i}^{k}\end{math} for task \begin{math}\tau_{i}\end{math}:
 \begin{equation}\label{eqn:mthnpr-time}
-   q_{i}(\delta_{i}^{j},\delta_{i}^{k}) = \Big[\xi_{i}(\delta_{i}^{j},\delta_{i}^{k}) + \sum_{n=\delta_{i}^{j}}^{\delta_{i}^{k}}b_{i}^{n}\Big]
+   q_{i}(\delta_{i}^{j},\delta_{i}^{k}) = \Big[\xi_{i}(\delta_{i}^{j},\delta_{i}^{k}) + \sum_{n=j+1}^{k}b_{i}^{n}\Big]
 \end{equation}
 
 \noindent
-We propose an O(N!) recursive relation shown in equation (\ref{eqn:bbkwcet-cost}) that computes the WCET including preemption cost used in the dynamic programming algorithm for selecting the optimal preemption points. While the recursive formulation is clearly inefficient, it is helpful in developing an understanding of how the algorithm works. We compute the WCET including preemption cost for each potential preemption point \begin{math}\delta_{i}^{k}\end{math} using the term \begin{math}B_{i}(\delta_{i}^{k})\end{math} for task \begin{math}\tau_{i}\end{math} as given by:
+The next expression gives a recursive solution to the CRPD+WCET minimization problem for the subproblem of the first $i$ basic blocks.  This recursive formulation is necessary for developing the dynamic programming solution presented in the next section.  We compute the WCET including the preemption point $\delta_i^k$ using the term \begin{math}B_{i}(\delta_{i}^{k})\end{math} for task \begin{math}\tau_{i}\end{math} as given by:
+%We propose an O(N!) recursive relation shown in equation (\ref{eqn:bbkwcet-cost}) that computes the WCET %including preemption cost used in the dynamic programming algorithm for selecting the optimal preemption %points. While the recursive formulation is clearly inefficient, it is helpful in developing an understanding of %how the algorithm works. We compute the WCET including preemption cost for each potential preemption point %\begin{math}\delta_{i}^{k}\end{math} using the term \begin{math}B_{i}(\delta_{i}^{k})\end{math} for task %\begin{math}\tau_{i}\end{math} as given by:
+%\begin{equation}\label{eqn:bbkwcet-cost-old}
+%\begin{split}
+%   B_{i}(\delta_{i}^{k}) = \min_{m \in \{0,1, \ldots, k-1\}}
+%   \Big\{\Big[&B_{i}(\delta_{i}^{m}) + q_{i}(\delta_{i}^{m},\delta_{i}^{k})\Big]\ |\\
+%   &\Psi_{i}(\delta_{i}^{m},\delta_{i}^{k})\ =\ True\Big\}
+%\end{split}
+%\end{equation}
+%
 \begin{equation}\label{eqn:bbkwcet-cost}
 \begin{split}
-   B_{i}(\delta_{i}^{k}) = \min_{\delta_{i}^{m} \in [\delta_{i}^{0},\delta_{i}^{k}]}
+   B_{i}(\delta_{i}^{k}) = \min_{m \in \{0,1, \ldots, k-1\}}
    \Big\{\Big[&B_{i}(\delta_{i}^{m}) + q_{i}(\delta_{i}^{m},\delta_{i}^{k})\Big]\ |\\
-   &\Psi_{i}(\delta_{i}^{m},\delta_{i}^{k})\ =\ True\Big\}
+   &\Psi_{i}(\delta_{i}^{m},\delta_{i}^{k})\ =\ True\ \wedge\\&k\ \in\ \{1, 2, \ldots, N_i\}\Big\}
 \end{split}
 \end{equation}
-%
 %In accordance with the recursive nature of equation (\ref{eqn:bbkwcet-cost}) we propose an O(N!) recursive %algorithm shown in Algorithm~\ref{alg:recursive-optimal-ppp} for computing the optimal preemption points.  %While the recursive formulation is clearly inefficient, it is helpful in developing an understanding of how the %algorithm works.
 %\noindent
 %\begin{equation}\label{eqn:global-pp-constraint}
@@ -197,11 +208,11 @@ We propose an O(N!) recursive relation shown in equation (\ref{eqn:bbkwcet-cost}
 %\end{algorithm}
 %}
 \noindent
-The recursive formulation gives a preliminary algorithm description, however, it is computationally intractable.  We now propose an \begin{math}O(cN^{2})\end{math} dynamic programming algorithm for computing the optimal preemption points.  In support of our dynamic programming algorithm, we propose the following theorem claiming optimal substructure of our solution formulation in terms of the WCET + CRPD cost $B_{i}(\delta_{i}^{k})$.
+For the base case where $\textrm{k = 0}$, we have $B_{i}(\delta_{i}^{0}) = 0.$  The following theorem shows our problem has optimal substructure and thus the formulation of Equation~\ref{eqn:bbkwcet-cost} represents an optimal solution.
 
 \begin{theorem}
 \label{thm:optimal-substructure-cost}
-The WCET + CRPD cost variable $B_{i}(\delta_{i}^{k})$ utilized in our solution exhibits optimal substructure.
+The WCET + CRPD cost variable $B_{i}(\delta_{i}^{k})$ utilized in Equation~\ref{eqn:bbkwcet-cost} exhibits optimal substructure.
 \end{theorem}
 %
 %\noindent

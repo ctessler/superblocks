@@ -1,7 +1,7 @@
 %\vspace{-5pt}
 \section{CRPD Computation}\label{sec:crpd_computation}
 
-While existing research has focused on computing the upper bounds on cache related preemption delay (CRPD), our approach achieves higher accuracy by computing the \emph{re-loaded cache blocks} (LCBs) due to higher priority task preemption by using the set of potential/chosen preemption locations.  Consistent with the literature the sets of various cache blocks CBs are represented as sets of integers.  We employ the CRPD terms UCB and ECB as defined by Lee et. al.~\cite{lee:98} and by Altmeyer and Burguiere~\cite{altmeyer:11c}.
+While existing research has focused on computing the upper bounds on cache related preemption delay (CRPD), our approach achieves higher accuracy by computing the \emph{loaded cache blocks} (LCBs) due to higher priority task preemption by using the set of potential/chosen preemption locations.  Consistent with the literature the sets of various cache blocks are represented as sets of integers.  We employ the CRPD terms UCB and ECB as defined by Lee et. al.~\cite{lee:98} and by Altmeyer and Burguiere~\cite{altmeyer:11c}.
 %Since the variables P and Q in the original are overloaded here, we modify the definition alternatively using %basic block identifiers.
 
 \begin{definition}
@@ -41,18 +41,18 @@ While existing research has focused on computing the upper bounds on cache relat
 %\noindent The notation
 %\begin{math}\textit{DC-UCB}_{\textrm{out}}(\delta_{i}^{j})\end{math} is the set of definitely cached useful cache blocks %cached in task \begin{math}\tau_{i}\end{math} post execution of basic block %\begin{math}\delta_{i}^{j}\end{math}.  Similarly, the notation %\begin{math}\textit{DC-UCB}_{in}(\delta_{i}^{j})\end{math} is the set of definitely cached useful cache blocks %cached in task \begin{math}\tau_{i}\end{math} pre-execution of basic block %\begin{math}\delta_{i}^{j}\end{math}.
 
-To capture the notion of what we are attempting to count, consider the set of replaced cache blocks (RCBs).
-
-\begin{definition}
-\textbf{Replaced cache block (RCB)}: A memory block of the preempted task is called a replaced cache block, if it is replaced during the execution of a preempting task.
-\end{definition}
-
-\noindent \begin{math}\textit{RCB}_{\textrm{out}}(\delta_{i}^{j},\tau_{k})\end{math} denotes preemption of task \begin{math}\tau_{i}\end{math} by task \begin{math}\tau_{k}\end{math} occurring immediately after basic block \begin{math}\delta_{i}^{j}\end{math}, where task \begin{math}\tau_{i}\end{math} at basic block location \begin{math}\delta_{i}^{j}\end{math} is a potential/selected preemption point in our preemption point placement algorithm described later.  We compute the set of replaced cache blocks (RCBs) as follows:
-\begin{equation}\label{eqn:rcb-formula}
+%To capture the notion of what we are attempting to count, consider the set of replaced cache blocks (RCBs).
+%
+%\begin{definition}
+%\textbf{Replaced cache block (RCB)}: A memory block of the preempted task is called a replaced cache block, if %it is replaced during the execution of a preempting task.
+%\end{definition}
+%
+%\noindent \begin{math}\textit{RCB}_{\textrm{out}}(\delta_{i}^{j},\tau_{k})\end{math} denotes preemption of task %\begin{math}\tau_{i}\end{math} by task \begin{math}\tau_{k}\end{math} occurring immediately after basic block %\begin{math}\delta_{i}^{j}\end{math}, where task \begin{math}\tau_{i}\end{math} at basic block location %\begin{math}\delta_{i}^{j}\end{math} is a potential/selected preemption point in our preemption point placement %algorithm described later.  We compute the set of replaced cache blocks (RCBs) as follows:
+%\begin{equation}\label{eqn:rcb-formula}
 %    \textit{RCB}_{\textrm{out}}(\delta_{i}^{j},\tau_{k}) = \textit{DC-UCB}_{\textrm{out}}(\delta_{i}^{j}) \cap
 %    \textit{ECB}(\tau_{k}).
-    \textit{RCB}_{\textrm{out}}(\delta_{i}^{j},\tau_{k}) = \textit{UCB}_{\textrm{out}}(\delta_{i}^{j}) \cap \textit{ECB}(\tau_{k}).
-\end{equation}
+%    \textit{RCB}_{\textrm{out}}(\delta_{i}^{j},\tau_{k}) = \textit{UCB}_{\textrm{out}}(\delta_{i}^{j}) \cap %\textit{ECB}(\tau_{k}).
+%\end{equation}
 %
 %\noindent where \begin{math}\textit{DC-UCB}_{\textrm{out}}(\delta_{i}^{j})\end{math} is the set of definitely cached %useful cache blocks for task \begin{math}\tau_{i}\end{math} post basic block
 %\noindent where \begin{math}\textit{UCB}_{\textrm{out}}(\delta_{i}^{j})\end{math} is the set of useful cache blocks for %task \begin{math}\tau_{i}\end{math} post basic block \begin{math}\delta_{i}^{j}\end{math} execution; and %\begin{math}\textit{ECB}(\tau_{k})\end{math} is the set of extrinsic evicting cache blocks of the preempting %task \begin{math}\tau_{k}\end{math}.
@@ -144,7 +144,7 @@ where
 %\begin{math}\textit{AUCB}_{\textrm{out}}(\delta_{i}^{x})\end{math} represents the accessed useful cache blocks or memory %of interest accessed by the preempted task \begin{math}\tau_{i}\end{math} at basic block %\begin{math}\delta_{i}^{x}\end{math}; and \begin{math}\delta_{i}^{j}\end{math} represents the current basic %block location.  This formula for \begin{math}\textit{LCB}(\delta_{i}^{j},\tau_{k})\end{math} results in the %accounting of loaded cache blocks where the reload occurs.  The algorithms for optimal preemption placement for %linear basic block structure use the preemption cost paid where The preemptions occur formula.
 %Once we have the set of cache blocks that must be re-loaded due to preemption, the CRPD related preemption %overhead may be computed as per below.
 \begin{equation}\label{eqn:crpd-formula}
-    \gamma(\delta_{i}^{curr},\delta_{i}^{next}) = | \textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next}) | \cdot BRT.
+    \gamma_{i}(\delta_{i}^{curr},\delta_{i}^{next}) = | \textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next}) | \cdot BRT.
 \end{equation}
 
 \noindent where BRT is the cache block reload time; and \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} represents the loaded cache blocks or memory accessed by the preempted task \begin{math}\tau_{i}\end{math} at basic block \begin{math}\delta_{i}^{curr}\end{math} caused by higher priority preempting tasks.
