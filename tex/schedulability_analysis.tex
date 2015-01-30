@@ -46,7 +46,7 @@ The complete problem formulation with constraints for finding the minimum WCET w
 \end{equation}
 %
 \noindent
-The selection of optimal preemption points is subject to the constraint \begin{math}\Psi_{i}(\rho_{i})\end{math} that no non-preemptive region in task \begin{math}\tau_{i}\end{math} exceeds the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math}: 
+The selection of optimal preemption points is subject to the constraint \begin{math}\Psi_{i}(\rho_{i})\end{math} that no non-preemptive region in task \begin{math}\tau_{i}\end{math} exceeds the maximum allowable non-preemption region parameter \begin{math}Q_{i}\end{math}:
 \begin{equation}\label{eqn:global-pp-constraint}
    \Psi_{i}(\rho_{i}) =
 \left\{
@@ -220,15 +220,29 @@ The WCET + CRPD cost variable $B_{i}(\delta_{i}^{k})$ utilized in Equation~\ref{
 %\newline
 \noindent
 \begin{proof}
-Let $B_{i}(\delta_{i}^{k})$ with its corresponding selected preemption points denoted by $\rho_{i}^{k}$ be the optimal limited preemption execution cost solution from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{k}$, and assume the optimal cost solution contains the basic block identified by $\delta_{i}^{m}$. Furthermore, let $B_{i}(\delta_{i}^{m})$ with selected preemption points denoted by $\rho_{i}^{m}$ and $q_{i}(\delta_{i}^{m},\delta_{i}^{k})$ be the optimal limited preemption execution cost from $\delta_{i}^{0}$ to $\delta_{i}^{m}$, respectively, contained in the optimal solution to the original problem. Three additional constraints are imposed where $\rho_{i}^{m} \subseteq \rho_{i}^{k}$ with $B_{i}(\delta_{i}^{m}) + q_{i}(\delta_{i}^{m},\delta_{i}^{k}) = B_{i}(\delta_{i}^{k})$. To prove optimal substructure, we need to prove that in order for the limited preemption execution cost $B_{i}(\delta_{i}^{k})$ to be optimal, the limited preemption execution costs $B_{i}(\delta_{i}^{m})$ and $q_{i}(\delta_{i}^{m},\delta_{i}^{k})$ must also be optimal solutions to their respective sub-problems.
+%Let $B_{i}(\delta_{i}^{k})$ with its corresponding selected preemption points denoted by $\rho_{i}^{k}$ be the optimal limited preemption execution cost solution from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{k}$, and assume the optimal cost solution contains the basic block identified by $\delta_{i}^{m}$. Furthermore, let $B_{i}(\delta_{i}^{m})$ with selected preemption points denoted by $\rho_{i}^{m}$ and $q_{i}(\delta_{i}^{m},\delta_{i}^{k})$ be the optimal limited preemption execution cost from $\delta_{i}^{0}$ to $\delta_{i}^{m}$, respectively, contained in the optimal solution to the original problem. Three additional constraints are imposed where $\rho_{i}^{m} \subseteq \rho_{i}^{k}$ with $B_{i}(\delta_{i}^{m}) + q_{i}(\delta_{i}^{m},\delta_{i}^{k}) = B_{i}(\delta_{i}^{k})$. 
+Let $\Delta_i^k$ be the subproblem of the sequential control flowgraph containing basic blocks $\{\delta_i^0, \delta_i^1, \ldots, \delta_i^{k}\}$.
+To prove optimal substructure, we show that we can obtain the optimal set of preemption points for minimizing the WCET+CRPD for any $\Delta_i^k$ by using the optimal solutions to subproblems $\Delta_i^0, \Delta_i^1, \ldots, \Delta_i^{k-1}$. .  Let $B_i(\delta_i^0), B_i(\delta_i^1), \ldots, B_i(\delta_i^{k-1})$ represent the cost of the optimal solution to these subproblems.  We need to show that Equation~\ref{eqn:bbkwcet-cost} represents the optimal cost to $\Delta_i^k$.
 
-Using proof by contradiction, assume there is a better solution $B_{i}^{'}(\delta_{i}^{m})$ with preemption points denoted as $\rho_{i}^{'m}$ for the sub-problem of determining the optimal limited preemption execution costs from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{m}$, such that $B_{i}^{'}(\delta_{i}^{m}) < B_{i}(\delta_{i}^{m})$ and $\rho_{i}^{'m} \neq \rho_{i}^{m}$. Since the solution for selecting the optimal preemption points from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{k}$ will work regardless of which set of preemption points are used, we could then use the better solution  $B_{i}^{'}(\delta_{i}^{m})$ and $\rho_{i}^{'m}$ to arrive at a lower cost solution to the original problem. Thus we have the following:
-\begin{equation}\label{eqn:pcost-bb-1}
-B_{i}(\delta_{i}^{k})\ =\ B_{i}(\delta_{i}^{m}) + q_{i}(\delta_{i}^{m},\delta_{i}^{k})
+By way of contradiction, assume there is a better feasible solution $\rho_{i}'$ for the sub-problem of determining the optimal limited preemption execution costs from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{k}$; that is, $B_{i}(\rho_{i}')$ is strictly smaller than the solution to $\Delta_i^k$ obtained in Equation~\ref{eqn:bbkwcet-cost} (i.e.,  $B_{i}(\delta_{i}^{k})$).  Let $\delta_i^{\ell}$ (where $\ell \in \{0, 1, \ldots, k-1\}$) be the last preemption point prior to $\delta_i^k$ in the set $\rho_{i}'$, and let $\rho_{i}''$ be the set of preemption points obtained from $\rho_{i}'$ by removing the preemption point after $\delta_i^k$ (i.e., $\rho_{i}''$ is a solution to $\Delta_i^{\ell}$).  Thus, we can represent the cost of the solution $\rho_{i}'$ (i.e., $B_i(\rho_{i}')$ by the left-hand-side of the following inequality:
+\begin{equation}\label{eqn:bi-deltai-lb}
+    B_i(\rho_{i}'') + q_i(\delta_i^{\ell}, \delta_i^k) < B_i(\delta_i^k).
 \end{equation}
-\begin{equation}\label{eqn:pcost-bb-2}
-B_{i}(\delta_{i}^{k})\ >\ B_{i}^{'}(\delta_{i}^{m}) + q_{i}^{'}(\delta_{i}^{m},\delta_{i}^{k})
+  
+Since $\rho_{i}'$ is a feasible solution to $\Delta_i^k$, it must be that $\Psi_i(\delta_i^{\ell}, \delta_i^k)$ is true.  Hence, from Equation~\ref{eqn:bbkwcet-cost}, we can obtain an upper bound on $B_i(\delta_i^k)$ by considering the solution to subproblem $\Delta_i^{\ell}$:
+\begin{equation}\label{eqn:bi-deltai-ub}
+    B_i(\delta_i^k) \leq B_i(\delta_i^{\ell}) + q_i(\delta_i^{\ell}, \delta_i^k).
 \end{equation}
-\noindent
-However this contradicts the original definition that $B_{i}(\delta_{i}^{k})$ and $\rho_{i}^{k}$ form an optimal solution to the problem. Therefore, the optimal limited preemption execution cost from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{k}$ contained in the original solution $B_{i}(\delta_{i}^{k})$ and $\rho_{i}^{k}$ must be an optimal solution to the sub-problem of determining the optimal limited preemption execution cost solution from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{k}$. Thus, the problem exhibits optimal substructure.
+
+Combining the inequalities of Equations~\ref{eqn:bi-deltai-lb} and~\ref{eqn:bi-deltai-ub}, we finally obtain $B_i(\rho_{i}'') < B_i(\delta_i^{\ell})$.  However, this contradicts our assumption at the beginning of the proof that $B_i(\delta_i^{\ell})$ represented an optimal solution to subproblem $\Delta_i^{\ell}$.  Thus, a solution $\rho_{i}'$ with smaller cost than $B_i(\delta_i^k)$ cannot exist and Equation~\ref{eqn:bbkwcet-cost} computes the minimum obtainable cost for the problem $\Delta_i^k$.
+
+%Since the solution for selecting the optimal preemption points from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{k}$ will work regardless of which set of preemption points are used, we could then use the better solution  $B_{i}^{'}(\delta_{i}^{m})$ and $\rho_{i}^{'m}$ to arrive at a lower cost solution to the original problem. Thus we have the following:
+%\begin{equation}\label{eqn:pcost-bb-1}
+%B_{i}(\delta_{i}^{k})\ =\ B_{i}(\delta_{i}^{m}) + q_{i}(\delta_{i}^{m},\delta_{i}^{k})
+%\end{equation}
+%\begin{equation}\label{eqn:pcost-bb-2}
+%B_{i}(\delta_{i}^{k})\ >\ B_{i}^{'}(\delta_{i}^{m}) + q_{i}^{'}(\delta_{i}^{m},\delta_{i}^{k})
+%\end{equation}
+%\noindent
+%However this contradicts the original definition that $B_{i}(\delta_{i}^{k})$ and $\rho_{i}^{k}$ form an optimal solution to the problem. Therefore, the optimal limited preemption execution cost from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{k}$ contained in the original solution $B_{i}(\delta_{i}^{k})$ and $\rho_{i}^{k}$ must be an optimal solution to the sub-problem of determining the optimal limited preemption execution cost solution from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{k}$. Thus, the problem exhibits optimal substructure.
 \end{proof}

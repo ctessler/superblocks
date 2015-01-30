@@ -1,7 +1,7 @@
 \vspace{-5pt}
 \section{Preemption Point Placement Algorithm}\label{sec:implementation}
 
-The recursive formulation gives a preliminary algorithm description, however, it is computationally intractable with running time O(N!).  We now propose an \begin{math}O(cN^{2})\end{math} dynamic programming algorithm for computing the optimal preemption points.  Our dynamic programming preemption point placement algorithm is summarized in Algorithm~\ref{alg:dynamic-optimal-ppp} shown below.  For each task $\tau_i$, we are given the following parameters: 1) the number of basic blocks $N_i$ , 2) the non-preemptive execution time of each basic block $b_i$, 3) the maximum allowable non-preemptive region $Q_i$, and 4) the preemption cost matrix $\xi_i$.  The preemption cost matrix $\xi_i$ is organized for each basic block \begin{math}\delta_{i}^{j}\end{math} and contains the preemption cost for all successor basic blocks of the task's control flow graph.  The minimum preemption cost up to all basic blocks is computed and stored in a matrix denoted $B_{i}$.  The $B_{i}$ matrix is initially seeded with the corresponding $q_i$ preemptive cost for basic block pairs that satisfy the constraint $q_{i}(\delta_{i}^{j},\delta_{i}^{k}) < Q_{i}$. All other entries are set to infinity.  As we consider whether each basic block $\delta_{i}^{k}$ is in the set of optimal preemption points, the location of the previous basic block $\delta_{i}^{j}$ with minimal preemption cost is stored in an array denoted $\rho_{prev}$.  The algorithm examines each basic block from \begin{math}\delta_{i}^{1}\end{math} to \begin{math}\delta_{i}^{N_i}\end{math} to minimize the preemption cost by traversing backwards from the current basic block $\delta_{i}^{k}$ under consideration in order to find the basic block $\delta_{i}^{j}$ with minimal preemption cost subject to the constraint $q_{i}(\delta_{i}^{j},\delta_{i}^{k}) < Q_{i}$.  While each basic block will have a predecessor with minimum preemption cost, the list of selected preemption points is obtained by starting with basic block $\delta_{i}^{N_i}$ and hopping to the predecessor basic block stored at $\rho_{prev}(\delta_{i}^{N_i})$, denoted $\delta_{i}^{m}$.  Basic blocks $\delta_{i}^{N_i}$ and $\delta_{i}^{m}$ are added to the optimal preemption point set $\rho_{i}$.  This basic block hopping process continues until basic block $\delta_{i}^{0}$ is reached.  The set $\rho_{i}$ contains the complete list of selected optimal preemption points.
+ Implementing a recursive algorithm directly from Equation~\ref{eqn:bbkwcet-cost} would lead to a computationally intractable implementation.  Instead, we now propose an \begin{math}O(N_i^{2})\end{math} dynamic programming algorithm for computing the optimal preemption points.  Our dynamic programming preemption point placement algorithm is summarized in Algorithm~\ref{alg:dynamic-optimal-ppp} shown below.  For each task $\tau_i$, we are given the following parameters: 1) the number of basic blocks $N_i$ , 2) the non-preemptive execution time of each basic block $b_i$, 3) the maximum allowable non-preemptive region $Q_i$, and 4) the preemption cost matrix $\xi_i$.  The preemption cost matrix $\xi_i$ is organized for each basic block \begin{math}\delta_{i}^{j}\end{math} and contains the preemption cost for all successor basic blocks of the task's control flow graph.  The minimum preemption cost up to all basic blocks is computed and stored in a matrix denoted $B_{i}$.  The $B_{i}$ matrix is initially seeded with the corresponding $q_i$ preemptive cost for basic block pairs that satisfy the constraint $q_{i}(\delta_{i}^{j},\delta_{i}^{k}) \leq Q_{i}$. All other entries are set to infinity.  As we consider whether each basic block $\delta_{i}^{k}$ is in the set of optimal preemption points, the location of the previous basic block $\delta_{i}^{j}$ with minimal preemption cost is stored in an array denoted $\rho_{prev}$.  The algorithm examines each basic block from \begin{math}\delta_{i}^{1}\end{math} to \begin{math}\delta_{i}^{N_i}\end{math} to minimize the preemption cost by traversing backwards from the current basic block $\delta_{i}^{k}$ under consideration in order to find the basic block $\delta_{i}^{j}$ with minimal preemption cost subject to the constraint $q_{i}(\delta_{i}^{j},\delta_{i}^{k}) \leq Q_{i}$.  While each basic block will have a predecessor with minimum preemption cost, the list of selected preemption points is obtained by starting with basic block $\delta_{i}^{N_i}$ and hopping to the predecessor basic block stored at $\rho_{prev}(\delta_{i}^{N_i})$, denoted $\delta_{i}^{m}$.  Basic blocks $\delta_{i}^{N_i}$ and $\delta_{i}^{m}$ are added to the optimal preemption point set $\rho_{i}$.  This basic block hopping process continues until basic block $\delta_{i}^{0}$ is reached.  The set $\rho_{i}$ contains the complete list of selected optimal preemption points.
 {\fontsize{10}{10}\selectfont
 \begin{algorithm}
 \caption{D.P. Optimal Preemption Point Placement}
@@ -9,21 +9,31 @@ The recursive formulation gives a preliminary algorithm description, however, it
 \begin{algorithmic}[1]
 \small
 \Function{$Select\_Optimal\_PPP$}{$N_{i}$,$b_{i}$,$Q_{i}$,$\xi_i$}
-\State {$C_{i}^{NP}\ \gets\ \infty\ q_{i}\ \gets\ \infty\ B_{i}\ \gets\ \infty\ \rho_{prev}\ \gets\ \{\delta_{i}^{0}\}$};
-\If {$b_{i}^{k} > Q_{i}\ for\ some\ k\ \in\ [1,N_{i}]$}
+%\State {$C_{i}^{NP}\ \gets\ \infty\ q_{i}\ \gets\ \infty\ B_{i}\ \gets\ \infty\ \rho_{prev}\ \gets\ \{\delta_{i}^{0}\}$};
+\State {$ B_{i}\ \gets\ \infty\ \rho_{prev}\ \gets\ \{\delta_{i}^{0}\}$};
+\If {$b_{i}^{k} > Q_{i}\ for\ some\ k\ \in\ \{1,\ldots, N_{i}\}$}
 \State\Return{INFEASIBLE;}
 \EndIf
-\For{$k: 2\leq k\leq N_{i}$}
-\State\Call{$Compute\_PPCost$}{$\delta_{i}^{k-1}$,$\delta_{i}^{k}$};
-\For{$j: k-1\geq j\geq 1\ and\ q_{i}(\delta_{i}^{j},\delta_{i}^{k}) < Q_{i}$}
+\State{$B_i(\delta_i^0)\ \gets\ 0$};
+%\State{$C_{i}^{NP}(\delta_{i}^{0}$,$\delta_{i}^{0}) \gets\ 0$};
+%\State{$q_i(\delta_{i}^{0}$,$\delta_{i}^{0}) \gets\ 0$};
+\For{$k: 0\leq k\leq N_{i}$}
+\State{$C_{i}^{NP}(\delta_{i}^{k}$,$\delta_{i}^{k}) \gets\ 0$};
+\State{$q_{i}(\delta_{i}^{k},\delta_{i}^{k}) \gets\ 0$};
+%\State\Call{$Compute\_PPCost$}{$\delta_{i}^{k-1}$,$\delta_{i}^{k}$};
+\For{$j: k-1\geq j\geq 0$}
 %\Comment{$Check\ preemption\ cost\ at\ BB\ \delta_{i}^{j}\ with\ preemption$}
 %\Comment{$at\ BB\ \delta_{i}^{0}\ and\ BB\ \delta_{i}^{k}$}
-\State\Call{$Compute\_PPCost$}{$\delta_{i}^{0}$,$\delta_{i}^{j}$};
-\State\Call{$Compute\_PPCost$}{$\delta_{i}^{j}$,$\delta_{i}^{k}$};
+%\State\Call{$Compute\_PPCost$}{$\delta_{i}^{0}$,$\delta_{i}^{j}$};
+%\State\Call{$Compute\_PPCost$}{$\delta_{i}^{j}$,$\delta_{i}^{k}$};
+\State{$C_{i}^{NP}(\delta_{i}^{j},\delta_{i}^{k}) \gets b_i^{j+1} + C_{i}^{NP}(\delta_{i}^{j+1},\delta_{i}^{k})$};
+\State{$q_{i}(\delta_{i}^{j},\delta_{i}^{k}) \gets\ \xi_i(\delta_{i}^{j},\delta_{i}^{k}) + C_{i}^{NP}(\delta_{i}^{j},\delta_{i}^{k})$};
+\If {$q_{i}(\delta_{i}^{j},\delta_{i}^{k}) \leq Q_{i}$}
 \State{$P_{cost}\ \gets\ B_{i}(\delta_{i}^{j})\ +\ q_{i}(\delta_{i}^{j},\delta_{i}^{k})$};
 \If {$P_{cost} < B_{i}(\delta_{i}^{k})$}
 \State{$B_{i}(\delta_{i}^{k}) \gets P_{cost}$};
 \State{$\rho_{prev}(\delta_{i}^{k}) \gets \delta_{i}^{j}$};
+\EndIf
 \EndIf
 \EndFor
 \EndFor
@@ -31,21 +41,22 @@ The recursive formulation gives a preliminary algorithm description, however, it
 \State\Return{FEASIBLE;}
 \EndFunction
 \\
-\Function{$Compute\_PPCost$}{$\delta_{i}^{j}$,$\delta_{i}^{k}$}
-\If {$q_{i}(\delta_{i}^{j},\delta_{i}^{k})$ = $\infty$}
-\State{$Compute\ \xi_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ using\ Equation\ (\ref{eqn:prempt-cost})$};
-\State{$Compute\ C_{i}^{NP}(\delta_{i}^{j}$,$\delta_{i}^{k})\ using\ Equation\ (\ref{eqn:c-np2})$};
-\State{$Compute\ q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ using\ Equation\ (\ref{eqn:mthnpr-time})$};
-\If {$q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ \leq\ Q_{i}\ and\ \delta_{i}^{j}\ =\ \delta_{i}^{0}$}
-\State{$B_{i}(\delta_{i}^{k}) \gets q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})$};
-\State{$\rho_{prev}(\delta_{i}^{k}) \gets \delta_{i}^{j}$};
-%\Else
-%\If {$j-k\ =\ 1$}
-%\State\Return{INFEASIBLE;}
+%\Function{$Compute\_PPCost$}{$\delta_{i}^{j}$,$\delta_{i}^{k}$}
+%\If {$q_{i}(\delta_{i}^{j},\delta_{i}^{k})$ = $\infty$}
+%\State{$Compute\ \xi_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ using\ Equation\ (\ref{eqn:prempt-cost})$};
+%\State{$Compute\ C_{i}^{NP}(\delta_{i}^{j}$,$\delta_{i}^{k})\ using\ Equation\ (\ref{eqn:c-np2})$};
+%%\State{$Compute\ q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ using\ Equation\ (\ref{eqn:mthnpr-time})$};
+%\State{$q_{i}(\delta_{i}^{j},\delta_{i}^{k}) \gets C_i^{NP}(\delta_{i}^{j},\delta_{i}^{k}) + \xi_i(\delta_{i}^{j},\delta_{i}^{k})$};
+%%\If {$q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})\ \leq\ Q_{i}\ and\ \delta_{i}^{j}\ =\ \delta_{i}^{0}$}
+%%\State{$B_{i}(\delta_{i}^{k}) \gets q_{i}(\delta_{i}^{j}$,$\delta_{i}^{k})$};
+%%\State{$\rho_{prev}(\delta_{i}^{k}) \gets \delta_{i}^{j}$};
+%%\Else
+%%\If {$j-k\ =\ 1$}
+%%\State\Return{INFEASIBLE;}
+%%\EndIf
+%%\EndIf
 %\EndIf
-\EndIf
-\EndIf
-\EndFunction
+%\EndFunction
 \\
 \Function{$Compute\_PPSet$}{$N_{i}$,$\rho_{prev}$}
 \State {Computes $\rho_{i}$ from $\rho_{prev}$ (Details omitted)}
