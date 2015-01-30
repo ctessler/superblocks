@@ -24,10 +24,10 @@ While existing research has focused on computing the upper bounds on cache relat
 \begin{equation}\label{eqn:ecb-task}
     \textit{ECB}(\tau_{k}) = \bigcup_{\delta_{k}^{j} \in \tau_{k}} \textit{ECB}(\delta_{k}^{j}).
 \end{equation}
-\noindent The notation \begin{math}\textit{ECB}(\delta_{k}^{j})\end{math} is the set of evicting cache blocks accessed in task \begin{math}\tau_{k}\end{math} during execution of basic block \begin{math}\delta_{k}^{j}\end{math}.
-
+\noindent The notation \begin{math}\textit{ECB}(\delta_{k}^{j})\end{math} is the set of evicting cache blocks accessed in task \begin{math}\tau_{k}\end{math} during execution of basic block \begin{math}\delta_{k}^{j}\end{math}.  In order to determine which cache blocks are reloaded once preemption occurs, we introduce the notion of an accessed useful cache block (AUCB).
+%
 %Altmeyer and Burguiere~\cite{altmeyer:11c} introduced a refinement of \textit{UCB} to capture extrinsic cache %blocks evicted due to inter-task preemption thereby removing the cache blocks evicted via intra-task %execution.
-
+%
 %\begin{definition}
 %\textbf{Definitely Cached Useful Cache Block (DC-UCB)}: A memory block $m$ is called a definitely cached useful %cache block at program point \begin{math}\delta_{i}^{j_{1}}\end{math}, if \\(a) $m$ must be cached at %\begin{math}\delta_{i}^{j_{1}}\end{math} and \\(b) $m$ may be reused at program point %\begin{math}\delta_{i}^{j_{2}}\end{math} that may be reached from \begin{math}\delta_{i}^{j_{1}}\end{math} %without eviction of $m$ on this path.
 %\end{definition}
@@ -56,10 +56,9 @@ While existing research has focused on computing the upper bounds on cache relat
 %
 %\noindent where \begin{math}\textit{DC-UCB}_{\textrm{out}}(\delta_{i}^{j})\end{math} is the set of definitely cached %useful cache blocks for task \begin{math}\tau_{i}\end{math} post basic block
 %\noindent where \begin{math}\textit{UCB}_{\textrm{out}}(\delta_{i}^{j})\end{math} is the set of useful cache blocks for %task \begin{math}\tau_{i}\end{math} post basic block \begin{math}\delta_{i}^{j}\end{math} execution; and %\begin{math}\textit{ECB}(\tau_{k})\end{math} is the set of extrinsic evicting cache blocks of the preempting %task \begin{math}\tau_{k}\end{math}.
-\noindent
+%\noindent
 %If a cache block is evicted there are two options in terms of where the preemption overhead cost can be paid: %1) the cost can be paid where the next memory accesses occur; or 2) The cost can also be paid where the %preemptions occur.  In order to determine which cache blocks are reloaded once preemption occurs, we introduce %the notion of an accessed useful cache block (AUCB).
 %If a cache block is evicted the cost is paid where the preemptions occur.
-In order to determine which cache blocks are reloaded once preemption occurs, we introduce the notion of an accessed useful cache block (AUCB).
 
 \begin{definition}
 \textbf{Accessed useful cache block (AUCB)}: A memory block of the preempted task is called an accessed useful cache block; if it may be accessed during the execution of a basic block \begin{math}\delta_{i}^{j}\end{math} for task \begin{math}\tau_{i}\end{math}.

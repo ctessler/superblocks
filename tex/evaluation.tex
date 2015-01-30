@@ -66,8 +66,8 @@ The results are presented as a comparison between our proposed method and the Be
 %\end{equation*}
 
 In the following graphs, each point in the graph represents two points in the program. The first point of the program ${\delta_i^j}$ is fixed by the x-axis. The y-axis indicates the shared LCB count with a later program
-point. The first graph shown in Figure~\ref{fig:recusion_data_cache} is for the recursion program of the MRTC benchmark suite.  The lines represent the minimum and maximum shared LCBs between various program points. 
-%The first graph, representing the recursion benchmark task data cache in Figure~\ref{fig:recusion_data_cache}, %shows the minimum and maximum shared LCBs between various program points. 
+point. The first graph shown in Figure~\ref{fig:recusion_data_cache} is for the recursion program of the MRTC benchmark suite.  The lines represent the minimum and maximum shared LCBs between various program points.
+%The first graph, representing the recursion benchmark task data cache in Figure~\ref{fig:recusion_data_cache}, %shows the minimum and maximum shared LCBs between various program points.
 At each point on the graph, the index of the next preemption point associated with the respective minimum or maximum graph value at that location is shown.  At program point ${\delta_i^4}$, the minimum CRPD value is coupled with program point ${\delta_i^7}$ having a shared LCB count of 14 whereas the single-valued CRPD computation method finds 24 shared LCBs coupled at program point ${\delta_i^5}$.
 %
 \begin{figure}[h!]
@@ -337,7 +337,7 @@ Using ten tasks, the breakdown utilization comparison between ${UOE}$, ${BEPP}$,
 %\normalsize
 %\vspace{-20pt}
 %\end{table}
-The breakdown utilization results indicate that $BEPP$ dominates the $UOE$ algorithm primarily due to the limited preemption model utilizing CRPD cost at the basic block level.  $EPP$ dominates $BEPP$ resulting from the more accurate location aware CRPD cost used in our preemption point placement algorithm.  As expected, the breakdown utilization converges for all three methods convergence for small ${BRT}$ values.
+The breakdown utilization results indicate that $BEPP$ dominates the $UOE$ algorithm primarily due to the limited preemption model utilizing CRPD cost at the basic block level.  $EPP$ dominates $BEPP$ resulting from the more accurate location aware CRPD cost used in our preemption point placement algorithm.  As expected, the breakdown utilization converges for all three methods for small ${BRT}$ values.
 %Compared to \cite{lunniss:13} this evaluation of ${UOE}$ has an average breakdown utilization approximately 17\% lower. This is likely due to a %different selection of benchmark tasks and our subsequent estimation technique used for computing the set of UCBs. The data used in \cite{lunniss:13} %does not include UCB information per basic block, which is required for ${BEPP}$ and ${EPP}$, thereby necessitating the generation of new LCB estimates %for each task.
 %
 %\clearpage
