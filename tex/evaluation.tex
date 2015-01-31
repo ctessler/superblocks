@@ -83,7 +83,19 @@ At each point on the graph, the index of the next preemption point associated wi
 To compare the two preemption point placement algorithms their selection of two program points is
 simulated by assuming ${Q_i}$ is larger than the task's total execution time. Bertogna's algorithm would select the preemption point commensurate with the lowest value of the dashed line. Our algorithm would select the preemption point commensurate with the lowest value of the solid line.  The difference between the performance of these two preemption point placement algorithms is an example of the benefit provided by considering location aware CRPD cost.
 
-The second graph represents the lms benchmark task data cache shown in Figure~\ref{fig:lms_data_cache}, and the third graph represents the adpcm benchmark task data cache shown in Figure~\ref{fig:adpcm_data_cache}. Similar to the recursion benchmark data cache, the variability in the minimum and maximum shared LCBs for each program point further exemplifies the benefit of using location aware CRPD cost in preemption point placement.  Maximum and minimum data cache costs for the other seven tasks show similar variability but are not shown here due to space limitations.
+The second graph represents the lms benchmark task data cache shown in
+Figure~\ref{fig:lms_data_cache}, and the third graph represents the
+adpcm benchmark task data cache shown in
+Figure~\ref{fig:adpcm_data_cache}. Similar to the recursion benchmark
+data cache, the variability in the minimum and maximum shared LCBs for
+each program point further exemplifies the benefit of using location
+aware CRPD cost in preemption point placement. Across all 
+benchmarks the CRPD cost was reduced or maintained compared to the
+Bertogna approach. Ranging from no benefit in the cnt benchmark, to a 68\%
+reduction of contributing cache lines in the bsort benchmark. Averaged
+over all benchmarks, the benefit is an 18.6\% decrease in cache lines
+contributing to the CRPD cost.
+
 \begin{figure}[h!]
 \vspace{-10pt}
 \begin{center}
@@ -104,47 +116,47 @@ The second graph represents the lms benchmark task data cache shown in Figure~\r
 \vspace{-10pt}
 \end{figure}
 %
-%\begin{table}[h!]
-%%{\fontsize{10}{10}\selectfont
-%\small
-%\begin{minipage}{\linewidth}
-%\centering
-%    \begin{tabular}{l | l | l || l | l | l}
-%      Task & Cache & Benefit & Task & Cache & Benefit\\
-%      \hline
-%
-%      adpcm & ${I}$ & 143 & fft1 & ${I}$ & 72 \\
-%            & ${D}$ & 5 & & ${D}$ & 13\\
-%      \hline
-%
-%      bsort & ${I}$ & 0 & fibcall & ${I}$ & 1 \\
-%            & ${D}$ & 0 & & ${D}$ & 1 \\
-%      \hline
-%
-%      cnt & ${I}$ & 63 & lms & ${I}$ & 158 \\
-%          & ${D}$ & 2 & & ${D}$ & 18 \\
-%      \hline
-%
-%      cover & ${I}$ & 135 & ndes & ${I}$ & 96 \\
-%            & ${D}$ & 2 & & ${D}$ & 15 \\
-%      \hline
-%
-%      crc & ${I}$ & 18 & recursion & ${I}$ & 7 \\
-%          & ${D}$ & 1 & & ${D}$ & 10  \\
-%      \hline
-%
-%    \end{tabular}
-%    \bigskip
-%    \caption {Benefit of Proposed Method}
-%    \label{tab:proposed_method_benefit}
-%
-%    Benefit of Proposed Method
-%    \bigskip
-%\end{minipage}
-%\normalsize
-%}
-%\vspace{-20pt}
-%\end{table}
+%% \begin{table}[h!]
+%% {\fontsize{10}{10}\selectfont
+%% \small
+%% \begin{minipage}{\linewidth}
+%% \centering
+%%    \begin{tabular}{l | l | l || l | l | l}
+%%      Task & Cache & Benefit & Task & Cache & Benefit\\
+%%      \hline
+
+%%      adpcm & ${I}$ & 143 & fft1 & ${I}$ & 72 \\
+%%            & ${D}$ & 5 & & ${D}$ & 13\\
+%%      \hline
+
+%%      bsort & ${I}$ & 0 & fibcall & ${I}$ & 1 \\
+%%            & ${D}$ & 0 & & ${D}$ & 1 \\
+%%      \hline
+
+%%      cnt & ${I}$ & 63 & lms & ${I}$ & 158 \\
+%%          & ${D}$ & 2 & & ${D}$ & 18 \\
+%%      \hline
+
+%%      cover & ${I}$ & 135 & ndes & ${I}$ & 96 \\
+%%            & ${D}$ & 2 & & ${D}$ & 15 \\
+%%      \hline
+
+%%      crc & ${I}$ & 18 & recursion & ${I}$ & 7 \\
+%%          & ${D}$ & 1 & & ${D}$ & 10  \\
+%%      \hline
+
+%%    \end{tabular}
+%%    \bigskip
+%%    \caption {Benefit of Proposed Method}
+%%    \label{tab:proposed_method_benefit}
+
+%% %   Benefit of Proposed Method
+%%    \bigskip
+%% \end{minipage}
+%% \normalsize
+%% }
+%% \vspace{-20pt}
+%% \end{table}
 %
 %\begin{minipage}{\linewidth}
 %\centering
