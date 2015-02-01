@@ -1,10 +1,11 @@
 %\vspace{-10pt}
 \section{Related Work}\label{sec:related}
 
+This paper draws from two areas of real-time theory resulting in two significant contributions. Hence, the descriptions of the related works are divided into two separate subsections, namely, CRPD Calculation, and Limited Preemption Scheduling.
 \subsection {CRPD Calculation}\label{sec:crpd_related_work}
 Analyzing the preempted task, Lee et al.~\cite{lee:96,lee:97,lee:98} introduced the concept and algorithm for computing the set of useful cache blocks (UCB) for statically addressed instruction and data for direct mapped and set-associative caches.
 %where dynamic memory accesses are treated as cache misses.
-The UCBs of the preempted task are used to compute the CRPD, which is simply the cardinality of the UCB set times the cache block reload time (BRT).
+The UCBs of the preempted task are used to compute an upper bound on the CRPD.
 \newline
 \indent
 Analyzing the preempting task, Tomiyamay and Dutt~\cite{tomiyamay:00} computed the set of evicting cache blocks (ECBs) via program path analysis formulating an integer linear programming model for direct mapped instruction caches.
@@ -38,7 +39,7 @@ Two closely related subsequent works implementing a fixed preemption point model
 In contrast, Bertogna et. al.~\cite{bertogna:10} achieved an optimal preemption point placement algorithm with linear time complexity.  The analysis assumed a pessimistic fixed constant context switch cost at each preemption point equal to the largest preemption overhead experienced by a task.  Later work by Bertogna et. al.~\cite{bertogna:11} relaxes the fixed constant context switch assumption using more accurate variable preemption overhead cost information via available timing analysis tools.  Additionally, Peng et. al.~\cite{peng:14} proposed a pseudo-polynomial preemption point placement algorithm for control flow graphs with arbitrarily nested conditional program structures.  The CRPD cost model used in these papers does not take into account the interdependency between selected preemption points.
 \newline
 \indent
-Our work improves these results by computing the cache related preemption delay (CRPD) contribution to the variable preemption overhead cost as a function of the current and next selected preemption points.  Our method not only accounts for the cache blocks evicted due to preemption, but also accounts for the cache blocks that are reloaded during execution between preemption points thereby improving the accuracy of marginal CRPD computations for multiple nested preemptions.  
+Our work improves these results by computing the cache related preemption delay (CRPD) contribution to the variable preemption overhead cost as a function of the current and next selected preemption points.  Our method not only accounts for the cache blocks evicted due to preemption, but also accounts for the cache blocks that are reloaded during execution between preemption points thereby improving the accuracy of marginal CRPD computations for multiple nested preemptions.
 %Future work will incorporate our enhanced CRPD cost model into control flow graphs with arbitrarily nested %conditional program structures.
 Due to the variability in CRPD and preemption overhead cost, we propose a dynamic programming algorithm to realize a globally optimal preemption point placement that further minimizes the number of preemptions and the preemption overhead cost due to the increased CRPD accuracy.
 %The dynamic programming algorithm assumes a linear basic block structure with high level programming language %constructs fully contained within the basic block.

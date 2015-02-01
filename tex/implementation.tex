@@ -1,7 +1,9 @@
 \vspace{-5pt}
 \section{Preemption Point Placement Algorithm}\label{sec:implementation}
 
- Implementing a recursive algorithm directly from Equation~\ref{eqn:bbkwcet-cost} would lead to a computationally intractable implementation.  Instead, we now propose an \begin{math}O(N_i^{2})\end{math} dynamic programming algorithm for computing the optimal preemption points.  Our dynamic programming preemption point placement algorithm is summarized in Algorithm~\ref{alg:dynamic-optimal-ppp} shown below.  For each task $\tau_i$, we are given the following parameters: 1) the number of basic blocks $N_i$ , 2) the non-preemptive execution time of each basic block $b_i$, 3) the maximum allowable non-preemptive region $Q_i$, and 4) the preemption cost matrix $\xi_i$.  The preemption cost matrix $\xi_i$ is organized for each basic block \begin{math}\delta_{i}^{j}\end{math} and contains the preemption cost for all successor basic blocks of the task's control flow graph.  The minimum preemption cost up to all basic blocks is computed and stored in a matrix denoted $B_{i}$.  The $B_{i}$ matrix is initially seeded with the corresponding $q_i$ preemptive cost for basic block pairs that satisfy the constraint $q_{i}(\delta_{i}^{j},\delta_{i}^{k}) \leq Q_{i}$. All other entries are set to infinity.  As we consider whether each basic block $\delta_{i}^{k}$ is in the set of optimal preemption points, the location of the previous basic block $\delta_{i}^{j}$ with minimal preemption cost is stored in an array denoted $\rho_{prev}$.  The algorithm examines each basic block from \begin{math}\delta_{i}^{1}\end{math} to \begin{math}\delta_{i}^{N_i}\end{math} to minimize the preemption cost by traversing backwards from the current basic block $\delta_{i}^{k}$ under consideration in order to find the basic block $\delta_{i}^{j}$ with minimal preemption cost subject to the constraint $q_{i}(\delta_{i}^{j},\delta_{i}^{k}) \leq Q_{i}$.  While each basic block will have a predecessor with minimum preemption cost, the list of selected preemption points is obtained by starting with basic block $\delta_{i}^{N_i}$ and hopping to the predecessor basic block stored at $\rho_{prev}(\delta_{i}^{N_i})$, denoted $\delta_{i}^{m}$.  Basic blocks $\delta_{i}^{N_i}$ and $\delta_{i}^{m}$ are added to the optimal preemption point set $\rho_{i}$.  This basic block hopping process continues until basic block $\delta_{i}^{0}$ is reached.  The set $\rho_{i}$ contains the complete list of selected optimal preemption points.
+ Implementing a recursive algorithm directly from Equation~\ref{eqn:bbkwcet-cost} would lead to a computationally intractable implementation.  Instead, we now propose an \begin{math}O(N_i^{2})\end{math} dynamic programming algorithm for computing the optimal preemption points.  Our dynamic programming preemption point placement algorithm is summarized in Algorithm~\ref{alg:dynamic-optimal-ppp} shown below.  For each task $\tau_i$, we are given the following parameters: 1) the number of basic blocks $N_i$ , 2) the non-preemptive execution time of each basic block $b_i$, 3) the maximum allowable non-preemptive region $Q_i$, and 4) the preemption cost matrix $\xi_i$.  The preemption cost matrix $\xi_i$ is organized for each basic block \begin{math}\delta_{i}^{j}\end{math} and contains the preemption cost for all successor basic blocks of the task's control flow graph.  The minimum preemption cost up to all basic blocks is computed and stored in an array denoted $B_{i}$.  Each entry of the $B_i$ array is initialized to infinity.  
+ %The $B_{i}$ matrix is initially seeded with the corresponding $q_i$ preemptive cost for basic block pairs that %satisfy the constraint $q_{i}(\delta_{i}^{j},\delta_{i}^{k}) \leq Q_{i}$. 
+ As we consider whether each basic block $\delta_{i}^{k}$ is in the set of optimal preemption points, the location of the previous basic block $\delta_{i}^{j}$ with minimal preemption cost is stored in an array denoted $\rho_{prev}$.  The algorithm examines each basic block from \begin{math}\delta_{i}^{1}\end{math} to \begin{math}\delta_{i}^{N_i}\end{math} to minimize the preemption cost by traversing backwards from the current basic block $\delta_{i}^{k}$ under consideration in order to find the basic block $\delta_{i}^{j}$ with minimal preemption cost subject to the constraint $q_{i}(\delta_{i}^{j},\delta_{i}^{k}) \leq Q_{i}$.  While each basic block will have a predecessor with minimum preemption cost, the list of selected preemption points is obtained by starting with basic block $\delta_{i}^{N_i}$ and hopping to the predecessor basic block stored at $\rho_{prev}(\delta_{i}^{N_i})$, denoted $\delta_{i}^{m}$.  Basic blocks $\delta_{i}^{N_i}$ and $\delta_{i}^{m}$ are added to the optimal preemption point set $\rho_{i}$.  This basic block hopping process continues until basic block $\delta_{i}^{0}$ is reached.  The set $\rho_{i}$ contains the complete list of selected optimal preemption points.
 {\fontsize{10}{10}\selectfont
 \begin{algorithm}
 \caption{D.P. Optimal Preemption Point Placement}
@@ -116,7 +118,7 @@ The maximum blocking time \begin{math}Q_{i}\end{math} that each task may tolerat
 \label{alg:iterative-schedulability-optimal-ppp}
 \begin{algorithmic}[1]
 \small
-\State{Start with a task system that may or may not be feasible.}
+%\State{Start with a task system that may or may not be feasible.}
 \State{Assume the CRPD of the task system is initially zero.}
 %\Repeat
     \Repeat
@@ -126,13 +128,13 @@ The maximum blocking time \begin{math}Q_{i}\end{math} that each task may tolerat
         \end{varwidth}
         \State\begin{varwidth}[t]{\linewidth}
         Select optimal preemption points using our \par
-        \hskip\algorithmicindent dynamic programming algorithm.
+        \hskip\algorithmicindent dynamic programming algorithm and CRPD calculation.
         \end{varwidth}
         \State\begin{varwidth}[t]{\linewidth}
-        Compute the CRPD and the preemptive WCET \par
-        \hskip\algorithmicindent $C_i$ from the selected preemption points.
+        Compute the WCET + CRPD $C_i$ from the selected \par
+        \hskip\algorithmicindent preemption points.
         \end{varwidth}
-    \Until{the selected preemption points do not change.}
+    \Until{the selected preemption points do not change or the system is not feasible for the computed WCET + CRPD.}
 %    \If{the task system is feasible/schedulable}
 %        \State\begin{varwidth}[t]{\linewidth}
 %        Increase the system utilization by decreasing the \par

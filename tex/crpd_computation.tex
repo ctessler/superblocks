@@ -1,7 +1,7 @@
 %\vspace{-5pt}
 \section{CRPD Computation}\label{sec:crpd_computation}
 
-While existing research has focused on computing the upper bounds on cache related preemption delay (CRPD), our approach achieves higher accuracy by computing the \emph{loaded cache blocks} (LCBs) due to higher priority task preemption by using the set of potential/chosen preemption locations.  Consistent with the literature the sets of various cache blocks are represented as sets of integers.  We employ the CRPD terms UCB and ECB as defined by Lee et. al.~\cite{lee:98} and by Altmeyer and Burguiere~\cite{altmeyer:11c}.
+While existing research has focused on computing the upper bounds on cache related preemption delay (CRPD), our approach achieves higher accuracy by computing the \emph{loaded cache blocks} (LCBs), as defined below, due to higher priority task preemption by using the set of potential/chosen preemption locations.  Consistent with the literature the sets of various cache blocks are represented as sets of integers.  We employ the CRPD terms UCB and ECB as defined by Lee et. al.~\cite{lee:98} and by Altmeyer and Burguiere~\cite{altmeyer:11c}.
 %Since the variables P and Q in the original are overloaded here, we modify the definition alternatively using %basic block identifiers.
 
 \begin{definition}
@@ -13,7 +13,7 @@ While existing research has focused on computing the upper bounds on cache relat
 \begin{equation}\label{eqn:ucb-task}
     \textit{UCB}(\tau_{i}) = \bigcup_{\delta_{i}^{j} \in \tau_{i}} \textit{UCB}_{\textrm{out}}(\delta_{i}^{j}).
 \end{equation}
-\noindent The notation \begin{math}\textit{UCB}_{\textrm{out}}(\delta_{i}^{j})\end{math} is the set of useful cache blocks cached in task \begin{math}\tau_{i}\end{math} post execution of basic block \begin{math}\delta_{i}^{j}\end{math}.  Similarly, the notation \begin{math}\textit{UCB}_{in}(\delta_{i}^{j})\end{math} is the set of useful cache blocks cached in task \begin{math}\tau_{i}\end{math} pre-execution of basic block \begin{math}\delta_{i}^{j}\end{math}.
+\noindent The notation \begin{math}\textit{UCB}_{\textrm{out}}(\delta_{i}^{j})\end{math} is the set of useful cache blocks cached in task \begin{math}\tau_{i}\end{math} post-execution of basic block \begin{math}\delta_{i}^{j}\end{math}.  Similarly, the notation \begin{math}\textit{UCB}_{in}(\delta_{i}^{j})\end{math} is the set of useful cache blocks cached in task \begin{math}\tau_{i}\end{math} pre-execution of basic block \begin{math}\delta_{i}^{j}\end{math}.
 
 \begin{definition}
 \textbf{Evicting cache block (ECB)}: A memory block of the preempting task is called an evicting cache block, if it may be accessed during the execution of the preempting task.
@@ -24,7 +24,7 @@ While existing research has focused on computing the upper bounds on cache relat
 \begin{equation}\label{eqn:ecb-task}
     \textit{ECB}(\tau_{k}) = \bigcup_{\delta_{k}^{j} \in \tau_{k}} \textit{ECB}(\delta_{k}^{j}).
 \end{equation}
-\noindent The notation \begin{math}\textit{ECB}(\delta_{k}^{j})\end{math} is the set of evicting cache blocks accessed in task \begin{math}\tau_{k}\end{math} during execution of basic block \begin{math}\delta_{k}^{j}\end{math}.  In order to determine which cache blocks are reloaded once preemption occurs, we introduce the notion of an accessed useful cache block (AUCB).
+\noindent The notation \begin{math}\textit{ECB}(\delta_{k}^{j})\end{math} is the set of evicting cache blocks accessed in task \begin{math}\tau_{k}\end{math} during execution of basic block \begin{math}\delta_{k}^{j}\end{math}.  In order to determine which cache blocks may be reloaded once preemption occurs, we introduce the notion of an accessed useful cache block (AUCB).
 %
 %Altmeyer and Burguiere~\cite{altmeyer:11c} introduced a refinement of \textit{UCB} to capture extrinsic cache %blocks evicted due to inter-task preemption thereby removing the cache blocks evicted via intra-task %execution.
 %
@@ -75,12 +75,12 @@ While existing research has focused on computing the upper bounds on cache relat
 \noindent where \begin{math}\textit{UCB}_{\textrm{out}}(\delta_{i}^{j})\end{math} is the set of useful cache blocks for task \begin{math}\tau_{i}\end{math} post basic block \begin{math}\delta_{i}^{j}\end{math} execution; and \begin{math}\textit{ECB}(\delta_{i}^{j})\end{math} denotes the set of cache blocks accessed in task \begin{math}\tau_{i}\end{math} during execution of basic block \begin{math}\delta_{i}^{j}\end{math}. It is important to note that only cache block evictions due to preemption are considered, as intrinsic cache misses are captured as part of WCET analysis in the term \begin{math}C_{i}^{NP}\end{math}.  Using the previously defined terms, we may now define and explicitly compute the cache blocks that are re-loaded due to preemption which are called loaded cache blocks (LCBs).
 
 \begin{definition}
-\textbf{Loaded cache block (LCB)}: A memory block of the preempted task is called a loaded cache block, if it may be re-loaded during the execution following a preempting task.
+\textbf{Loaded cache block (LCB)}: A memory block of the preempted task is called a loaded cache block, if it may be re-loaded during the non-preemptive region (i.e., within a series of basic blocks with no preemptions) immediately following a preemption.
 \end{definition}
 \noindent
-\begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} denotes set set of cache blocks re-loaded during execution of the non-preemptive region between basic block \begin{math}\delta_{i}^{curr}\end{math} and basic block \begin{math}\delta_{i}^{next}\end{math}, resulting from preemption of task \begin{math}\tau_{i}\end{math}, where basic block location \begin{math}\delta_{i}^{curr}\end{math} and \begin{math}\delta_{i}^{next}\end{math} are the potential/selected preemption point and next potential/selected preemption point respectively.
+\begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} denotes set set of cache blocks re-loaded during execution of the non-preemptive region between basic block \begin{math}\delta_{i}^{curr}\end{math} and basic block \begin{math}\delta_{i}^{next}\end{math}, resulting from preemption of task \begin{math}\tau_{i}\end{math}, where basic block location \begin{math}\delta_{i}^{curr}\end{math} and \begin{math}\delta_{i}^{next}\end{math} are the potential/selected preemption point and next potential/selected preemption point respectively.  In our model, a preemption point located at basic block \begin{math}\delta_{i}^{curr}\end{math} occurs at the edge between \begin{math}\delta_{i}^{curr}\end{math} and \begin{math}\delta_{i}^{curr+1}\end{math}.
 
-The definition of \textit{LCB} is introduced to capture the set of reloaded cache memory at a specific basic block as a function of the current and next selected preemption points.  Here, we account for the overhead within a non-preemptive region (i.e., series of basic blocks with no preemptions) for reloading UCBs that could have potentially been evicted by the preemption occurring immediately after $\delta_i^{curr}$ and used by some basic block prior to the preemption occurring immediately after $\delta_i^{next}$.
+The definition of \textit{LCB} is introduced to capture the set of reloaded cache memory at a specific basic block as a function of the current and next selected preemption points.  Here, we account for the overhead within a non-preemptive region for reloading UCBs that could have potentially been evicted by the preemption occurring immediately after $\delta_i^{curr}$ and used by some basic block prior to the preemption occurring immediately after $\delta_i^{next}$.
 %As previously stated, there are two options in terms of where the cache block reload cost can be paid: 1) the cost can be paid where the next memory %accesses occur; or 2) The cost can also be paid where the preemptions occur.  In this paper, we use the cost paid where the preemptions occur as per %below.
 %This results in two similar formulations for computing loaded cache blocks (LCBs) as per below.
 %\newline
@@ -100,7 +100,7 @@ The definition of \textit{LCB} is introduced to capture the set of reloaded cach
 \noindent
 where
 \begin{equation*}\label{eqn:lcb-formula-1b}
-    \lambda \stackrel{\text{def}}{=} \{ \nu|\nu \in [ \textit{curr}, \textit{curr}+1, \ldots, \textit{next} ] \}
+    \lambda \stackrel{\text{def}}{=} \{ \nu|\nu \in [ \textit{curr+1}, \textit{curr+2}, \ldots, \textit{next} ] \}
 \end{equation*}
 
 \noindent
@@ -145,10 +145,10 @@ where
 \begin{equation}\label{eqn:crpd-formula}
     \gamma_{i}(\delta_{i}^{curr},\delta_{i}^{next}) = | \textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next}) | \cdot BRT.
 \end{equation}
-
-\noindent where BRT is the cache block reload time; and \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} represents the loaded cache blocks or memory accessed by the preempted task \begin{math}\tau_{i}\end{math} at basic block \begin{math}\delta_{i}^{curr}\end{math} caused by higher priority preempting tasks.
-%\newline
+\newline
+\noindent 
+where BRT is the cache block reload time; and \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} represents the loaded cache blocks or memory accessed by the preempted task \begin{math}\tau_{i}\end{math} at basic block \begin{math}\delta_{i}^{curr}\end{math} caused by higher priority preempting tasks.
 %\newline
 %\noindent
-%To illustrate our approach for performing CRPD computations, consider the following example as shown below.
+To illustrate our approach for computing LCBs, a suitable example is presented in the appendix due to space limitations here.
 %\vspace{-10pt}

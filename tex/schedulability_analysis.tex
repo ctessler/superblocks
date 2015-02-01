@@ -1,4 +1,4 @@
-%\vspace{-5pt}
+\vspace{-5pt}
 \section{Integrated WCET/CRPD Calculation}\label{sec:schedulability_analysis}
 
 The modified preemption cost as a function of the current and next preemption points is given by:
@@ -29,48 +29,7 @@ where $\rho_i \subset \{\delta_i^0, \delta_i^1,  \ldots, \delta_i^{N_i}\}$ is an
 \end{equation*}
 %
 \noindent
-and \begin{math}\rho_{i}^{m}\end{math} is the \textrm{$m^{th}$}
-selected preemption point for task \begin{math}\tau_{i}\end{math}.  To
-further clarify what we mean by preemption, we say that $\delta_i^m$
-is a ``preemption point'' if the preemption between basic blocks
-$\delta_i^m$ and $\delta_i^{m+1}$ is enabled, meaning the scheduler
-may preempt between these two basic blocks.  Commensurate with our
-preemption point placement algorithm discussed later, preemptions are
-always taken at basic blocks $\delta_i^0$ and $\delta_i^{N_i}$ hence
-$\delta_i^0,\ \delta_i^{N_i}\ \in\ \rho_{i}$.
-
-%
-% BEGIN:2015-01-31 CT
-%
-
-Figure~\ref{fig:test} illustrates the necessary inclusion of
-${\delta_i^{N_i}}$. A four basic block of task ${\tau_2}$
-may be preempted by ${\tau_1}$. To simplify the example, the
-ECBs of ${\tau_1}$ includes all cache lines. When ${\rho_2 =
-  \{\delta_2^0, \delta_2^1\}}$, only reloaded lines from
-${LCB(\delta_2^0, \delta_2^1)}$ contribute to
-${C_2}$. However, ${\delta_2^2}$ accesses cache line 3 which may have
-been present before ${\delta_2^0}$ was preempted. By requiring the
-inclusion of ${\delta_2^3}$ in ${\rho_2}$ cache line 3 will be
-accounted for by ${LCB(\delta_2^1, \delta_2^3)}$. Similarly, the
-requirement of ${\delta_2^0}$ in ${\rho_2}$ assures no reloaded cache
-line is omitted in the calculation of ${C_2}$.
-
-\begin{figure}[!htb]
-  \centering
-  \def\svgwidth{250pt}
-  \input{ink/lcb_01.pdf_tex}
-  \vspace{5pt}  
-  \caption{LCB Example}
-  \label{fig:test}
-\end{figure}
-
-%
-% END:2015-01-31 CT
-%
-
-
-
+and \begin{math}\rho_{i}^{m}\end{math} is the \textrm{$m^{th}$} selected preemption point for task \begin{math}\tau_{i}\end{math}.  To further clarify what we mean by preemption, we say that $\delta_i^m$ is a ``preemption point'' if the preemption between basic blocks $\delta_i^m$ and $\delta_i^{m+1}$ is enabled, meaning the scheduler may preempt between these two basic blocks.  Commensurate with our preemption point placement algorithm discussed later, preemptions are always taken at basic blocks $\delta_i^0$ and $\delta_i^{N_i}$ hence $\delta_i^0,\ \delta_i^{N_i}\ \in\ \rho_{i}$.
 %\begin{equation*}\label{eqn:pp-mth}
 %\begin{split}
 %   \rho_{i}^{m} \stackrel{\text{def}}{=} \{\delta_{i}^{j}|&\delta_{i}^{j} \text{ is the $m^{th}$ selected %preemption point of task } \tau_{i}\ \\ &\wedge j \in [0, 1, 2, \ldots, N_{i}]\}
@@ -81,7 +40,7 @@ line is omitted in the calculation of ${C_2}$.
 The complete problem formulation with constraints for finding the minimum WCET with preemption overhead cost \begin{math}B_{i}(\rho_{i})\end{math} for task \begin{math}\tau_{i}\end{math} is given by:
 \begin{equation}\label{eqn:global-bbkwcet-cost}
 \begin{split}
-   B_{i}(\rho_{i}) = \min_{\rho_{i} \in \tau_{i}} \Big\{&\Big[\sum_{m=1}^{|\rho_{i}|-1} \xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1}) + \sum_{n=1}^{N_i}b_{i}^{n}\Big]\ |\\
+   B_{i}(\rho_{i}) = \min_{\rho_{i} \in \tau_{i}} \Big\{&\Big[\sum_{m=1}^{|\rho_{i}|-1} \xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1}) + \sum_{s=1}^{N_i}b_{i}^{s}\Big]\ |\\
    &\Psi_{i}(\rho_{i})\ =\ True\Big\}
 \end{split}
 \end{equation}
@@ -102,7 +61,7 @@ The selection of optimal preemption points is subject to the constraint \begin{m
 where \begin{math}q_{i}^{m}(\rho_{i})\end{math} represents the \begin{math}m^{th}\end{math} non-preemptive-region (NPR) time for task \begin{math}\tau_{i}\end{math}, capturing the cost of the preemption $\rho_i^m$ given that $\rho_i^{m+1}$ is the next selected preemption point, plus the basic block cost of all blocks between $\rho_i^m$ and $\rho_i^{m+1}$:
 \begin{equation}\label{eqn:global-mthnpr-time}
    q_{i}^{m}(\rho_{i}) = \Big[\xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1}) +
-   \sum_{n: \delta_i^n \in \{\rho_i^m,\ldots, \rho_i^{m+1}\}} b_{i}^{n}\Big]
+   \sum_{s: \delta_i^s \in \{\rho_i^m,\ldots, \rho_i^{m+1}\}} b_{i}^{s}\Big]
 \end{equation}
 \noindent
 %\newline
@@ -124,7 +83,7 @@ where \begin{math}q_{i}(\delta_{i}^{j},\delta_{i}^{k})\end{math} represents a po
 \end{equation}
 
 \noindent
-The next expression gives a recursive solution to the CRPD+WCET minimization problem for the subproblem of the first $i$ basic blocks.  This recursive formulation is necessary for developing the dynamic programming solution presented in the next section.  We compute the WCET including the preemption point $\delta_i^k$ using the term \begin{math}B_{i}(\delta_{i}^{k})\end{math} for task \begin{math}\tau_{i}\end{math} as given by:
+The next expression gives a recursive solution to the CRPD+WCET minimization problem for the subproblem of the first $i$ basic blocks.  This recursive formulation is necessary for developing the dynamic programming solution presented in the next section.  We compute the WCET including the preemption point $\delta_i^k$ using the term \begin{math}B_{i}(\delta_{i}^{k})\end{math} when $k\ \in\ \{1, 2, \ldots, N_i\}$ for task \begin{math}\tau_{i}\end{math} as given by:
 %We propose an O(N!) recursive relation shown in equation (\ref{eqn:bbkwcet-cost}) that computes the WCET %including preemption cost used in the dynamic programming algorithm for selecting the optimal preemption %points. While the recursive formulation is clearly inefficient, it is helpful in developing an understanding of %how the algorithm works. We compute the WCET including preemption cost for each potential preemption point %\begin{math}\delta_{i}^{k}\end{math} using the term \begin{math}B_{i}(\delta_{i}^{k})\end{math} for task %\begin{math}\tau_{i}\end{math} as given by:
 %\begin{equation}\label{eqn:bbkwcet-cost-old}
 %\begin{split}
@@ -138,7 +97,8 @@ The next expression gives a recursive solution to the CRPD+WCET minimization pro
 \begin{split}
    B_{i}(\delta_{i}^{k}) = \min_{m \in \{0,1, \ldots, k-1\}}
    \Big\{\Big[&B_{i}(\delta_{i}^{m}) + q_{i}(\delta_{i}^{m},\delta_{i}^{k})\Big]\ |\\
-   &\Psi_{i}(\delta_{i}^{m},\delta_{i}^{k})\ =\ True\ \wedge\\&k\ \in\ \{1, 2, \ldots, N_i\}\Big\}
+   &\Psi_{i}(\delta_{i}^{m},\delta_{i}^{k})\ =\ True\Big\}
+%\wedge\\&k\ \in\ \{1, 2, \ldots, N_i\}\Big\}
 \end{split}
 \end{equation}
 %In accordance with the recursive nature of equation (\ref{eqn:bbkwcet-cost}) we propose an O(N!) recursive %algorithm shown in Algorithm~\ref{alg:recursive-optimal-ppp} for computing the optimal preemption points.  %While the recursive formulation is clearly inefficient, it is helpful in developing an understanding of how the %algorithm works.
@@ -249,7 +209,7 @@ The next expression gives a recursive solution to the CRPD+WCET minimization pro
 %\end{algorithm}
 %}
 \noindent
-For the base case where $\textrm{k = 0}$, we have $B_{i}(\delta_{i}^{0}) = 0.$  The following theorem shows our problem has optimal substructure and thus the formulation of Equation~\ref{eqn:bbkwcet-cost} represents an optimal solution.
+For the base case where $\textrm{k = 0}$, we have $B_{i}(\delta_{i}^{0}) = 0.$  The following theorem shows our problem has optimal substructure, and thus the formulation of Equation~\ref{eqn:bbkwcet-cost} represents an optimal solution.
 
 \begin{theorem}
 \label{thm:optimal-substructure-cost}
@@ -270,12 +230,12 @@ By way of contradiction, assume there is a better feasible solution $\rho_{i}'$ 
     B_i(\rho_{i}'') + q_i(\delta_i^{\ell}, \delta_i^k) < B_i(\delta_i^k).
 \end{equation}
 
-Since $\rho_{i}'$ is a feasible solution to $\Delta_i^k$, it must be that $\Psi_i(\delta_i^{\ell}, \delta_i^k)$ is true.  Hence, from Equation~\ref{eqn:bbkwcet-cost}, we can obtain an upper bound on $B_i(\delta_i^k)$ by considering the solution to subproblem $\Delta_i^{\ell}$:
+Since $\rho_{i}'$ is a feasible solution to $\Delta_i^k$, it must be that $\Psi_i(\delta_i^{\ell}, \delta_i^k)$ is true.  Hence, from Equation~\ref{eqn:bbkwcet-cost} and the $\min$ operation, we can obtain an upper bound on $B_i(\delta_i^k)$ by considering the solution to subproblem $\Delta_i^{\ell}$:
 \begin{equation}\label{eqn:bi-deltai-ub}
     B_i(\delta_i^k) \leq B_i(\delta_i^{\ell}) + q_i(\delta_i^{\ell}, \delta_i^k).
 \end{equation}
 
-Combining the inequalities of Equations~\ref{eqn:bi-deltai-lb} and~\ref{eqn:bi-deltai-ub}, we finally obtain $B_i(\rho_{i}'') < B_i(\delta_i^{\ell})$.  However, this contradicts our assumption at the beginning of the proof that $B_i(\delta_i^{\ell})$ represented an optimal solution to subproblem $\Delta_i^{\ell}$.  Thus, a solution $\rho_{i}'$ with smaller cost than $B_i(\delta_i^k)$ cannot exist and Equation~\ref{eqn:bbkwcet-cost} computes the minimum obtainable cost for the problem $\Delta_i^k$.
+Combining the inequalities of Equations~\ref{eqn:bi-deltai-lb} and~\ref{eqn:bi-deltai-ub}, we finally obtain $B_i(\rho_{i}'') < B_i(\delta_i^{\ell})$.  However, this contradicts our assumption at the beginning of the proof that $B_i(\delta_i^{\ell})$ represented an optimal solution to subproblem $\Delta_i^{\ell}$.  Thus, a solution $\rho_{i}'$ with smaller cost than $B_i(\delta_i^k)$ cannot exist, and Equation~\ref{eqn:bbkwcet-cost} computes the minimum obtainable cost for the problem $\Delta_i^k$.
 
 %Since the solution for selecting the optimal preemption points from basic block $\delta_{i}^{0}$ to basic block $\delta_{i}^{k}$ will work regardless of which set of preemption points are used, we could then use the better solution  $B_{i}^{'}(\delta_{i}^{m})$ and $\rho_{i}^{'m}$ to arrive at a lower cost solution to the original problem. Thus we have the following:
 %\begin{equation}\label{eqn:pcost-bb-1}

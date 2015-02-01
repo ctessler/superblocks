@@ -26,7 +26,9 @@ performed. The tasks were selected from the Malardalen University (MRTC) WCET be
 Tasks were first analyzed using AbsInt's a\textsuperscript{3} WCET~\cite{absint:01}
 to determine the set of basic blocks. Next, the basic blocks ${\{\delta_i^0, \delta_i^1, \delta_i^2, ..., \delta_i^{N_i}\}}$ were serialized by recording their order during execution. Program points were identified as the address of the final instruction of each basic block ${\delta_i^j}$ for $j \in [0, N_i]$ to match the sequential basic block structure used by our preemption point placement algorithm. Each program point served as a breakpoint when running the task on the simulator. In accordance with the sequential basic block structure used in our algorithm, only the data cache is used to compute CRPD as the linear basic block structure offers only limited opportunities for instruction cache blocks to be revisited.
 
-During the execution of each basic block, the data cache states were saved as ${\Upsilon_D(\delta_i^j)}$ at each breakpoint. As expected, the data cache contents were highly dependent on the actual basic block instruction control flow during execution.  The cache snapshots were selected as the final visit of each program point where the data cache contents ${\Upsilon_D(\delta_i^j)}$ were captured, and recorded. From the final ${\Upsilon_D(\delta_i^j)}$ snapshots, a conservative estimate of LCBs shared between program points was determined.
+During the execution of each basic block, the data cache states were saved as ${\Upsilon_D(\delta_i^j)}$ at each breakpoint. 
+%The data cache contents were highly dependent on the actual basic block instruction control flow during execution.  
+The cache snapshots were selected as the final visit of each program point where the data cache contents ${\Upsilon_D(\delta_i^j)}$ were captured, and recorded. From the final ${\Upsilon_D(\delta_i^j)}$ snapshots, a conservative estimate of LCBs shared between program points was determined.
 %Given the limitations of the simulator and a\textsuperscript{3} it was not possible to record the actual control flow.
 %Thus, calculating an accurate over-estimate of the LCBs shared between program points was not possible. A %selection of cache snapshots were chosen as an estimation of the actual cache behavior.
 %
@@ -40,12 +42,12 @@ During the execution of each basic block, the data cache states were saved as ${
 
 Shared LCBs were calculated by intersecting the cache state snapshots from ${\delta_i^j}$
 to ${\delta_i^k}$, except ${\delta_i^k}$. A cache line that remains unchanged after
-the execution of $\{{\delta_i^j}$, ${\delta_i^{j+1}}$, ..., ${\delta_i^{k-1}}\}$ will be present in the cache before execution of the basic block that ${\delta_i^k}$ represents. It is only from these unchanged cache lines that the shared LCBs between ${\delta_i^j}$ and ${\delta_i^k}$ can be selected. The complete set of
+the execution of $\{{\delta_i^{j+1}}$, ${\delta_i^{j+2}}$, ..., ${\delta_i^{k}}\}$ will be present in the cache before execution of the basic block that ${\delta_i^k}$ represents. It is only from these unchanged cache lines that the shared LCBs between ${\delta_i^j}$ and ${\delta_i^k}$ can be selected. The complete set of
 unchanged cache lines serves as a safe upper-bound on the LCBs shared between each basic block pair. The equation below formalizes this idea, using the data cache snapshots ${\Upsilon_D(\delta_i^j)}$.
 \vspace{-20pt}
 \begin{center}
   \begin{equation}
-    LCB(\delta_i^j,\delta_i^k) \subseteq \bigcap_{m=j}^{k-1} {\Upsilon_D(\delta_i^m)}
+    LCB(\delta_i^j,\delta_i^k) \subseteq \bigcap_{m=j+1}^{k} {\Upsilon_D(\delta_i^m)}
   \end{equation}
 \end{center}
 \subsubsection{Availability}
@@ -83,19 +85,7 @@ At each point on the graph, the index of the next preemption point associated wi
 To compare the two preemption point placement algorithms their selection of two program points is
 simulated by assuming ${Q_i}$ is larger than the task's total execution time. Bertogna's algorithm would select the preemption point commensurate with the lowest value of the dashed line. Our algorithm would select the preemption point commensurate with the lowest value of the solid line.  The difference between the performance of these two preemption point placement algorithms is an example of the benefit provided by considering location aware CRPD cost.
 
-The second graph represents the lms benchmark task data cache shown in
-Figure~\ref{fig:lms_data_cache}, and the third graph represents the
-adpcm benchmark task data cache shown in
-Figure~\ref{fig:adpcm_data_cache}. Similar to the recursion benchmark
-data cache, the variability in the minimum and maximum shared LCBs for
-each program point further exemplifies the benefit of using location
-aware CRPD cost in preemption point placement. Across all 
-benchmarks the CRPD cost was reduced or maintained compared to the
-Bertogna approach. Ranging from no benefit in the cnt benchmark, to a 68\%
-reduction of contributing cache lines in the bsort benchmark. Averaged
-over all benchmarks, the benefit is an 18.6\% decrease in cache lines
-contributing to the CRPD cost.
-
+The second graph represents the lms benchmark task data cache shown in Figure~\ref{fig:lms_data_cache}, and the third graph represents the adpcm benchmark task data cache shown in Figure~\ref{fig:adpcm_data_cache}. Similar to the recursion benchmark data cache, the variability in the minimum and maximum shared LCBs for each program point further exemplifies the benefit of using location aware CRPD cost in preemption point placement.  Maximum and minimum data cache costs for the other seven tasks show similar variability but are not shown here due to space limitations.  In summary, the CRPD cost was consistently reduced or maintained compared to Bertogna's algorithm.  A maximum of 68\% reduction of contributing cache lines in the bsort benchmark along with an average of 18.6\% decrease over all benchmarks was notably observed.  The ability of our method to leverage this reduction leads to the schedulability improvements observed in the next subsection.
 \begin{figure}[h!]
 \vspace{-10pt}
 \begin{center}
@@ -116,47 +106,47 @@ contributing to the CRPD cost.
 \vspace{-10pt}
 \end{figure}
 %
-%% \begin{table}[h!]
-%% {\fontsize{10}{10}\selectfont
-%% \small
-%% \begin{minipage}{\linewidth}
-%% \centering
-%%    \begin{tabular}{l | l | l || l | l | l}
-%%      Task & Cache & Benefit & Task & Cache & Benefit\\
-%%      \hline
-
-%%      adpcm & ${I}$ & 143 & fft1 & ${I}$ & 72 \\
-%%            & ${D}$ & 5 & & ${D}$ & 13\\
-%%      \hline
-
-%%      bsort & ${I}$ & 0 & fibcall & ${I}$ & 1 \\
-%%            & ${D}$ & 0 & & ${D}$ & 1 \\
-%%      \hline
-
-%%      cnt & ${I}$ & 63 & lms & ${I}$ & 158 \\
-%%          & ${D}$ & 2 & & ${D}$ & 18 \\
-%%      \hline
-
-%%      cover & ${I}$ & 135 & ndes & ${I}$ & 96 \\
-%%            & ${D}$ & 2 & & ${D}$ & 15 \\
-%%      \hline
-
-%%      crc & ${I}$ & 18 & recursion & ${I}$ & 7 \\
-%%          & ${D}$ & 1 & & ${D}$ & 10  \\
-%%      \hline
-
-%%    \end{tabular}
-%%    \bigskip
-%%    \caption {Benefit of Proposed Method}
-%%    \label{tab:proposed_method_benefit}
-
-%% %   Benefit of Proposed Method
-%%    \bigskip
-%% \end{minipage}
-%% \normalsize
-%% }
-%% \vspace{-20pt}
-%% \end{table}
+%\begin{table}[h!]
+%%{\fontsize{10}{10}\selectfont
+%\small
+%\begin{minipage}{\linewidth}
+%\centering
+%    \begin{tabular}{l | l | l || l | l | l}
+%      Task & Cache & Benefit & Task & Cache & Benefit\\
+%      \hline
+%
+%      adpcm & ${I}$ & 143 & fft1 & ${I}$ & 72 \\
+%            & ${D}$ & 5 & & ${D}$ & 13\\
+%      \hline
+%
+%      bsort & ${I}$ & 0 & fibcall & ${I}$ & 1 \\
+%            & ${D}$ & 0 & & ${D}$ & 1 \\
+%      \hline
+%
+%      cnt & ${I}$ & 63 & lms & ${I}$ & 158 \\
+%          & ${D}$ & 2 & & ${D}$ & 18 \\
+%      \hline
+%
+%      cover & ${I}$ & 135 & ndes & ${I}$ & 96 \\
+%            & ${D}$ & 2 & & ${D}$ & 15 \\
+%      \hline
+%
+%      crc & ${I}$ & 18 & recursion & ${I}$ & 7 \\
+%          & ${D}$ & 1 & & ${D}$ & 10  \\
+%      \hline
+%
+%    \end{tabular}
+%    \bigskip
+%    \caption {Benefit of Proposed Method}
+%    \label{tab:proposed_method_benefit}
+%
+%    Benefit of Proposed Method
+%    \bigskip
+%\end{minipage}
+%\normalsize
+%}
+%\vspace{-20pt}
+%\end{table}
 %
 %\begin{minipage}{\linewidth}
 %\centering
@@ -349,7 +339,7 @@ Using ten tasks, the breakdown utilization comparison between ${UOE}$, ${BEPP}$,
 %\normalsize
 %\vspace{-20pt}
 %\end{table}
-The breakdown utilization results indicate that $BEPP$ dominates the $UOE$ algorithm primarily due to the limited preemption model utilizing CRPD cost at the basic block level.  $EPP$ dominates $BEPP$ resulting from the more accurate location aware CRPD cost used in our preemption point placement algorithm.  As expected, the breakdown utilization converges for all three methods for small ${BRT}$ values.
+The breakdown utilization results indicate that $BEPP$ dominates the $UOE$ algorithm primarily due to the limited preemption model utilizing CRPD cost at the basic block level.  $EPP$ dominates $BEPP$ resulting from the more accurate location aware CRPD cost used in our preemption point placement algorithm.  As expected, the breakdown utilization converges for all three methods for small ${BRT}$ values as the cache-overhead becomes negligible.
 %Compared to \cite{lunniss:13} this evaluation of ${UOE}$ has an average breakdown utilization approximately 17\% lower. This is likely due to a %different selection of benchmark tasks and our subsequent estimation technique used for computing the set of UCBs. The data used in \cite{lunniss:13} %does not include UCB information per basic block, which is required for ${BEPP}$ and ${EPP}$, thereby necessitating the generation of new LCB estimates %for each task.
 %
 %\clearpage

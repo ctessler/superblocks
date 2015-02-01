@@ -30,10 +30,10 @@ our revised methods for enhanced CRPD calculation and optimal limited
 preemption point placement.  The need to subsume higher level programming constructs
 being the prominent assumption of the linear basic block structure can potentially
 diminish the utility of our approach if the non-preemptive execution time of any basic block
-violates the constraint \begin{math}C_{i}^{NP}\end{math} \begin{math}>\end{math} \begin{math}Q_{i}\end{math}.
+violates the constraint \begin{math}C_{i}^{NP}\end{math} \begin{math}>\end{math} \begin{math}Q_{i}\end{math}.  For this case, we need to ``break-up'' the basic block by permitting preemption every $Q_i$ time units.
 %To overcome this limitation in future work, we plan to relax the linear basic block structure assumption and
 %address arbitrarily connected basic block structures.
+
 In future work, we plan to 1) extend the techniques described here to set-associative caches,
 2) perform a schedulability comparison of synthetic task set for various preemption models, and
-3) remove the linear basic block restriction thereby permitting arbitrarily connected basic
-block structures.
+3) remove the linear basic block restriction thereby permitting arbitrary control flowgraphs.
