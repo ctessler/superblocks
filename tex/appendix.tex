@@ -228,20 +228,7 @@ Using the method illustrated here, the preemption cost matrix entries for each p
 \subsection {Example of LCB Interdependence}\label{sec:example_lcb_interdependence}
 %\newline
 \indent
-To further exemplify the interdependence of preemption points,
-consider the example shown below.  In order to account for all
-re-loaded cache blocks (LCBs), preemptions are always included at the
-first basic block  ${\delta_i^{0}}$ and the last basic block
-${\delta_i^{N_i}}$ as shown in Figure~\ref{fig:lcb_ex}.  This is
-commensurate with the preemptions that occur before and after the task
-executes.  Assume we have two tasks where ${\tau_2}$ contains four
-basic blocks which may be preempted by task ${\tau_1}$.  For
-simplification, assume that the ECBs of task ${\tau_1}$ evicts all
-UCBs of task ${\tau_2}$.  Let us further assume that we have ${\rho_2
-= \{\delta_2^0, \delta_2^1, \delta_2^2, \delta_2^4\}}$.  Using our LCB computation
-approach, only the re-loaded lines as captured in the terms
-${LCB(\delta_2^1, \delta_2^2)}$ and ${LCB(\delta_2^2, \delta_2^4)}$
-are included in the ${C_2}$ computation.   
+To further exemplify the interdependence of preemption points, consider the example shown below.  In order to account for all re-loaded cache blocks (LCBs), preemptions are always included at the first basic block  ${\delta_i^{0}}$ and the last basic block ${\delta_i^{N_i}}$ as shown in Figure~\ref{fig:lcb_ex}.  This is commensurate with the preemptions that occur before and after the task executes.  Assume we have two tasks where ${\tau_2}$ contains four basic blocks which may be preempted by task ${\tau_1}$.  For simplification, assume that the ECBs of task ${\tau_1}$ evicts all UCBs of task ${\tau_2}$.  Let us further assume that we have ${\rho_2 = \{\delta_2^0, \delta_2^1, \delta_2^2, \delta_2^4\}}$.  Using our LCB computation approach, only the re-loaded lines as captured in the terms ${LCB(\delta_2^1, \delta_2^2)}$ and ${LCB(\delta_2^2, \delta_2^4)}$ are included in the ${C_2}$ computation.  ${LCB(\delta_2^0, \delta_2^1)} = 0$ as no LCBs have been cached until after execution of basic block $\delta_2^1$.
 %%Note that ${\delta_2^2}$ accesses cache line 3 which may have been present in the cache before task %${\delta_2^0}$ was preempted.  By requiring the inclusion of ${\delta_2^3}$ in ${\rho_2}$ cache line 3 will be %accounted for by ${LCB(\delta_2^1, \delta_2^3)}$. Similarly, the requirement of ${\delta_2^0}$ in ${\rho_2}$ %assures no reloaded cache line is omitted in the calculation of ${C_2}$.
 
 %% \begin{figure}[!htb]
@@ -252,8 +239,6 @@ are included in the ${C_2}$ computation.
 %%   \caption{LCB Interdependence}
 %%   \label{fig:test}
 %% \end{figure}
-
-
 %% \begin{figure}[!htb]
 %%   \centering
 %%   \def\svgwidth{250pt}
