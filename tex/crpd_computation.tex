@@ -1,4 +1,4 @@
-%\vspace{-5pt}
+\vspace{-5pt}
 \section{CRPD Computation}\label{sec:crpd_computation}
 
 While existing research has focused on computing the upper bounds on cache related preemption delay (CRPD), our approach achieves higher accuracy by computing the \emph{loaded cache blocks} (LCBs), as defined below, due to higher priority task preemption by using the set of potential/chosen preemption locations.  Consistent with the literature the sets of various cache blocks are represented as sets of integers.  We employ the CRPD terms UCB and ECB as defined by Lee et. al.~\cite{lee:98} and by Altmeyer and Burguiere~\cite{altmeyer:11c}.
@@ -95,14 +95,15 @@ The definition of \textit{LCB} is introduced to capture the set of reloaded cach
     &\left[\textit{UCB}_{\textrm{out}}(\delta_{i}^{curr})\ \cap \left[\cup_{\nu \in \lambda} \textit{AUCB}_{\textrm{out}}(\delta_{i}^{\nu})\right]\right] \cap [\cup_{\tau_{k}\in hp_(i)} \textit{ECB}(\tau_{k})]\\
 \end{split}
 \end{equation}
-
+%
 %\newline
-\noindent
-where
+%\noindent
+%where
+%\vspace{-10pt)
 \begin{equation*}\label{eqn:lcb-formula-1b}
-    \lambda \stackrel{\text{def}}{=} \{ \nu|\nu \in [ \textit{curr+1}, \textit{curr+2}, \ldots, \textit{next} ] \}
+    \textrm{where }\lambda \stackrel{\text{def}}{=} \{ \nu|\nu \in [ \textit{curr+1}, \textit{curr+2}, \ldots, \textit{next} ] \}
 \end{equation*}
-
+%
 \noindent
 %\begin{math}\textit{AUCB}_{\textrm{out}}(\delta_{i}^{x})\end{math} represents the accessed useful cache blocks or memory of interest accessed by the preempted %task \begin{math}\tau_{i}\end{math} at basic block \begin{math}\delta_{i}^{x}\end{math};
 \begin{math}\delta_{i}^{curr}\end{math} represents the current selected preemption point where \begin{math}\delta_{i}^{curr} \in \rho(\tau_{i})\end{math} and \begin{math}\delta_{i}^{next}\end{math} represents the next selected preemption point where \begin{math}\delta_{i}^{next} \in \rho(\tau_{i})\end{math}.  This formula for \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} results in the accounting of loaded cache blocks where the preemption occurs.  Note that this notation assumes a sequential basic block structure. Once we have the set of cache blocks that must be re-loaded due to preemption, the CRPD related preemption overhead may be computed as shown below.
@@ -146,7 +147,7 @@ where
     \gamma_{i}(\delta_{i}^{curr},\delta_{i}^{next}) = | \textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next}) | \cdot BRT.
 \end{equation}
 \newline
-\noindent 
+\noindent
 where BRT is the cache block reload time; and \begin{math}\textit{LCB}(\delta_{i}^{curr},\delta_{i}^{next})\end{math} represents the loaded cache blocks or memory accessed by the preempted task \begin{math}\tau_{i}\end{math} at basic block \begin{math}\delta_{i}^{curr}\end{math} caused by higher priority preempting tasks.
 %\newline
 %\noindent
