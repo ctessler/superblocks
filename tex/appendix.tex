@@ -15,8 +15,8 @@ To illustrate our approach for computing LCBs, consider the following example.  
 \vspace{-10pt}
 \newline
 \noindent
-The computation for LCBs uses the accessed useful cache blocks (AUCBs) since the cache blocks that are re-loaded during execution of the non-preemptive region between preemption points is a function of the memory that is explicitly accessed by the preempted task.  The computed AUCBs for each task is shown in Figure~\ref{fig:taskset_aucbs}. In accordance with Equation~\ref{eqn:aucb-formula} one can readily see that the AUCBs are simply the intersection of the UCBs and ECBs for each basic block.
-\vspace{-5pt}
+The computation for LCBs uses the accessed useful cache blocks (AUCBs) since the cache blocks that are re-loaded during execution of the non-preemptive region between preemption points is a function of the memory that is explicitly accessed by the preempted task.  The computed AUCBs for each task is shown in Figure~\ref{fig:taskset_aucbs}. In accordance with Equation 7 one can readily see that the AUCBs are simply the intersection of the UCBs and ECBs for each basic block.
+\vspace{-10pt}
 \begin{figure}[h!]
 \begin{center}
 \includegraphics[width=\linewidth]{taskset_aucbs.png}
@@ -33,13 +33,13 @@ In our example, assume preemptions are taken at basic blocks \begin{math}\delta_
     LCB(\delta_{1}^{2},\delta_{1}^{4}) = &\{1,2,4,8\}\ \cap\ \{1,2,7,8\}\ \cap\ \\&\{1,3,5,7,8,9,10,11,12,13\} = \{1,8\}
 \end{split}
 \end{equation*}
-\newline
+%\newline
 \noindent
 The preemption cost $\gamma(\delta_{1}^{2},\delta_{1}^{4})$ for a BRT = $390\mu$s is given by:
 \begin{equation*}\label{eqn:gamma-example-1}
     \gamma(\delta_{1}^{2},\delta_{1}^{4}) = |\{1,8\}|\ \cdot\ 390 = 780\mu\textit{s}
 \end{equation*}
-\newline
+%\newline
 \noindent
 Using the same method, $LCB(\delta_{1}^{4},\delta_{1}^{5})$ is given by:
 \begin{equation*}\label{eqn:lcb-example-2}
@@ -47,13 +47,13 @@ Using the same method, $LCB(\delta_{1}^{4},\delta_{1}^{5})$ is given by:
     LCB(\delta_{1}^{4},\delta_{1}^{5}) = &\{1,2,7,8\}\ \cap\ \{1,2,7,8\}\ \cap\ \\&\{1,3,5,7,8,9,10,11,12,13\} = \{1,7,8\}
 \end{split}
 \end{equation*}
-\newline
+%\newline
 \noindent
 The preemption cost $\gamma(\delta_{1}^{4},\delta_{1}^{5})$ for a BRT = $390\mu$s is given by:
 \begin{equation*}\label{eqn:gamma-example-1}
     \gamma(\delta_{1}^{4},\delta_{1}^{5}) = |\{1,7,8\}|\ \cdot\ 390 = 1170\mu\textit{s}
 \end{equation*}
-\newline
+%\newline
 \noindent
 Using the method illustrated here, the preemption cost matrix entries for each pair of basic blocks are computed in a similar fashion and used as input to our preemption point placement algorithm.
 %
@@ -219,30 +219,21 @@ Using the method illustrated here, the preemption cost matrix entries for each p
 %\label{fig:ndes_instruction_cache}
 %\end{center}
 %\end{figure}
-% 
+%
 %
 % BEGIN:2015-01-31 CT
 %
-
-Figure~\ref{fig:test} illustrates the necessary inclusion of
-${\delta_i^{N_i}}$. A four basic block of task ${\tau_2}$
-may be preempted by ${\tau_1}$. To simplify the example, the
-ECBs of ${\tau_1}$ includes all cache lines. When ${\rho_2 =
-  \{\delta_2^0, \delta_2^1\}}$, only reloaded lines from
-${LCB(\delta_2^0, \delta_2^1)}$ contribute to
-${C_2}$. However, ${\delta_2^2}$ accesses cache line 3 which may have
-been present before ${\delta_2^0}$ was preempted. By requiring the
-inclusion of ${\delta_2^3}$ in ${\rho_2}$ cache line 3 will be
-accounted for by ${LCB(\delta_2^1, \delta_2^3)}$. Similarly, the
-requirement of ${\delta_2^0}$ in ${\rho_2}$ assures no reloaded cache
-line is omitted in the calculation of ${C_2}$.
+\newline
+\indent
+To further exemplify the interdependence of preemption points, consider the example shown below.  In order to account for all re-loaded cache blocks (LCBs), preemptions are always included at the first basic block  ${\delta_i^{0}}$ and the last basic block ${\delta_i^{N_i}}$ as shown in Figure~\ref{fig:test}.  This is commensurate with the preemptions that occur before and after the task executes.  Assume we have two tasks where ${\tau_2}$ contains four basic blocks which may be preempted by task ${\tau_1}$.  For simplification, assume that the ECBs of task ${\tau_1}$ evicts all UCBs of task ${\tau_2}$.  Let us further assume that we have ${\rho_2 = \{\delta_2^0, \delta_2^1, \delta_2^3\}}$.  Using our LCB computation approach, only the re-loaded lines as captured in the terms ${LCB(\delta_2^0, \delta_2^1)}$ and ${LCB(\delta_2^1, \delta_2^3)}$ are included in the ${C_2}$ computation.  
+%%Note that ${\delta_2^2}$ accesses cache line 3 which may have been present in the cache before task %${\delta_2^0}$ was preempted.  By requiring the inclusion of ${\delta_2^3}$ in ${\rho_2}$ cache line 3 will be %accounted for by ${LCB(\delta_2^1, \delta_2^3)}$. Similarly, the requirement of ${\delta_2^0}$ in ${\rho_2}$ %assures no reloaded cache line is omitted in the calculation of ${C_2}$.
 
 \begin{figure}[!htb]
   \centering
   \def\svgwidth{250pt}
   \input{ink/lcb_01.pdf_tex}
   \vspace{5pt}
-  \caption{LCB Example}
+  \caption{LCB Interdependence}
   \label{fig:test}
 \end{figure}
 
