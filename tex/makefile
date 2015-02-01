@@ -18,4 +18,5 @@ crpd_lppp.pdf: $(TEX) $(EPS) $(BIB)
 
 crpd_lppp_appendix.pdf: appendix.tex  crpd_lppp_appendix.tex 
 	pdflatex crpd_lppp_appendix.tex
+	pdflatex crpd_lppp_appendix.tex
 	rm -f *.log *.aux *.dvi
