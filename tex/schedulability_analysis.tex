@@ -29,7 +29,48 @@ where $\rho_i \subset \{\delta_i^0, \delta_i^1,  \ldots, \delta_i^{N_i}\}$ is an
 \end{equation*}
 %
 \noindent
-and \begin{math}\rho_{i}^{m}\end{math} is the \textrm{$m^{th}$} selected preemption point for task \begin{math}\tau_{i}\end{math}.  To further clarify what we mean by preemption, we say that $\delta_i^m$ is a ``preemption point'' if the preemption between basic blocks $\delta_i^m$ and $\delta_i^{m+1}$ is enabled, meaning the scheduler may preempt between these two basic blocks.  Commensurate with our preemption point placement algorithm discussed later, preemptions are always taken at basic blocks $\delta_i^0$ and $\delta_i^{N_i}$ hence $\delta_i^0,\ \delta_i^{N_i}\ \in\ \rho_{i}$.
+and \begin{math}\rho_{i}^{m}\end{math} is the \textrm{$m^{th}$}
+selected preemption point for task \begin{math}\tau_{i}\end{math}.  To
+further clarify what we mean by preemption, we say that $\delta_i^m$
+is a ``preemption point'' if the preemption between basic blocks
+$\delta_i^m$ and $\delta_i^{m+1}$ is enabled, meaning the scheduler
+may preempt between these two basic blocks.  Commensurate with our
+preemption point placement algorithm discussed later, preemptions are
+always taken at basic blocks $\delta_i^0$ and $\delta_i^{N_i}$ hence
+$\delta_i^0,\ \delta_i^{N_i}\ \in\ \rho_{i}$.
+
+%
+% BEGIN:2015-01-31 CT
+%
+
+Figure~\ref{fig:test} illustrates the necessary inclusion of
+${\delta_i^{N_i}}$. A four basic block of task ${\tau_2}$
+may be preempted by ${\tau_1}$. To simplify the example, the
+ECBs of ${\tau_1}$ includes all cache lines. When ${\rho_2 =
+  \{\delta_2^0, \delta_2^1\}}$, only reloaded lines from
+${LCB(\delta_2^0, \delta_2^1)}$ contribute to
+${C_2}$. However, ${\delta_2^2}$ accesses cache line 3 which may have
+been present before ${\delta_2^0}$ was preempted. By requiring the
+inclusion of ${\delta_2^3}$ in ${\rho_2}$ cache line 3 will be
+accounted for by ${LCB(\delta_2^1, \delta_2^3)}$. Similarly, the
+requirement of ${\delta_2^0}$ in ${\rho_2}$ assures no reloaded cache
+line is omitted in the calculation of ${C_2}$.
+
+\begin{figure}[!htb]
+  \centering
+  \def\svgwidth{250pt}
+  \input{ink/lcb_01.pdf_tex}
+  \vspace{5pt}  
+  \caption{LCB Example}
+  \label{fig:test}
+\end{figure}
+
+%
+% END:2015-01-31 CT
+%
+
+
+
 %\begin{equation*}\label{eqn:pp-mth}
 %\begin{split}
 %   \rho_{i}^{m} \stackrel{\text{def}}{=} \{\delta_{i}^{j}|&\delta_{i}^{j} \text{ is the $m^{th}$ selected %preemption point of task } \tau_{i}\ \\ &\wedge j \in [0, 1, 2, \ldots, N_{i}]\}
