@@ -1,0 +1,50 @@
+Task fibcall
+UCB cache block counts range is [147,159]
+Non-preemptive cycles range is [1,1114]
+Preemptive cycles range is [1470,1590]
+Task recursion
+UCB cache block counts range is [133,178]
+Non-preemptive cycles range is [1,6594]
+Preemptive cycles range is [1330,1780]
+Task cover
+UCB cache block counts range is [21,307]
+Non-preemptive cycles range is [1,160]
+Preemptive cycles range is [210,3070]
+Task bsort100
+UCB cache block counts range is [148,190]
+Non-preemptive cycles range is [1,12663]
+Preemptive cycles range is [1480,1900]
+Task cnt
+UCB cache block counts range is [75,268]
+Non-preemptive cycles range is [1,11392]
+Preemptive cycles range is [750,2680]
+Task crc
+UCB cache block counts range is [143,233]
+Non-preemptive cycles range is [1,94744]
+Preemptive cycles range is [1430,2330]
+Task ndes
+UCB cache block counts range is [35,357]
+Non-preemptive cycles range is [1,71444]
+Preemptive cycles range is [350,3570]
+Task fft1
+UCB cache block counts range is [202,293]
+Non-preemptive cycles range is [1,276375]
+Preemptive cycles range is [2020,2930]
+Task adpcm
+UCB cache block counts range is [10,331]
+Non-preemptive cycles range is [1,1220412]
+Preemptive cycles range is [100,3310]
+Task lms
+UCB cache block counts range is [89,343]
+Non-preemptive cycles range is [1,15404051]
+Preemptive cycles range is [890,3430]
+Task 1 (fibcall): e,p,d (1244,1244000,1244000)
+Task 2 (recursion): e,p,d (6916,6916000,6916000)
+Task 3 (cover): e,p,d (8769,8769000,8769000)
+Task 4 (bsort100): e,p,d (17642,17642000,17642000)
+Task 5 (cnt): e,p,d (22832,22832000,22832000)
+Task 6 (crc): e,p,d (100518,100518000,100518000)
+Task 7 (ndes): e,p,d (173646,173646000,173646000)
+Task 8 (fft1): e,p,d (339181,339181000,339181000)
+Task 9 (adpcm): e,p,d (2174811,2174811000,2174811000)
+Task 10 (lms): e,p,d (29849025,29849025000,29849025000)

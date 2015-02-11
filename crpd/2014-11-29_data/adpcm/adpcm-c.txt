@@ -1,0 +1,2 @@
+WCET of task: 2204141
+WCET of timed blocks: 2174856
