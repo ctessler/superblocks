@@ -20,6 +20,7 @@ package:
 	    cp $$dir/*-cycles.txt $(DATE)/$$dir/. ; \
 	    cp $$dir/*-?matrix.txt $(DATE)/$$dir/. ; \
 	    cp $$dir/*-?ucb.txt $(DATE)/$$dir/. ; \
+	    cp $$dir/*-observed.txt $(DATE)/$$dir/. ; \
 	    cp $$dir/*-ucb.txt $(DATE)/$$dir/. || : \
 	; done
 	tar -cvzf $(DATE).tar.gz $(DATE)
