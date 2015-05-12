@@ -1,4 +1,4 @@
-\vspace{-10pt}
+\vspace{-5pt}
 \section{Integrated WCET/CRPD Calculation}\label{sec:schedulability_analysis}
 
 The modified preemption cost as a function of the current and next preemption points is given by:
@@ -20,16 +20,16 @@ The output of our algorithm is an optimal set of preemption points, with respect
    C_{i} = B_{i}(\rho_{i}) = C_{i}^{NP} + \sum_{m=1}^{|\rho_{i}|-1} [\xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1})]
 \end{equation}
 \noindent
-where $\rho_i \subseteq \{\delta_i^0, \delta_i^1,  \ldots, \delta_i^{N_i}\}$ is an ordered set by ascending index of selected preemption points for task \begin{math}\tau_{i}\end{math}:
-%\begin{math}\rho_{i}\end{math} is the set of selected preemption points for task
-\begin{equation*}\label{eqn:pp-set}
-\begin{split}
-   \rho_{i} \stackrel{\text{def}}{=} \{\delta_{i}^{m}|&\delta_{i}^{m} \text{ is a selected preemption point of task } \tau_{i}\ \\ &\wedge m \in [0, 1, 2, \ldots, N_{i}]\}
-\end{split}
-\end{equation*}
-%
-\noindent
-and \begin{math}\rho_{i}^{m}\end{math} is the \textrm{$m^{th}$} selected preemption point for task \begin{math}\tau_{i}\end{math}.  To further clarify what we mean by preemption, we say that $\delta_i^m$ is a ``preemption point'' if the preemption between basic blocks $\delta_i^m$ and $\delta_i^{m+1}$ is enabled, meaning the scheduler may preempt between these two basic blocks.  Commensurate with our preemption point placement algorithm discussed later, preemptions are always taken at basic blocks $\delta_i^0$ and $\delta_i^{N_i}$ hence $\delta_i^0,\ \delta_i^{N_i}\ \in\ \rho_{i}$ for any feasible set of preemption points $\rho_i$.  Supplemental clarification of this requirement is shown in the example of LCB interdependence in the appendix.
+%where $\rho_i \subseteq \{\delta_i^0, \delta_i^1,  \ldots, \delta_i^{N_i}\}$ is an ordered set by ascending %index of selected preemption points for task \begin{math}\tau_{i}\end{math}:
+%%\begin{math}\rho_{i}\end{math} is the set of selected preemption points for task
+%\begin{equation*}\label{eqn:pp-set}
+%\begin{split}
+%   \rho_{i} \stackrel{\text{def}}{=} \{\delta_{i}^{m}|&\delta_{i}^{m} \text{ is a selected preemption point of %task } \tau_{i}\ \\ &\wedge m \in [0, 1, 2, \ldots, N_{i}]\}
+%\end{split}
+%\end{equation*}
+%%
+%\noindent
+where \begin{math}\rho_{i}^{m}\end{math} is the \textrm{$m^{th}$} selected preemption point for task \begin{math}\tau_{i}\end{math}.  To further clarify what we mean by preemption, we say that $\delta_i^m$ is a ``preemption point'' if the preemption between basic blocks $\delta_i^m$ and $\delta_i^{m+1}$ is enabled, meaning the scheduler may preempt between these two basic blocks.  Commensurate with our preemption point placement algorithm discussed later, preemptions are always taken at basic blocks $\delta_i^0$ and $\delta_i^{N_i}$ hence $\delta_i^0,\ \delta_i^{N_i}\ \in\ \rho_{i}$ for any feasible set of preemption points $\rho_i$.  Supplemental clarification of this requirement is shown in the example of LCB interdependence in the appendix.
 %\begin{equation*}\label{eqn:pp-mth}
 %\begin{split}
 %   \rho_{i}^{m} \stackrel{\text{def}}{=} \{\delta_{i}^{j}|&\delta_{i}^{j} \text{ is the $m^{th}$ selected %preemption point of task } \tau_{i}\ \\ &\wedge j \in [0, 1, 2, \ldots, N_{i}]\}

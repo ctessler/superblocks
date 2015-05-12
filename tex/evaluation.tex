@@ -11,7 +11,7 @@ comparison for various CRPD computational approaches.
   Characterization}\label{sec:preemption_cost_measurement}
 To characterize the behavior and estimate the benefit of the approach
 proposed in this paper, a case study of representative tasks was
-performed. The tasks were selected from the Malardalen University (MRTC) WCET benchmark suite~\cite{mrtc:01}. Each task was built using Gaisler's Bare-C Cross Compiler~\cite{gaisler:01} for the GRSIM LEON3~\cite{gaisler:02} simulated target.
+performed. The tasks were randomly selected from the Malardalen University (MRTC) WCET benchmark suite~\cite{mrtc:01}. Each task was built using Gaisler's Bare-C Cross Compiler~\cite{gaisler:01} for the GRSIM LEON3~\cite{gaisler:02} simulated target.
 %
 %During execution of a task within a specific basic block, variance in the number of shared
 %UCBs between program points is related to the execution flow of the task through each of
@@ -54,8 +54,8 @@ unchanged cache lines serves as a safe upper-bound on the LCBs shared between ea
 This method may be verified and reproduced using the same tools and data. Gaisler's compiler and simulator are freely available. AbsInt's a\textsuperscript{3} tool is available for educational and evaluation purposes. The programs written and data used in this paper can be found on GitHub~\cite{tessler:14} thereby permitting the research community to reproduce and leverage our work as needed.
 \newline
 \subsubsection{Results}
-The results are presented as an illustration of the potential benefit of our proposed method, utilizing pairs of preemptions to determine costs, over methods that consider only the maximum CRPD at a particular preemption point (e.g., Bertogna et al.~\cite{bertogna:11}).  
-%a comparison between our proposed method and the Bertogna method~\cite{bertogna:11}, which uses a single value %for CRPD at each program point.  
+The results are presented as an illustration of the potential benefit of our proposed method, utilizing pairs of preemptions to determine costs, over methods that consider only the maximum CRPD at a particular preemption point (e.g., Bertogna et al.~\cite{bertogna:11}).
+%a comparison between our proposed method and the Bertogna method~\cite{bertogna:11}, which uses a single value %for CRPD at each program point.
 In terms of LCB computation this implies that the maximum LCB value over all subsequent program points must be used as the CRPD cost:
 \begin{equation}
   \max\{LCB(\delta_i^j,\delta_i^k)\ \vert\ j\ <\ k\}
@@ -215,7 +215,7 @@ Drastic spikes downwards in the shared LCB counts for the minimum and maximum cu
 \vspace{-10pt}
 \subsection{Breakdown Utilization}
 The previous analysis illustrates the benefit of using a more precise CRPD cost in preemption point placement thereby reducing the preemption overhead
-for an individual task, however, it does not address the benefits to task set schedulability. To evaluate task set schedulability benefits a second case study was performed focusing on the breakdown utilization of the MRTC WCET benchmark suite~\cite{mrtc:01} for various algorithms.  Our study compares the Luniss et. al. UCB only approach for EDF~\cite{lunniss:13}, the Bertogna et. al. Explicit Preemption Point Placement algorithm~\cite{bertogna:11}, and our improved Explicit Preemption Point Placement algorithm. For notational convenience the UCB Only approach for EDF will be referred to as ${UOE}$, the Bertogna Explicit Preemption Point Placement algorithm as ${BEPP}$, and our Explicit Preemption Point Placement algorithm as ${EPP}$.
+for an individual task, however, it does not address the benefits to task set schedulability. To evaluate task set schedulability benefits a second case study was performed focusing on the breakdown utilization of the MRTC WCET benchmark suite~\cite{mrtc:01} for various algorithms.  Our study compares the Luniss et al. UCB only approach for EDF~\cite{lunniss:13}, the Bertogna et al. Explicit Preemption Point Placement algorithm~\cite{bertogna:11}, and our improved Explicit Preemption Point Placement algorithm. For notational convenience the UCB Only approach for EDF will be referred to as ${UOE}$, the Bertogna Explicit Preemption Point Placement algorithm as ${BEPP}$, and our Explicit Preemption Point Placement algorithm as ${EPP}$.
 
 The appropriate schedulablity test for ${UOE}$ is comprised of three parts: ${\gamma^{ucb}_{t,j}}$, ${U^*_j}$, and ${U^*}$ each representing
 the maximum CRPD for task \begin{math}\tau_{j}\end{math}, the utilization of task \begin{math}\tau_{j}\end{math} including CRPD, and the utilization of the task set
@@ -317,7 +317,7 @@ Using ten tasks, the breakdown utilization comparison between ${UOE}$, ${BEPP}$,
 \begin{figure}[h!]
 \vspace{-10pt}
 \begin{center}
-\includegraphics[width=\linewidth]{eps/breakdown.pdf}
+\includegraphics[width=\linewidth]{eps/breakdown.png}
 \caption{Breakdown Utilization Comparison.}
 \label{fig:breakdown_utilization}
 \end{center}
