@@ -1,4 +1,4 @@
-\vspace{-10pt}
+\vspace{-15pt}
 \section{Evaluation}\label{sec:evaluation}
 The evaluation of our preemption point placement algorithm will embody
 two methods: 1) characterization and measurement of preemption costs
@@ -6,12 +6,12 @@ using real-time application code, and 2) a breakdown utilization schedulability
 comparison for various CRPD computational approaches.
 %2) a schedulability comparison
 %of synthetic task set for various preemption models.
-%\vspace{-10pt}
+\vspace{-10pt}
 \subsection {Preemption Cost
   Characterization}\label{sec:preemption_cost_measurement}
 To characterize the behavior and estimate the benefit of the approach
 proposed in this paper, a case study of representative tasks was
-performed. The tasks were randomly selected from the Malardalen University (MRTC) WCET benchmark suite~\cite{mrtc:01}. Each task was built using Gaisler's Bare-C Cross Compiler~\cite{gaisler:01} for the GRSIM LEON3~\cite{gaisler:02} simulated target.
+performed. The ten tasks were randomly selected from the Malardalen University (MRTC) WCET benchmark suite~\cite{mrtc:01}. Each task was built using Gaisler's Bare-C Cross Compiler~\cite{gaisler:01} for the GRSIM LEON3~\cite{gaisler:02} simulated target.
 %
 %During execution of a task within a specific basic block, variance in the number of shared
 %UCBs between program points is related to the execution flow of the task through each of
@@ -50,9 +50,11 @@ unchanged cache lines serves as a safe upper-bound on the LCBs shared between ea
     LCB(\delta_i^j,\delta_i^k) \subseteq \bigcap_{m=j+1}^{k} {\Upsilon_D(\delta_i^m)}
   \end{equation}
 \end{center}
+%\vspace{-10pt}
 \subsubsection{Availability}
 This method may be verified and reproduced using the same tools and data. Gaisler's compiler and simulator are freely available. AbsInt's a\textsuperscript{3} tool is available for educational and evaluation purposes. The programs written and data used in this paper can be found on GitHub~\cite{tessler:14} thereby permitting the research community to reproduce and leverage our work as needed.
 \newline
+\vspace{-10pt}
 \subsubsection{Results}
 The results are presented as an illustration of the potential benefit of our proposed method, utilizing pairs of preemptions to determine costs, over methods that consider only the maximum CRPD at a particular preemption point (e.g., Bertogna et al.~\cite{bertogna:11}).
 %a comparison between our proposed method and the Bertogna method~\cite{bertogna:11}, which uses a single value %for CRPD at each program point.
@@ -384,4 +386,4 @@ The breakdown utilization results indicate that $BEPP$ dominates the $UOE$ algor
 %CRPD preemption cost model uses the CRPD cost from the each preemption
 %point to the end of the task. The fixed CRPD preemption cost model
 %uses the maximum CRPD cost of all variable CRPD preemption cost
-%values. 
+%values.

@@ -16,6 +16,7 @@ where \begin{math}\pi\end{math} is the pipeline cost, \begin{math}\sigma\end{mat
 %\end{equation}
 %
 The output of our algorithm is an optimal set of preemption points, with respect to our computed preemption cost $\xi_i()$, subject to the maximum allowable non-preemption region \begin{math}Q_{i}\end{math}.  The optimal set of preemption points obtained using the enhanced accuracy of our preemption cost computation is used to calculate each task's WCET with preemption overhead given by:
+\vspace{-5pt}
 \begin{equation}\label{eqn:wcet-cost}
    C_{i} = B_{i}(\rho_{i}) = C_{i}^{NP} + \sum_{m=1}^{|\rho_{i}|-1} [\xi_{i}(\rho_{i}^{m},\rho_{i}^{m+1})]
 \end{equation}
@@ -24,7 +25,7 @@ The output of our algorithm is an optimal set of preemption points, with respect
 %%\begin{math}\rho_{i}\end{math} is the set of selected preemption points for task
 %\begin{equation*}\label{eqn:pp-set}
 %\begin{split}
-%   \rho_{i} \stackrel{\text{def}}{=} \{\delta_{i}^{m}|&\delta_{i}^{m} \text{ is a selected preemption point of %task } \tau_{i}\ \\ &\wedge m \in [0, 1, 2, \ldots, N_{i}]\}
+%   \rho_{i} \stackrel{\text{def}}{=} \{\delta_{i}^{m}|&\delta_{i}^{m} \text{ is a selected preemption point of %task } \tau_{i}\ \\ &\wedge m \in [0, %1, 2, \ldots, N_{i}]\}
 %\end{split}
 %\end{equation*}
 %%
@@ -99,7 +100,7 @@ The next expression gives a recursive solution to the CRPD+WCET minimization pro
 %\wedge\\&k\ \in\ \{1, 2, \ldots, N_i\}\Big\}
 \end{split}
 \end{equation}
-\newline
+%\newline
 \noindent
 when $k\ \in\ \{1, 2, \ldots, N_i\}$.  For the base case where $\textrm{k = 0}$, we have $B_{i}(\delta_{i}^{0}) = 0$.  This recursive formulation is necessary for developing the dynamic programming solution presented in the next section.  The following theorem shows our problem has optimal substructure, and thus the formulation of Equation~\ref{eqn:bbkwcet-cost} represents an optimal solution.
 %In accordance with the recursive nature of equation (\ref{eqn:bbkwcet-cost}) we propose an O(N!) recursive %algorithm shown in Algorithm~\ref{alg:recursive-optimal-ppp} for computing the optimal preemption points.  %While the recursive formulation is clearly inefficient, it is helpful in developing an understanding of how the %algorithm works.

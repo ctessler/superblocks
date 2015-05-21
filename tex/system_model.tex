@@ -9,14 +9,14 @@ Our system contains a task set \begin{math}\tau\end{math} of $n$ periodic or spo
 %and \begin{math}P_{i}\end{math} is the uniquely assigned static fixed priority.
 Each task \begin{math}\tau_{i}\end{math} creates an infinite number of jobs, with the first job arriving at any time after system start time and subsequent jobs arriving no earlier than \begin{math}T_{i}\end{math} time units with a relative deadline \begin{math}D_{i}\end{math} \begin{math}\leq\end{math} \begin{math}T_{i}\end{math}.  The system utilizes a preemptive scheduler with each task/job containing \begin{math}N_{i}\end{math} number of basic blocks denoted (\begin{math}\delta_{i}^{0}\end{math}, \begin{math}\delta_{i}^{1}\end{math}, \begin{math}\delta_{i}^{2}\end{math}, ..., \begin{math}\delta_{i}^{N_{i}}\end{math}) with the total number of basic blocks given by N = \begin{math}\Sigma_{i}\end{math}\begin{math}N_{i}\end{math}. A dummy basic block \begin{math}\delta_{i}^{0}\end{math} with zero WCET is added at the beginning of each task to capture the preemption that occurs prior to task execution.  In our sequential model, a basic block is a set of one or more instructions that execute non-preemptively.  Basic blocks are essentially the vertices $V$ of a linear control flow graph (CFG) connected in a sequence by edges $E$ representing the execution sequence of one or more job instructions. Figure~\ref{fig:system_model} shown below illustrates the sequential basic block connection structure.
 %denoted as \begin{math}\delta_{i}^{b}\end{math} using our convention.
-\vspace{-10pt}
+\vspace{-20pt}
 \begin{figure}[h!]
 \begin{center}
 \includegraphics[width=0.5\textwidth]{system_model.png}
 \caption{System Model.}
 \label{fig:system_model}
 \end{center}
-\vspace{-10pt}
+\vspace{-15pt}
 \end{figure}
 \noindent
 Preemptions are permitted at basic block boundaries.  We introduce the basic block notation \begin{math}\delta_{i}^{j}\end{math} where $i$ is the task identifier and $j$ is the basic block identifier. We introduce the the non-preemptive basic block execution time notation \begin{math}b_{i}^{j}\end{math} where $i$ is the task identifier and $j$ is the basic block identifier, hence using this convention we have
