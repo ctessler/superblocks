@@ -91,7 +91,7 @@ $(NAME): $(NAME).c
 
 clean:
 	rm -f $(NAME) $(NAME)-observed.txt $(NAME)-ordered.txt $(NAME)-c.txt
-	rm -f $(NAME)-256blocks.txt $(NAME)-ducb.txt $(NAME)-iucb.txt
+	rm -f $(NAME)-blocks.txt $(NAME)-256blocks.txt $(NAME)-ducb.txt $(NAME)-iucb.txt
 	rm -f $(NAME)-cycles.txt $(NAME)-dmatrix.txt $(NAME)-imatrix.txt
 	rm -f $(NAME)-icache.png $(NAME)-icache.eps
 	rm -f $(NAME)-dcache.png $(NAME)-dcache.eps
