@@ -46,7 +46,8 @@ sub main {
 		vout(1, "Opening an expect handle to tsim-leon3\n");
 		my ($handle, $hok);
 		use Expect;
-		$handle = Expect->spawn("tsim-leon3", $OPTS{binary});
+		$handle = Expect->spawn("tsim-leon3", $OPTS{binary})
+		    or die("Couldn't spawn tsim-leon3");
 		$handle->log_stdout($OPTS{expect});
 		$hok = $handle->expect(3, 'tsim>');
 		vout(1, "Connected\n");
