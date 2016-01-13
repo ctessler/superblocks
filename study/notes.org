@@ -122,3 +122,6 @@
   echo boo
   icache
   dcache
+* ex/<name>/<name>-blocks.txt
+  These files are the basic block boundaries determined by a3
+  exporting GDL compatible files.
