@@ -51,7 +51,7 @@ sub arguments {
 
 
 sub do_instruction {
-	my @inCaches = grep {/icache.dat./} <./*>;
+	my @inCaches = grep {/icache.dat./} <./*>; #/ perl Q_Q
 
 	my @iCaches;
 	foreach my $fname (@inCaches) {
@@ -137,7 +137,7 @@ sub do_instruction {
 }
 
 sub do_data {
-	my @daCaches = grep {/dcache.dat./} <./*>;
+	my @daCaches = grep {/dcache.dat./} <./*>; #/
 	print "Processing " . scalar(@daCaches) . " data cache snapshots\n";
 
 	my @dCaches;
@@ -279,13 +279,12 @@ sub calcUCBs {
 	@caches = @_;
 
 	use POSIX;
-	my $scale = ceil(scalar(@caches) / 10);
 	$| = 1;
 
 	# $p - potential preemption point
 	for (my $p = 1; $p < scalar(@caches); $p++) {
 		# $l - last preemption point
-		my $str = "$p/" . scalar(@caches);
+		my $str = "$p/" . (scalar(@caches) - 1);
 		print "\b" x length($str);
 		print "$str";
 		for (my $l = 0; $l < $p; $l++) {
@@ -328,7 +327,7 @@ sub dispUCBs {
 		for my $last (sort { $a <=> $b } keys(%{$ucbs{$point}})) {
 			my $cache = $ucbs{$point}->{$last};
 			printf("\tGiven: %02d UCBs: %02d\n", 
-				$last, $cache->lineCount());
+			       $last, $cache->lineCount());
 		}
 	}
 }

@@ -33,6 +33,7 @@ has 'line' => (
 		lineDelete => 'delete',
 		lineSet => 'set',
 		lineGet => 'get',
+		clear => 'clear',
 	}
 );
 
@@ -40,6 +41,7 @@ has 'line' => (
 sub importFile {
 	my ($self, $filename, $fh);
 	($self, $filename) = @_;
+	$self->clear();
 
 	open($fh, $filename);
 
@@ -67,6 +69,33 @@ sub removeBlanks {
 			$i--;
 		}
 	}
+}
+
+sub toString {
+	my ($self, $str);
+	$self = shift;
+
+	my $cache_line = 0;
+	foreach my $line ($self->lines()) {
+		$str .= sprintf ("Line [ %03i ] ", $cache_line++);
+		foreach my $addr ($line->addresses()) {
+			$addr =~ s/0x//;
+			$str .= sprintf("%-12s", $addr);
+		}
+		$str .= "\n";
+	}
+	return $str;
+}
+
+sub copy {
+	my $self = shift;
+
+	my $r = new Cache();
+	foreach my $line ($self->lines()) {
+		$r->linePush($line->copy());
+	}
+
+	return $r;
 }
 
 #
@@ -97,6 +126,34 @@ sub intersect {
 		$cache->linePush($line);
 	}
 
+	return $cache;
+}
+
+#
+# Calculates the conflicts of two caches
+#
+# The resulting conflict cache takes the values from this cache
+#
+# Usage:
+#   $newCache = $cache->conflicts($anotherCache)
+#
+sub conflicts {
+	my ($self, $other, $cache);
+	($self, $other) = @_;
+	$cache = new Cache();
+
+	for (my $i = 0; $i < $self->lineCount(); $i++) {
+		my ($ref, $cand, $line);
+		$ref = $self->lineGet($i);
+		$cand = $other->lineGet($i);
+
+		if ($ref->nonZero() && $cand->nonZero()) {
+			$line = $ref->copy();
+		} else {
+			$line = new CacheLine();
+		}
+		$cache->linePush($line);
+	}
 	return $cache;
 }
 

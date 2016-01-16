@@ -8,7 +8,8 @@ NAME := $(shell basename ${PWD})
 #
 ICACHE?=1
 ifeq ($(ICACHE), 1)
-	ITARGETS=$(NAME)-imatrix.txt $(NAME)-icache.png
+	ITARGETS=$(NAME)-imatrix.txt $(NAME)-icache.png \
+		$(NAME)-icache.ecb.dat $(NAME)-icache.ucb.dat
 else
      isetargs := --noinstruction
 endif
@@ -18,7 +19,8 @@ endif
 #
 DCACHE?=1
 ifeq ($(DCACHE), 1)
-	DTARGETS=$(NAME)-dmatrix.txt $(NAME)-dcache.png
+	DTARGETS=$(NAME)-dmatrix.txt $(NAME)-dcache.png \
+		$(NAME)-dcache.ecb.dat $(NAME)-dcache.ucb.dat
 else
      isetargs := --nodata
 endif
@@ -37,6 +39,10 @@ ifeq ($(COMBINED), 1)
 endif
 
 UCBTOP: $(TARGETS)
+
+ECBUCB=$(NAME)-dcache.ecb.dat $(NAME)-dcache-ucb.dat \
+	$(NAME)-icache.ecb.dat $(NAME)-icache.ucb.dat
+
 
 $(NAME)-ucb.txt: caches/ISET
 	cp -a caches/ucb_bound.txt $(NAME)-ucb.txt
@@ -71,6 +77,10 @@ $(NAME)-dmatrix.txt: caches/ISET
 $(NAME)-imatrix.txt: caches/ISET
 	cp -a caches/icache.matrix $(NAME)-imatrix.txt
 
+$(ECBUCB): caches
+	cd caches; ecb-ucb-dump.pl $(NAME)
+	cp caches/$(NAME)-[id]cache.[eu]cb.dat .
+
 caches/ISET: caches
 	cd caches; cache-iset.pl $(isetargs)
 	touch caches/ISET
@@ -93,7 +103,7 @@ clean:
 	rm -f $(NAME) $(NAME)-observed.txt $(NAME)-ordered.txt $(NAME)-c.txt
 	rm -f $(NAME)-256blocks.txt $(NAME)-ducb.txt $(NAME)-iucb.txt
 	rm -f $(NAME)-cycles.txt $(NAME)-dmatrix.txt $(NAME)-imatrix.txt
-	rm -f $(NAME)-icache.png $(NAME)-icache.eps
-	rm -f $(NAME)-dcache.png $(NAME)-dcache.eps
+	rm -f $(NAME)-[di]cache.png $(NAME)-[di]cache.eps
+	rm -f $(NAME)-[id]cache.[eu]cb.dat
 	rm -f $(NAME)-ucb.txt
 	rm -rf caches

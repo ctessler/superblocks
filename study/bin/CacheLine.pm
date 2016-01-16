@@ -63,6 +63,14 @@ sub equals {
 	}
 	return 1;
 }
- 
+
+sub copy {
+	my $self = shift;
+
+	my $r = new CacheLine();
+	$r->addressPush($self->addresses());
+
+	return $r;
+}
 no Moose;
 1
