@@ -44,12 +44,13 @@ sub main {
 	while (scalar(@unsorted) != 0) {
 		print "Remaining breakpoints: " . scalar(@unsorted) . "\n";
 		vout(1, "Opening an expect handle to tsim-leon3\n");
-		my ($handle, $hok);
+		my ($handle);
 		use Expect;
 		$handle = Expect->spawn("tsim-leon3", $OPTS{binary})
-		    or die("Couldn't spawn tsim-leon3");
+		    or die("Couldn't spawn tsim-leon3 $OPTS{binary}");
 		$handle->log_stdout($OPTS{expect});
-		$hok = $handle->expect(3, 'tsim>');
+		$handle->expect(3, 'tsim>') or
+		    die("Could not find tsim> prompt");
 		vout(1, "Connected\n");
 
 		# Set breakpoints
