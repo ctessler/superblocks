@@ -269,7 +269,7 @@ sub get_cycles {
 			 }
 			],
 	    );
-	$handle->expect('trsim>');
+	$handle->expect(3, 'tsim>');
 
 	return $cycles;
 }
