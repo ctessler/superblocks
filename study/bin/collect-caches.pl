@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings;
 use Getopt::Long
-    qw(:config no_bundling no_ignore_case no_auto_abbrev auto_help);
+    qw(:config bundling no_ignore_case no_auto_abbrev auto_help);
 use Pod::Usage;
 
 use vars qw/%OPTS/;
@@ -67,6 +67,7 @@ sub arguments {
 		pod2usage("No blocklist given");
 		return 0;
 	}
+	$opts->{lastcache} .= " -v" if ($opts->{verbose});
 
 	vout(1, "Binary being used is " . $opts->{binary} . "\n");
 	vout(1, "Blocklist being used is " . $opts->{blocklist} . "\n");
@@ -122,10 +123,15 @@ sub create_cache {
 	    @args{'lastcache', 'tsim', 'binary', 'address', 'prefix', 'dest'};
 
 	my $cmd = "$lastcache --tsim=$tsim $binary $address\n";
+	vout(1, "Issuing command $cmd");
+	if ($OPTS{verbose} < 3) {
+		vout(1,"\t(output suppressed use -vvv)\n");
+	}
 
 	open(CMD, "$cmd |");
 	my (@icache, @dcache);
 	while (my $line = <CMD>) {
+		vout(3, $line);
 		next if ($line =~ /icache/);
 		last if ($line =~ /dcache/);
 		push @icache, $line;
