@@ -71,6 +71,23 @@ sub removeBlanks {
 	}
 }
 
+#
+# Counts the number of empty cache lines
+#
+sub emptyCount {
+	my ($self, $rv);
+	$rv = 0;
+	$self = shift;
+
+	for (my $i = 0; $i < $self->lineCount; $i++) {
+		my $line = $self->lineGet($i);
+		if (!$line->nonZero()) {
+			$rv++;
+		}
+	}
+	return $rv;
+}
+
 sub toString {
 	my ($self, $str);
 	$self = shift;
@@ -104,24 +121,30 @@ sub copy {
 # Usage:
 #   $newCache = $cache->intersect($anotherCache);
 sub intersect {
-	my ($self, $other, $cache);
+	my ($self, $other, $cache, $zstr);
 	($self, $other) = @_;
 	$cache = new Cache();
 
-	for (my $i = 0; $i < $self->lineCount(); $i++) {
+	# Do the zero string once.
+	$zstr = $self->lineGet(0)->zeroStr();
+	# Make the array once too
+	my @zs;
+	for ($self->lineGet(0)->addresses()) {
+		push @zs, $zstr;
+	}
+
+	my $count = $self->lineCount();
+	for (my $i = 0; $i < $count; $i++) {
 		my ($ref, $cand, $line);
 		$ref = $self->lineGet($i);
 		$cand = $other->lineGet($i);
 
 		$line = new CacheLine();
 
-		my $use = 0;
 		if ($ref->equals($cand)) {
-			$use = 1;
-		}
-		foreach my $addr ($ref->addresses()) {
-			$addr = $ref->zeroStr() if !$use;
-			$line->addressPush($addr);
+			$line->addressPush($ref->addresses());
+		} else {
+			$line->addressPush(@zs);
 		}
 		$cache->linePush($line);
 	}

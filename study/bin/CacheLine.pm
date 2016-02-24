@@ -22,6 +22,7 @@ has 'address' => (
 		addressGet => 'get',
 		addressPush => 'push',
 		addressPop => 'pop',
+		join => 'join',
 	}
 );
 
@@ -49,18 +50,13 @@ sub equals {
 	my ($self, $other);
 	($self, $other) = @_;
 
-	if ($self->addressCount() != $other->addressCount()) {
+	my ($l, $r);
+	$l = $self->join(":");
+	$r = $other->join(":");
+	if ($l ne $r) {
 		return 0;
 	}
 
-	for (my $i = 0; $i < $self->addressCount(); $i++) {
-		my ($l, $r);
-		$l = $self->addressGet($i);
-		$r = $other->addressGet($i);
-		if ($l ne $r) {
-			return 0;
-		}
-	}
 	return 1;
 }
 

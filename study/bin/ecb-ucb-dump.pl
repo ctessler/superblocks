@@ -99,12 +99,11 @@ sub extract_ecb {
 		my $cache = new Cache();
 		$cache->importFile($name);
 
-		my $reduced = new Cache();
-		$reduced = $cache->copy();
-		$reduced->removeBlanks();
+		my $empties = $cache->emptyCount();
+		my $candc = $cache->lineCount() - $empties;
 
-		if ($reduced->lineCount() >= $maxc) {
-			$maxc = $reduced->lineCount();
+		if ($candc >= $maxc) {
+			$maxc = $candc;
 			$ecb = $cache->copy();
 		}
 	}
@@ -146,9 +145,8 @@ sub extract_ucbs {
 			for my $idx ($l .. $p - 1) {
 				$cache = $cache->intersect($caches[$l]);
 			}
-			my $reduced = $cache->copy();
-			$reduced->removeBlanks();
-			my $candc = $reduced->lineCount();
+			my $empties = $cache->emptyCount();
+			my $candc = $cache->lineCount() - $empties;
 			if ($candc > $maxc) {
 				print "$pfx: New larger UCB count: $candc\n";
 				$maxc = $candc;

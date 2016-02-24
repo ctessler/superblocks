@@ -62,7 +62,8 @@ sub do_instruction {
 
 	print "Processing " . scalar(@iCaches) . " instruction cache snapshots\n";
 
-	print "Calculating UCBs for instruction caches\n";
+	my $now = `date +"%F %T"`; chomp($now);
+	print "$now Calculating UCBs for instruction caches\n";
 	my %iUCBs = calcUCBs(@iCaches);
 	my $iUCBu = UCBMax(@iCaches);
 
@@ -147,7 +148,8 @@ sub do_data {
 		push(@dCaches, $cache);
 	}
 
-	print "Calculating UCBs for data caches\n";
+	my $now = `date +"%F %T"`; chomp($now);
+	print "$now Calculating UCBs for data caches\n";
 	my %dUCBs = calcUCBs(@dCaches);
 	my $dUCBu = UCBMax(@dCaches);
 
@@ -281,12 +283,21 @@ sub calcUCBs {
 	use POSIX;
 	$| = 1;
 
+	my $last = 0;
 	# $p - potential preemption point
 	for (my $p = 1; $p < scalar(@caches); $p++) {
-		# $l - last preemption point
-		my $str = "$p/" . (scalar(@caches) - 1);
-		print "\b" x length($str);
+		my $now = time();
+		$last = time() if !$last;
+		my $time = `date +"%F %T"`; chomp($time);
+		my $str = "$time Progress $p/" . (scalar(@caches) - 1);
+		my $diff = $now - $last;
+		my $est = $diff * (scalar(@caches) - $p);
+		$str .= " ($diff sec. to compute, $est sec to go)";
+		print "\b" x 80;
 		print "$str";
+		$last = $now;
+
+		# $l - last preemption point
 		for (my $l = 0; $l < $p; $l++) {
 			my $cache = $caches[$p - 1]; # last 
 			for my $idx ($l .. $p - 1) {
